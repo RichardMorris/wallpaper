@@ -1,0 +1,284 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"  "http://www.w3.org/TR/html4/strict.dtd">
+  <html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Wallpaper patterns - Mathematics</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+<style type="text/css">
+.latticeTable td {
+	width: 150px;
+}
+th {
+	font-weight: bold;
+}
+td {	vertical-align: top; }
+
+.rotTable td { text-align: center; width: 100px; }
+</style>
+</head>
+<body>
+<div id="head1"></div>
+<div id="col2">
+<p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
+<a href="wallpaper.html">Applet</a>
+<a href="help.html">help</a>
+<a href="maths.html">maths</a>
+</p>
+
+<h1>Wallpaper patterns - the mathematics</h1>
+<h2>Basic transformations</h2>
+
+The wallpaper patterns are produced by combining a number of transformations. The basic transformations are
+<table class="rotTable">
+<tr>
+<td><img src="naut/eryT.png" alt="180 rotation"></td>
+<td><img src="naut/eryM.png" alt="120 rotation"></td>
+<td><img src="naut/eryG.png" alt="120 rotation"></td>
+<tr>
+<td>A translation</td>
+<td>A reflection - M</td>
+<td>A glide-reflection: a translation follow by a reflection - G</td></tr>
+<tr>
+<td><img src="naut/eryC2.png" alt="180 rotation"></td>
+<td><img src="naut/eryC3.png" alt="120 rotation"></td>
+<td><img src="naut/eryC4.png" alt="120 rotation"></td>
+<td><img src="naut/eryC6.png" alt="120 rotation"></td></tr>
+<tr>
+<td>180° rotation - P2</td>
+<td>120° rotation - P3</td>
+<td>90° rotation - P4</td>
+<td>60° rotation - P6</td></tr>
+</table>
+<p>&nbsp;</p>
+<table>
+<tr><td width=300><p>Each <em>wallpaper pattern</em> is based on a pair of translations 
+in different directions.
+The translations are applied multiple times to give a repeating image. This defined
+ a regular grid of points called a <em>lattice</em>.
+</p></td><td>
+<img src="naut/eryTT.png" alt="The lattice produced by the translations">
+</td></tr>
+<tr><td><p>The blue shape in the program is called the 
+<em>fundamental domain</em>. The image inside it is translated, 
+rotated and reflected to produce the final image.
+The yellow parallelogram is one <em>cell</em> in the lattice, 
+the image inside every other cell will be identical to this.
+</p></td>
+<td><img src="naut/eryFD.png" alt="Fundamental domain and one lattice cell."></td></tr>
+<tr><td><p>The symmetry lines can be shown. In this pattern the final image is
+produced by reflecting in the magenta lines. This pattern also has rotational
+symmetry: each cyan-rectangle is a center of 180° rotation.</p></td>
+<td><img src="naut/erySL.png" alt="Symmetry lines and points of rotation,"></td></tr>
+<tr><td colspan=2>
+There is a certain flexibility in the selection of the fundamental domain
+and some of the patterns allow you to have curvy edges. 
+If the pattern contains a line of reflection then that line will form one edge
+of the fundamental domain.
+</td></tr>
+
+</table>
+
+
+<h2>The patterns</h2>
+<table class="latticeTable">
+<tr><th colspan=4>Lattice type: parallelogram</th></tr>
+<tr><td><img src="naut/eryP1.png" width=150 height=150 alt="P1 pattern"></td><td>P1: the simplest pattern, two translations in different directions.</td>
+<td><img src="naut/eryP2.png" width=150 height=150 alt="P2 pattern"></td><td>P2: this pattern has an extra 180° rotation.</td></tr>
+<tr><th colspan=4>Lattice type: diamond</th></tr>
+<tr><td><img src="naut/eryCM.png" width=150 height=150 alt="CM pattern"></td><td>CM: a reflection along a diagonal</td>
+<td><img src="naut/eryCMM.png" width=150 height=150 alt="CMM pattern"></td><td>CMM: two reflections along the diagonal</td></tr>
+<tr><th colspan=4>Lattice type: rectangle, the translations are at right angles</th></tr>
+<tr><td><img src="naut/eryPM.png" width=150 height=150 alt="PM pattern"></td><td>PM: A reflection</td>
+<td><img src="naut/eryPG.png" width=150 height=150 alt="PG pattern"></td><td>PG: A glide reflection</td></tr>
+<tr><td><img src="naut/eryPMG.png" width=150 height=150 alt="PMG pattern"></td><td>PMG: A reflection and a glide reflection</td>
+<td><img src="naut/eryPGG.png" width=150 height=150 alt="PGG pattern"></td><td>PGG: Two glide reflections at right angles</td>
+<td><img src="naut/eryPMM.png" width=150 height=150 alt="PMM pattern"></td><td>PMM: Two reflections at right angles</td></tr>
+<tr><th colspan=4>Lattice type: square</th></tr>
+<tr><td><img src="naut/eryP4.png" width=150 height=150 alt="P4 pattern"></td><td>P4: a 90° rotation</td>
+<td><img src="naut/eryP4M.png" width=150 height=150 alt="P4M pattern"></td><td>P4M: a 90° rotation and a reflection</td>
+<td><img src="naut/eryP4G.png" width=150 height=150 alt="P4G pattern"></td><td>P4G:  a 90° rotation and a glide-reflection</td></tr>
+<tr><th colspan=4>Lattice type: hexagon</th></tr>
+<tr><td><img src="naut/eryP3.png" width=150 height=150 alt="P2 pattern"></td><td>P3: a 120° rotation</td>
+<td><img src="naut/eryP31M.png" width=150 height=150 alt="P2 pattern"></td><td>P31M: a 120° rotation and a reflection</td>
+<td><img src="naut/eryP3M1.png" width=150 height=150 alt="P2 pattern"></td><td>P3M1: a 120° rotation and a reflection</td></tr>
+<tr><td><img src="naut/eryP6.png" width=150 height=150 alt="P2 pattern"></td><td>P3: a 60° rotation</td>
+<td><img src="naut/eryP6M.png" width=150 height=150 alt="P2 pattern"></td><td>P3M: a 60° rotation and a reflection</td></tr>
+</table>
+
+
+<h2>Frieze groups, cyclic groups and dihedral groups</h2>
+<p>As well as the wallpaper groups their are three other families of symetries in the plane.</p>
+<ul>
+<li>The seven frieze groups </li>
+<li>An infinite family of cyclic groups: rotations around a point.</li>
+<li>An infinite family of dihedral groups: generated by two lines of reflection which pass through a point.</li>
+</ul>
+<p>Whilst the wallpaper groups repeat in two directions the frieze groups only repeat in a single direction</p>
+<table>
+<tr><td><img src="naut/shellsF1.png" width=332 height=98 alt="frieze group F1"></td>
+<td><b>F1</b> translation in one direction<br>Symmetry of the infinite sequence of letters pppppp</td></tr>
+<tr><td><img src="naut/shellsF2.png" width=332 height=98 alt="frieze group F2"></td>
+<td><b>F2</b> a glide-reflection<br>pdpdpd.</td></tr>
+<tr><td><img src="naut/shellsF3.png" width=332 height=98 alt="frieze group F3"></td>
+<td><b>F3</b> translation and a parallel reflection<br>CCCCCC</td></tr>
+<tr><td><img src="naut/shellsF4.png" width=332 height=98 alt="frieze group F4"></td>
+<td><b>F4</b> translation and a perpendicular reflection<br>pqpqpq</td></tr>
+<tr><td><img src="naut/shellsF5.png" width=332 height=98 alt="frieze group F5"></td>
+<td><b>F5</b> translation and 180° rotation<br>pdpdpd</td></tr>
+<tr><td><img src="naut/shellsF6.png" width=332 height=98 alt="frieze group F6"></td>
+<td><b>F6</b> translation and a perpendicular reflection and 180° rotation<br>pdbqpdbq.</td></tr>
+<tr><td><img src="naut/shellsF7.png" width=332 height=98 alt="frieze group F7"></td>
+<td><b>F7</b> translation, perpendicular reflection, parallel reflection<br>XXXXXX.</td></tr>
+</table> 
+<p>Frieze groups are often found in decorative borders. The top border of this page is F2 and the left hand side border is F4.</p>
+<p>The cyclic and dihedral groups all have rotational symmetry about a single point. 
+Cyclic groups have n-fold rotation symmetry (rotation by 360°/n).
+Dihedral groups have an n-fold rotational symmetry and two reflections in lines at
+180°/n to each other.</p>  
+<table>
+<tr><td></td><td></td>
+<td><b>Cyclic groups</b></td>
+</tr>
+<tr>
+<td><b>C2</b> <img src="naut/shellsC2.png" width=122 height=122 alt="cyclic group C2" align="top"></td>
+<td><b>C3</b> <img src="naut/shellsC3.png" width=122 height=122 alt="cyclic group C3" align="top"></td>
+<td><b>C4</b> <img src="naut/shellsC4.png" width=122 height=122 alt="cyclic group C4" align="top"></td>
+<td><b>C5</b> <img src="naut/shellsC5.png" width=122 height=122 alt="cyclic group C5" align="top"></td>
+<td><b>C6</b> <img src="naut/shellsC6.png" width=122 height=122 alt="cyclic group C6" align="top"></td>
+</tr>
+<tr><td></td><td></td>
+<td><b>Dihedral groups</b></td>
+</tr><tr>
+<td><b>D2</b> <img src="naut/shellsD2.png" width=122 height=122 alt="dihedral group D2" align="top"></td>
+<td><b>D3</b> <img src="naut/shellsD3.png" width=122 height=122 alt="dihedral group D3" align="top"></td>
+<td><b>D4</b> <img src="naut/shellsD4.png" width=122 height=122 alt="dihedral group D4" align="top"></td>
+<td><b>D5</b> <img src="naut/shellsD5.png" width=122 height=122 alt="dihedral group D5" align="top"></td>
+<td><b>D6</b> <img src="naut/shellsD6.png" width=122 height=122 alt="dihedral group D6" align="top"></td>
+</tr>
+</table>
+<p>The group <b>D1</b> is technically classed as a dihedral group it just consists of a single reflection</p>
+<table><tr>
+<td><b>D1</b> <img src="naut/shellsD1.png" width=122 height=122 alt="dihedral group D1" align="top"></td>
+</tr></table>
+
+
+<h2>The code</h2>
+<p>Each symmetry group is represented by a member of the class <b>TessRule</b> which defines the type of pattern
+and a set of vectors which specify a coordinate frame. 
+The origin of this frame is the green dot and the two coordinate axis are the lines 
+from the green dot to the red and blue dots.
+This frame defines at lattice which tessellate the the plane by parallelograms, 
+and the image inside each parallelogram will be the same.
+</p>
+
+<img src="naut/frames2.png" alt="Transformation of coordinate frames" width="670" align="center">
+<p>First consider the case of the simplest group P1. To calculate the tessellated image for each point in the image P<sub>dest</sub> we wish to find 
+the point P<sub>src</sub> inside the fundamental domain. To achieve this first transform to coordinates in the new frame to
+give the point Q<sub>dest</sub>. As the image in each 
+parallelogram is identical we can take coordinates in this frame mod 1 giving the point Q<sub>src</sub>. Finally
+transform back to image coordinates giving the P<sub>src</sub>. Finally the colour of the pixel at P<dest> is set to the color at P<src>.</p>
+
+<p>For other transformations a little more work is needed. Consider Pmm which is obtained by reflection in two lines at right angles. 
+In the transformed coordinates this is in the lines x=0.5 and y=0.5. Let Q<sub>mod</sub> be the point after the modulus is taken
+which has coordinates (<em>x</em><sub>mod</sub>,<em>y</em><sub>mod</sub>) 
+with <em>x</em><sub>mod</sub> and <em>y</em><sub>mod</sub> in the range 0 to 1.
+The <em>y</em>-coordinates of Q<sub>src</sub>, <em>x</em><sub>src</sub> is calculate as follow:</p>
+<ul>
+<li>if <em>x</em><sub>mod</sub> < 0.5, <em>x</em><sub>src</sub> = <em>x</em><sub>mod</sub>,</li>
+<li>if <em>x</em><sub>mod</sub> > 0.5, <em>x</em><sub>src</sub> = 1 - <em>x</em><sub>mod</sub>.</li>
+<li>if <em>y</em><sub>mod</sub> < 0.5, <em>y</em><sub>src</sub> = <em>y</em><sub>mod</sub>,</li>
+<li>if <em>y</em><sub>mod</sub> > 0.5, <em>y</em><sub>src</sub> = 1 - <em>y</em><sub>mod</sub>.</li>
+</ul>
+<p>Each other group will have similar condition.</p>
+
+<p>In the above the transformation we have used floating point coordinates. 
+The above calculations can be repeated using purely integer arithmetic, this results in faster algorithms and eliminates any rounding problems.
+Let <b>O</b> be the position of the green dot and <b>u</b> and <b>v</b> be the two vectors of the frame.
+Let M be the matrix
+with <b>u</b> and <b>v</b> as columns,
+this has the determinant <em>det</em> =
+(<b>u</b><sub>x</sub> * <b>v</b><sub>y</sub> - <b>u</b><sub>y</sub> <b>v</b><sub>x</sub>).
+. Now the transformation from a point <b>q</b> in the Q-frame to a point
+<b>p</b> the P-frame
+is given by <b>p</b>=<b>O</b> + M<b>q</b>, and the inverse transformation is
+<b>q</b> = M<sup>-1</sup>(<b>p</b>-<b>O</b>).
+The inverse matrix M<sup>-1</sup> is calculated as 1/det (<b>v</b><sub>y</sub>, -<b>v</b><sub>x</sub>;-<b>u</b><sub>y</sub> <b>u</b><sub>x</sub>).
+If we multiply through by the determinant giving
+<b>q'</b> = det M<sup>-1</sup>(<b>p</b>-<b>O</b>), observe that <b>q'</b> will have integer coordinates.
+The above method can be followed through using this scaled frame, with the frame vectors being (det,0) and (0,det).</p>
+
+<pre>
+int Qdest[] = new int[2];
+int Qsrc[] = new int[2];
+int det = ux * vy - uy * vx;
+
+for(i=0;i&lt;width;++i)
+ for(j=0;j&lt;height;++j) {
+  // translate
+  int x = i - x0; 
+  int y = j - y0;
+  // calculate Q coodinates of dest
+  Qdest[0] = vy * x - vx * y; 
+  Qdest[1] = -uy * x + ux * y;
+  // apply specific transformation
+  fun(Qdest,Qsrc,det); 
+  // calculate Psrc
+  int srcX = x0 + (Qsrc[0] * ux + Qsrc[1] * vx ) / det;	
+  int srcY = y0 + (Qsrc[0] * uy + Qsrc[1] * vy ) / det;	
+  // copy src pixel to dest pixel
+  pixels[i*width+j] = pixels[srcX*width+srcY];
+ }
+ 
+// An example of transformation function for group Pmm 
+void fun(int dest[2],int src[2],int det) {
+	// find modulus
+	int a = dest[0] % det; if(a<0) a+= det;
+	int b = dest[1] % det; if(b<0) b+= det;
+	// find coordinates of point in fundamental domain
+	if(a>det/2) a = det - a;
+	if(b>det/2) b = det - b;
+}
+</pre>
+
+<h3>Using lattice points</h3>
+<p>The calculation can be sped up by using the lattice structure of the tessellation. First find the bounding box enclosing one 
+parallelogram in the lattice, and calculate the full pattern in that rectangle. The find all the lattice points in the region to be drawn.
+For each lattice point copy the pixels in the rectangle to a new rectangle based on the lattice point.
+This will result in a certain amount of overlap, but this does not affect the speed as coping arrays can be achieve very quickly.
+</p>
+
+<h3>Speeds of integer and floating point</h3>
+<p>Using integer arithmetic offers considerable speed advantages over floating point in the inner loops.
+Compare these two methods for finding division rounded down (rather than to 0 as in the language spec for /):
+<pre>
+ int a = (int) Math.floor((float) in[0]/det);
+ int b = (int) Math.floor((float) in[1]/det);
+</pre>
+and
+<pre>
+ int a = (in[0]<0 ? (in[0]+1)/det -1 : in[0]/det); 
+ int b = (in[1]<0 ? (in[1]+1)/det -1 : in[1]/det); 
+</pre>
+Changing from the first to the second resulted in a four fold speed improvement over the whole algorithm.
+These two lines represented 67% of the entire speed of the algorithm.
+
+<h2>Further information</h2>
+<P>For more information see</P>
+<ul>
+<li><a href="http://www.clarku.edu/~djoyce/wallpaper/">David 
+  Joyce's page</a></li>
+<li><a href="http://www.geom.umn.edu">CRC Standard Mathematical 
+  Tables</a> at the Geometry Center. </li>
+<li><a href="http://en.wikipedia.org/wiki/Wallpaper_group">Wikipedia</a></li>
+</ul>
+
+<hr>
+<p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
+<a href="wallpaper.html">Applet</a>
+<a href="help.html">help</a>
+<a href="maths.html">maths</a>
+</p>
+<p>Copyright R Morris 2007</p>
+</div>
+</body>
+</html>

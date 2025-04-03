@@ -1,0 +1,183 @@
+<html>
+<head>
+<title>Wallpaper patterns - Help</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+<div id="head1"></div>
+<div id="col2">
+<p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
+<a href="wallpaper.html">Applet</a> <a href="help.html">help</a> <a
+	href="maths.html">maths</a></p>
+
+<h1>Wallpaper patterns - Help</h1>
+<p>The wallpaper pattern java application/applet creates repeating
+patterns based on an image and the 17 mathematical plane symmetry
+groups.</p>
+
+<p>For further assistance you can email me <a
+	href="mailto:rich@singsurf.org">rich@singsurf.org</a>.</p>
+
+<h2>Installation</h2>
+<p>The package requires a java runtime to load. The sun java runtime
+can be downloaded from Sun's <a
+	href="http://www.java.com/en/download/manual.jsp">download site</a>.</p>
+
+<p>To installation of the package unpack the zip file into a
+directory. No other action should be needed.</p>
+
+<h2>Starting the program</h2>
+<p>The program can be run in a number of ways:</p>
+<ol>
+	<li>Double clicking on the <b>wallpaper.bat</b> file - opens with a
+	default image.</li>
+	<li>Double clicking on the <b>wallpaper.jar</b> file - will open with
+	default image.</li>
+	<li>Running <b>wallpaper.bat</b> on the command line
+	<ul>
+		<li><code>wallpaper.bat filename.jpg</code> - runs with the
+		selected filename</li>
+		<li><code>wallpaper.bat filename.jpg 800 600</code> - runs with
+		the selected filename and specified window size</li>
+	</ul></li>
+	<li>Using: <code>java -Xmx512m -jar wallpaper.jar image.jpg 800 600</code>
+	use this method if more memory need to be allocated.</li>
+</ol>
+
+<h2>Using the program</h2>
+<h3>Selection tessellations</h3>
+<p>A tessellation can be selected by choosing one of the check-boxes
+on the left hand side of the screen. These list the 17 wallpaper groups
+based around lattice structures. Additional tessellations for the 7
+Frieze group and cyclic and dihedral groups can be pull down menus below.
+The <b>basics</b> pull down menu allows the basic transformations to be applied:
+<i>translations</i>, <i>rotations</i>, <i>reflections</i>, <i>glide-reflections</i>,
+<i>uniform scaling</i>, and general <i>linear transformations</i> to be applied.  </p>
+
+<p>The shape of the domain can be altered by dragging the red, green
+and blue points. For some groups only the red and green points are
+visible. It sometimes happens that the some of the points will be lost
+outside the screen. If that happens the <b>Reset Domain</b> button can
+be used to load a default set of points which can appear on screen.</p>
+
+<p>Two sets lines are shown. The blue lines are the <i>fundamental
+domain</i>. The resulting image is constructed by taking the points inside
+this region and rotating, reflecting and translating them to fill the
+screen. The yellow lines give the shape of the lattice cells, which are
+either parallelograms or hexagons. These shapes tessellate the screen
+and each lattice cell contains exactly the same image as the others.</p>
+
+<p>The <b>image</b> menu allows some image manipulation to be
+carried out. The image can be zoomed by 1/2 to 1/32, this will preserve
+the underlying image. The other options will modify the underlying image
+these allow rotation by 90 degrees, scaling and resizing of the image.
+Apart from zooming they cannot be undone.</p>
+
+
+<h3>Saving very large images</h3>
+<p>If a very large image is required, say 8000 by 6000, this can
+cause problems with memory as they can take 50MB memory or more. Some
+improvement can be made by increasing the size of heap space allocated
+when the program is used using</p>
+<code>java -Xmx512m -jar wallpaper.jar image.jpg 800 600</code>
+<p>to allocate 512 megabytes heap space. Swap space on your computer
+may also be a limiting factor. To allow such large images to be saved
+the <b>Save expanded</b> menu item on the <b>File</b> menu can be used,
+this allows the desired output size to be set. This option only supports
+ppm and bmp format images.</p>
+
+<h3>Creating rectangular tiles</h3>
+<p>Rectangular tiles which can be used to tile a desktop background
+can be produced. However, not all patterns have the correct geometry to
+create such tiles: typically one edges of the domain need to be
+horizontal or vertical. To assist in creating such tiles select <b>Constrain vertices</b>
+from the <b>options</b> menu. This will restrict the possible domains
+only allowing display
+coordinates of the domain and whether rectangular tiles can be created.
+A green rectangle is also displayed when rectangular tiles can be
+created.</p>
+<img src="naut/rectangularTile.png" width="409" height="280"
+	alt="Displaying the tileable region">
+<p>If possible the tileable region can be saved using the <b>Save
+Tile</b> option on the <b>File</b> menu.</p>
+
+<!-- 
+<h3>Painting on the image</h3>
+<p>It is possible to paint on the image, to help touchup the final image.
+To start the paint mode select
+</p>
+-->
+<hr>
+
+<h2>Version history</h2>
+<dl>
+	<dt>Version 1.04 - 15 July 2009</dt>
+	<dd>
+	<ul>
+		<li>Speed up rendering of patterns</li>
+		<li>Add basic trandformations:translate, scale, linear etc.</li>
+		<li>Show all symmetries for all types</li>
+		<li>Better algorithm for calculation of desktop tiles.</li>
+		<li>Allow saving expanded images as bmp format.</li>
+		<li>The current visible display can be copied to clipboard.</li>
+	</ul>
+	</dd>
+	<dt>Version 1.03 - 26 April 2008</dt>
+	<dd>
+	<ul>
+		<li>Allow creation of tillable images.
+	</ul>
+	</dd>
+	<dt>Version 1.02 - 21 June 2007</dt>
+	<dd>
+	<ul>
+		<li>Allow uppercase file extensions.</li>
+		<li>Allow animations to be restarted. NE, NW animations.</li>
+		<li>Some interface improvements</li>
+		<li>Coordinates can be shown</li>
+	</ul>
+	</dd>
+	<dt>Version 1.01 - 04 June 2007</dt>
+	<dd>
+	<ul>
+		<li>Screen-saver version.</li>
+		<li>Load and save patterns</li>
+		<li>Speed up for hexagon based patterns</li>
+		<li>Rotation points and reflection/glide-reflection points can be
+		drawn</li>
+		<li>Ability to animate a pattern, a new algorithm based on
+		lattice points speeds up the calculation making this possible.</li>
+		<li>Reduced memory footprint</li>
+		<li>Background colour used to fill unknown regions can be set or
+		the background tiled</li>
+		<li>Key board arrow keys can move the domain</li>
+		<li>Zoom in</li>
+		<li>Cut and paste from system clipboard</li>
+		<li>Resize, rescale and flip now adjust the fundamental domain
+		and lattice points to match</li>
+		<li>Report errors in dialog when loading/saving an image.</li>
+		<li><b>Known bugs: </b> flipping the image can corrupt the
+		domain. Loading a zoomed pattern does not update menu items.</li>
+	</ul>
+	</dd>
+	<dt>Version 1.0 - 12 April 2007</dt>
+	<dd>
+	<ul>
+		<li>File load and save for common image types</li>
+		<li>Save expanded - saves very large images in ppm format</li>
+		<li>Image zoom, resize and rescale</li>
+		<li>Frieze, cyclic and dihedral groups implemented</li>
+		<li>Selection of regions for diamonds and rectangles improved</li>
+		<li>Scrollable canvas</li>
+	</ul>
+	</dd>
+</dl>
+
+<hr>
+<p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
+<a href="wallpaper.html">Applet</a> <a href="help.html">help</a> <a
+	href="maths.html">maths</a></p>
+<p>Copyright R Morris 2007</p>
+</div>
+</body>
+</html>
