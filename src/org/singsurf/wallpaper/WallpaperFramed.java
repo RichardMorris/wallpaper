@@ -699,10 +699,10 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         
         protected JMenu buildAnimationMenu() {
     	    stopBut.setVisible(true);
-    	    stopBut.setEnabled(false);
+    	    stopBut.setEnabled(true);
     	
     	    JMenu animateMenu = new JMenu("Animation");
-    	    String animations[] = {"up","down","left","right","NE","NW","SE","SW","rotate","bounce"};
+    	    String animations[] = {"up","down","left","right","NE","NW","SE","SW","rotate","bounce","smooth"};
     	    for(int i=0;i<animations.length;++i) {
     	        JMenuItem mi = new JMenuItem(animations[i]);
     	        mi.setActionCommand("anim/"+animations[i]);

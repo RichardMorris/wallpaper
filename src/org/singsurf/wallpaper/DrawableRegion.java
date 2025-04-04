@@ -20,7 +20,7 @@ import java.awt.image.PixelGrabber;
 import org.singsurf.wallpaper.tessrules.TessRule;
 
 public class DrawableRegion {
-	static final boolean DEBUG = true;
+	static final boolean DEBUG = false;
 	
 	/** Un-zoomed rectangle */ 
 	public Rectangle baseRect;

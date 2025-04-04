@@ -570,6 +570,8 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
         });
         stopBut.setVisible(true);
+	    stopBut.setEnabled(true);
+
         p2.add(stopBut);
 
         JComboBox<String> animateMenu = buildAnimationChoice();
@@ -676,11 +678,10 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     public void keyReleased(KeyEvent e) {/*ignore*/}
 
     protected JComboBox<String> buildAnimationChoice() {
-	    //stopBut.setVisible(true);
-	    //stopBut.setEnabled(false);
-	
+	    stopBut.setVisible(true);
+	    stopBut.setEnabled(true);
 	    animateChoice = new JComboBox<String>();
-	    String animations[] = {"bounce","up","down","left","right","NE","NW","SE","SW"}; // "rotate",
+	    String animations[] = {"bounce","smooth","up","down","left","right","NE","NW","SE","SW"}; // "rotate",
 	    for(int i=0;i<animations.length;++i) {
 //	        JMenuItem mi = new JMenuItem(animations[i]);
 //	        mi.setActionCommand("anim/"+animations[i]);
@@ -717,9 +718,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	}
 
 	private void startAnim() {
-	    //((Container)stopBut.getParent()).validate();
-	    //TessRule.tileBackground = true;
-	
 	    //if(DEBUG) 
 	    	System.out.println("Start anim");
 	    
@@ -769,10 +767,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	    if (animateTask != null)
 	        animateTask.cancel();
 	    animRunning = false;
-	    //		stopBut.setEnabled(false);
-	    //stopBut
 	    stopBut.setText("Start");
-	    //this.dr = oldDr;
 	}
 
 //	public void actionPerformed(ActionEvent ev) {

@@ -46,6 +46,9 @@ public abstract class AnimationPath {
 		else if(label.equals("bounce")) {
 			path = new BounceAnimation(rect,speed);
 		}
+		else if(label.equals("smooth")) {
+			path = new LissajousAnimation(rect,speed);
+		}
 		return path;
 	}
 }
