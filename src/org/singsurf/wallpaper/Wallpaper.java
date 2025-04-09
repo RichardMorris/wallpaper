@@ -130,35 +130,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         if(this.controller.constrainVertices)
             fd.paintRegularTile(g);
 
-
-        /*                final int latticeWidth = fd.getLatticeWidth();
-                final int latticeHeight = fd.getLatticeHeight();
-               Vec[] points = fd.getLatticePoints(new Rectangle(
-                        dr.dispRect.x-latticeWidth,dr.dispRect.y-latticeHeight,
-                        dr.dispRect.width+latticeHeight,
-                        dr.dispRect.height+latticeHeight));
-
-                g.setPaintMode();
-                g.setColor(Color.ORANGE);
-                int c=0;
-                for(Vec p:points) {
-                   switch(++c%8) {
-                    case 0: g.setColor(Color.BLACK); break;
-                    case 1: g.setColor(Color.RED); break;
-                    case 2: g.setColor(Color.GREEN); break;
-                    case 3: g.setColor(Color.BLUE); break;
-                    case 4: g.setColor(Color.MAGENTA); break;
-                    case 5: g.setColor(Color.YELLOW); break;
-                    case 6: g.setColor(Color.CYAN); break;
-                    case 7: g.setColor(Color.PINK); break;
-                    }
-                    //g.drawRect(p.x, p.y, latticeWidth, latticeHeight);
-                    g.fillOval(p.x-2, p.y-2, 5, 5);
-                }
-                Rectangle rect = fd.getMinimalRectangle(points);
-                if(rect!=null)
-                    g.drawRect(rect.x,rect.y,rect.width,rect.height);
-         */
         g.translate(-this.offset.x,-this.offset.y);
         paintDone = true;
     }
@@ -340,12 +311,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
             return;
         }
 
-        // Only recalculate when paint has been completed or 1 sec passed.
-        // and 0.1s has pased.
-        //long curtime = System.currentTimeMillis();
-        //System.out.println("t "+(curtime- lasttime)+" pd "+paintDone);
-        //if(curtime- lasttime <100) return;
-        if(!paintDone /*&& curtime- lasttime <1000 */) return;
+        if(!paintDone ) return;
         //lasttime = curtime;
         paintDone = false;
         controller.applyTessellation();
@@ -513,31 +479,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
                 myCanvas.repaint();
             }});
 
-//        showCPnt = new JCheckBox("Show Control Points",true);
-//        p2.add(showCPnt);
-//        showCPnt.addItemListener(new ItemListener() {
-//            public void itemStateChanged(ItemEvent e) {
-//            	fd.drawSelectionPoints = showCPnt.isSelected();
-//                myCanvas.repaint();
-//            }});
-
-//        interactiveCB = new JCheckBox("Interactive mode",interactiveMode);
-//        interactiveCB.addItemListener(new ItemListener() {
-//            public void itemStateChanged(ItemEvent e) {
-//                if(e.getStateChange() == ItemEvent.SELECTED)
-//                {
-//                    interactiveMode = true;
-//                    myCanvas.repaint();
-//                    ta.setText("Interactive mode.");
-//                }
-//                else
-//                {
-//                    interactiveMode = false;
-//                    ta.setText("Double click to redraw.");
-//                    myCanvas.repaint();
-//                }
-//            }});
-//        p2.add(interactiveCB);
 
         JCheckBox symmetryCB = new JCheckBox("Draw symmetry");
         symmetryCB.addItemListener(new ItemListener() {
@@ -562,6 +503,8 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         p2.add(symmetryCB);
 
         p2.add(new JLabel("Anim"));
+        JComboBox<String> animateMenu = buildAnimationChoice();
+        p2.add(animateMenu);
         stopBut = new JButton("Start");
         stopBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -574,8 +517,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
         p2.add(stopBut);
 
-        JComboBox<String> animateMenu = buildAnimationChoice();
-        p2.add(animateMenu);
 
 
         return p2;
@@ -663,14 +604,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
             myCanvas.repaint();			//redraw(false);
             return;
         }
-
-        // Only recalculate when paint has been completed or 1 sec passed.
-        // and 0.1s has pased.
-        //long curtime = System.currentTimeMillis();
-        //System.out.println("t "+(curtime- lasttime)+" pd "+paintDone);
-        //if(curtime- lasttime <100) return;
-        if(!paintDone /*&& curtime- lasttime <1000 */) return;
-        //lasttime = curtime;
+        if(!paintDone) return;
         paintDone = false;
         controller.applyTessellation();
 
@@ -678,22 +612,12 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     public void keyReleased(KeyEvent e) {/*ignore*/}
 
     protected JComboBox<String> buildAnimationChoice() {
-	    stopBut.setVisible(true);
-	    stopBut.setEnabled(true);
 	    animateChoice = new JComboBox<String>();
-	    String animations[] = {"bounce","smooth","up","down","left","right","NE","NW","SE","SW"}; // "rotate",
+	    String animations[] = {"bounce","smooth","up","down","left","right","NE","NW","SE","SW", "rotate"};
 	    for(int i=0;i<animations.length;++i) {
-//	        JMenuItem mi = new JMenuItem(animations[i]);
-//	        mi.setActionCommand("anim/"+animations[i]);
-//	        mi.addActionListener(this);
 	        animateChoice.addItem(animations[i]);
 	    }
 	    animateChoice.setSelectedIndex(0);
-//	    animateMenu.addSeparator();
-//	    JMenuItem mi = new JMenuItem("Stop");
-//	    mi.setActionCommand("anim/Stop");
-//	    mi.addActionListener(this);
-//	    animateMenu.add(mi);
 	    animateChoice.addItemListener(this);
 	
 	    return animateChoice;
@@ -769,20 +693,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	    animRunning = false;
 	    stopBut.setText("Start");
 	}
-
-//	public void actionPerformed(ActionEvent ev) {
-//        String com = ev.getActionCommand();
-//
-//		if(com.startsWith("anim/")) {
-//			String label = com.substring(5);
-//        //"up","down","left","right","rotate","Stop"
-//        if(label.equals("Stop")) {
-//            stopAnim();
-//        }
-//        else startAnim(label);
-//
-//    }
-
 		
 	public void itemStateChanged(ItemEvent ev) {
 		

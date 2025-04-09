@@ -646,10 +646,10 @@ public //	int[] fundY = {0,0,0,0,0,0};
                 Graphics2D g2 = (Graphics2D) this.graphics; 
 		Stroke oldStroke = g2.getStroke();
 		g2.setStroke(new BasicStroke(5));
-                graphics.setColor(Color.BLACK); // reflectColour
+                graphics.setColor(Color.black); // reflectColour
                 graphics.setColor(reflectColour);
 		graphics.drawLine(P1.x,P1.y,P2.x,P2.y);
-		graphics.setColor(Color.WHITE);
+		graphics.setColor(Color.white);
                 g2.setStroke(new BasicStroke(3));
                 graphics.drawLine(P1.x,P1.y,P2.x,P2.y);
                 g2.setStroke(oldStroke);

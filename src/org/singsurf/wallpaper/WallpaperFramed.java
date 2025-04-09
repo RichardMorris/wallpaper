@@ -46,7 +46,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileFilter;
@@ -717,26 +716,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
     	
     	    return animateMenu;
     	}
-
-        @Override
-        protected JPanel buildButtonBar() {
-            JPanel p2 = super.buildButtonBar();
-            //JComponent symButComp = p2.getComponent(p2.getComponentCount()-1);
-            //p2.remove(symButComp);
-            //p2.remove(2);
-            
-//            stopBut = new JButton("Stop");
-//            stopBut.addActionListener(new ActionListener() {
-//                public void actionPerformed(ActionEvent e) {
-//                    stopStartAnim();
-//                }
-//
-//            });
-//            stopBut.setVisible(false);
-//            p2.add(stopBut);
-            
-            return p2;
-        }
 
         //@Override
        public Image getImage(String loc) {

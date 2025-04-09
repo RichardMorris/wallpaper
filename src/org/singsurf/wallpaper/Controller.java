@@ -46,7 +46,6 @@ public class Controller {
         tr.calcFund(fd);
         if(showCoords)
             setText(fd.toString(dr));
-        //dr.resetDelayed();
         tr.replicate(dr,fd);
         if(this.showingOriginal) {
             wallpaper.origTileButton.setText("Original Image");
