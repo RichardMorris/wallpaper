@@ -37,7 +37,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JCheckBoxMenuItem;
@@ -63,17 +64,14 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
     private static final long serialVersionUID = 1L;
     static final boolean DO_PAINTING=false; 
     /** Scrollable pane */
-    //protected ScrollPane sp;
     protected JScrollPane jsp;
 
 
-    //@Override
     @Override
     protected DrawableRegion buildDrawableRegion() {
         return new ZoomedDrawableRegion(this);
     }
 
-    //@Override
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
@@ -566,6 +564,16 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             rescaleMI.addActionListener(this);
             rescaleMI.setActionCommand("rescale");
             imageMenu.add(rescaleMI);
+
+            JCheckBoxMenuItem splitMI = new JCheckBoxMenuItem("Split");
+            splitMI.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+					int state = e.getStateChange();
+					controller.split(state==ItemEvent.SELECTED);
+				}});
+            splitMI.addActionListener(this);
+            splitMI.setActionCommand("split");
+            imageMenu.add(splitMI);
 
             JMenu flipMI = new JMenu("Flip/Rotate");
             JMenuItem flipX = new JMenuItem(Wallpaper.FLIP_X);
@@ -1105,41 +1113,28 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
          * @return loaded image or null on error
          */
         public Image frameGetImage(String imgloc) {
-            URL imgurl=null;
+            URI imgurl=null;
             String filename=null;
             Image imgin;
 
-            //this.titleFilename = imgloc;
             // first try if its a a full URL
             try
             {
-                imgurl = new URL(imgloc);
-                this.imageURL = imgurl;
+                imgurl = new URI(imgloc);
+                imageURL = imgurl.toURL();
+                imgin = Toolkit.getDefaultToolkit().getImage(imageURL);
             }
-            catch(MalformedURLException e)
+            catch(MalformedURLException | URISyntaxException | IllegalArgumentException e)
             {
-                // then see if its relative 
+                // then see if its a regular file
                 filename = System.getProperty("user.dir")+System.getProperty("file.separator")+imgloc;
+                imgin = Toolkit.getDefaultToolkit().getImage(filename);
             }
             if(DEBUG) {
                 if(imgurl!=null) System.out.println("URL "+imgurl.toString());
                 else System.out.println(filename);
             }
-            this.imageFilename = filename;
-            try
-            {
-                if(imgurl!=null)
-                    imgin = Toolkit.getDefaultToolkit().getImage(imgurl);
-                else
-                    imgin = Toolkit.getDefaultToolkit().getImage(filename);
-            }
-            catch(Exception e)
-            {
-                System.out.println("Error with getImage");
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-                return null;
-            }
+            imageFilename = filename;
 
             if(imgin==null)
             {

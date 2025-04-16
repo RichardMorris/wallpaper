@@ -170,8 +170,10 @@ public abstract class TessRule
                 {
                     int px;
                     if(TessRule.tileBackground) {
-                        srcX %= dr.srcRect.width; if(srcX <0) srcX += dr.srcRect.width;
-                        srcY %= dr.srcRect.height; if(srcY <0) srcY += dr.srcRect.height;
+                        srcX %= dr.srcRect.width; 
+                        if(srcX <0) srcX += dr.srcRect.width;
+                        srcY %= dr.srcRect.height; 
+                        if(srcY <0) srcY += dr.srcRect.height;
                         int inInd = srcX+srcY*dr.srcRect.width;
                         px = dr.inpixels[inInd];
                     }

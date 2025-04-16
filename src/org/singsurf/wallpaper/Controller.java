@@ -121,4 +121,16 @@ public class Controller {
         showCoords=b;
 
     }
+
+	public void split(boolean b) {
+		if(dr instanceof ZoomedDrawableRegion) {
+			((ZoomedDrawableRegion)dr).setSplit(b);
+			dr.calcDispRegion();
+			showOriginal();
+			applyTessellation();
+//			calcGeom();
+			//dr.makeOutImage();
+//			redraw();
+		}
+	}
 }

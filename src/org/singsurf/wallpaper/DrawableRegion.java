@@ -65,12 +65,12 @@ public class DrawableRegion {
 
 
 	void calcDispRegion() {
-		int minX = this.viewpointL;
-		int minY = this.viewpointT;
-		int maxX = (this.destRect.width > this.viewpointR ? this.viewpointR : this.destRect.width);
-		int maxY = (this.destRect.height > this.viewpointB ? this.viewpointB : this.destRect.height);
-		this.dispRect = new Rectangle(minX,minY,maxX-minX,maxY-minY);
-		if(DEBUG) System.out.println("CDR w "+this.destRect.width+" h "+this.destRect.height+" ");
+		int minX = viewpointL;
+		int minY = viewpointT;
+		int maxX = (destRect.width > viewpointR ? viewpointR : destRect.width);
+		int maxY = (destRect.height > viewpointB ? viewpointB : destRect.height);
+		dispRect = new Rectangle(minX,minY,maxX-minX,maxY-minY);
+		if(DEBUG) System.out.println("CDR w "+destRect.width+" h "+destRect.height+" ");
 		if(DEBUG) System.out.println("vp "+viewpointL+" "+viewpointT+" "+viewpointR+" "+viewpointB);
 		if(DEBUG) System.out.println(""+minX+" "+minY+" "+maxX+" "+maxY);
 	}
@@ -78,7 +78,7 @@ public class DrawableRegion {
 	public void fillSource() {
 		if(!img_ok) return;
 		//System.out.println("fillSource");
-		this.source.newPixels(this.dispRect.x,this.dispRect.y,this.dispRect.width,this.dispRect.height);
+		source.newPixels(dispRect.x,dispRect.y,dispRect.width,dispRect.height);
 	}
 	
 	public void reset() {
@@ -138,12 +138,12 @@ public class DrawableRegion {
 			//height=pg.getHeight();	
 			if(DEBUG) System.out.println("creating source");
 
-			this.srcRect = new Rectangle(0,0,w,h);
-			this.destRect = new Rectangle(0,0,w,h);
+			srcRect = new Rectangle(0,0,w,h);
+			destRect = new Rectangle(0,0,w,h);
 			calcDispRegion();
 			makeOutImage();
 			if(DEBUG) System.out.println("loadImage successful: Width "+w+" height "+h);
-			this.img_ok = true;
+			img_ok = true;
 		}
 		catch(OutOfMemoryError e) {
 			reportMemoryError(e,w*h*2);
@@ -152,7 +152,7 @@ public class DrawableRegion {
 	}
 
 	public boolean isGoodImage() {
-		return this.img_ok;
+		return img_ok;
 	}
 	public Image getActiveImage() {
 		if(source!=null)
@@ -161,21 +161,21 @@ public class DrawableRegion {
 	}
 	public void setViewport(Rectangle r) {
 	    if(DEBUG)	    System.out.println("DR.setViewport "+r);
-		this.viewpointL = r.x-this.offset.x;
-		this.viewpointR = r.x+r.width-this.offset.x;
-		this.viewpointT = r.y-this.offset.y;
-		this.viewpointB = r.y + r.height-this.offset.y;
+		viewpointL = r.x-offset.x;
+		viewpointR = r.x+r.width-offset.x;
+		viewpointT = r.y-offset.y;
+		viewpointB = r.y + r.height-offset.y;
 		calcDispRegion();
 	}
 
 	protected void makeSrc(int w,int h) {
-		this.srcRect = new Rectangle(0,0,w,h);
-		this.inpixels = new int[w*h];
+		srcRect = new Rectangle(0,0,w,h);
+		inpixels = new int[w*h];
 	}
 
 	protected void makeDest(int w,int h) {
-		this.destRect = new Rectangle(0,0,w,h);
-		this.pixels = new int[w*h];
+		destRect = new Rectangle(0,0,w,h);
+		pixels = new int[w*h];
 	}
 	
 	protected void copySrcDest() {
@@ -188,9 +188,9 @@ public class DrawableRegion {
 
 	protected void makeOutImage() {
 	    if(DEBUG) System.out.println("makeOutImage");
-		this.source = new MemoryImageSource(this.destRect.width, this.destRect.height, pixels, 0, this.destRect.width);
-		this.source.setAnimated(true);
-		this.outImage = Toolkit.getDefaultToolkit().createImage(source);
+		source = new MemoryImageSource(destRect.width, destRect.height, pixels, 0, destRect.width);
+		source.setAnimated(true);
+		outImage = Toolkit.getDefaultToolkit().createImage(source);
 	}
 
 	public void resize(int w, int h, int xoff, int yoff) {
@@ -200,21 +200,21 @@ public class DrawableRegion {
 			if(TessRule.tileBackground) {
 				for(int i=0;i<w;++i)
 					for(int j=0;j<h;++j) {
-						int sx = (i-xoff) % this.srcRect.width; if(sx<0) sx+= this.srcRect.width;
-						int sy = (j-yoff) % this.srcRect.height; if(sy<0) sy+= this.srcRect.height;
-						pixels[i+j*w] = inpixels[sx+sy*this.srcRect.width];
+						int sx = (i-xoff) % srcRect.width; if(sx<0) sx+= srcRect.width;
+						int sy = (j-yoff) % srcRect.height; if(sy<0) sy+= srcRect.height;
+						pixels[i+j*w] = inpixels[sx+sy*srcRect.width];
 					}
 			}
 			else {
 				for(int i=0;i<w;++i)
 					for(int j=0;j<h;++j)
-						pixels[i+j*w]=this.backgroundRGB;
-				for(int i=0;i<this.srcRect.width;++i)
-					for(int j=0;j<this.srcRect.height;++j) {
+						pixels[i+j*w]=backgroundRGB;
+				for(int i=0;i<srcRect.width;++i)
+					for(int j=0;j<srcRect.height;++j) {
 						int x = i+xoff;
 						int y = j+yoff;
 						if(x>=0 && x<w && y>=0 && y<h)
-							pixels[x+y*w] = inpixels[i+j*this.destRect.width];
+							pixels[x+y*w] = inpixels[i+j*destRect.width];
 					}
 			}
 			makeSrc(w,h);
@@ -222,7 +222,7 @@ public class DrawableRegion {
 
 			calcDispRegion();
 			makeOutImage();
-			this.img_ok = true;
+			img_ok = true;
 		}
 		catch(OutOfMemoryError e) {
 			reportMemoryError(e,w*h*2);
@@ -232,7 +232,7 @@ public class DrawableRegion {
 
 	public void rescale(int w, int h) {
 		try {
-		MemoryImageSource mis = new MemoryImageSource(this.srcRect.width,this.srcRect.height,inpixels, 0, this.srcRect.width);
+		MemoryImageSource mis = new MemoryImageSource(srcRect.width,srcRect.height,inpixels, 0, srcRect.width);
 		ImageFilter scale = new AreaAveragingScaleFilter(w,h);
 		ImageProducer prod = new FilteredImageSource(mis,scale);
 		Image img = Toolkit.getDefaultToolkit().createImage(prod);
@@ -246,9 +246,9 @@ public class DrawableRegion {
 	
 	public void flip(String code) {
 		// rotated width and height
-		int w = this.destRect.height,h=this.destRect.width;
+		int w = destRect.height,h=destRect.width;
 		// original width and height
-		int ow = this.destRect.width,oh=this.destRect.height;
+		int ow = destRect.width,oh=destRect.height;
 		try {
 		//		System.out.println("flip " + code);
 		if(code.equals(Wallpaper.FLIP_X)) {
@@ -267,8 +267,8 @@ public class DrawableRegion {
 			for(int j=0;j<h;++j)
 				for(int i=0;i<w;++i)
 					pixels[i+j*w] = inpixels[j+(oh-1-i)*ow];
-			this.destRect = new Rectangle(0,0,w,h);
-			this.srcRect = new Rectangle(0,0,w,h);
+			destRect = new Rectangle(0,0,w,h);
+			srcRect = new Rectangle(0,0,w,h);
 		}
 		else if(code.equals(Wallpaper.FLIP_180)) {
 			for(int j=0;j<oh;++j)
@@ -280,21 +280,21 @@ public class DrawableRegion {
 			for(int j=0;j<h;++j)
 				for(int i=0;i<w;++i)
 					pixels[i+j*w] = inpixels[(ow-1-j)+i*ow];
-			this.destRect = new Rectangle(0,0,w,h);
-			this.srcRect = new Rectangle(0,0,w,h);
+			destRect = new Rectangle(0,0,w,h);
+			srcRect = new Rectangle(0,0,w,h);
 		}
 		else { // flip x-y
 			for(int j=0;j<h;++j)
 				for(int i=0;i<w;++i)
 					pixels[i+j*w] = inpixels[j+i*ow];
-			this.destRect = new Rectangle(0,0,w,h);
-			this.srcRect = new Rectangle(0,0,w,h);
+			destRect = new Rectangle(0,0,w,h);
+			srcRect = new Rectangle(0,0,w,h);
 		}
 
 		copyDestSrc();
 		calcDispRegion();
 		makeOutImage();
-		this.img_ok = true;
+		img_ok = true;
 		}
 		catch(OutOfMemoryError e) {
 			reportMemoryError(e,w*h*2);
@@ -305,7 +305,7 @@ public class DrawableRegion {
 	public void paint(Graphics g,Wallpaper wall) {
 	    if(DEBUG) System.out.println("DR:paint");
 		try {
-			g.drawImage(this.getActiveImage(),this.offset.x,this.offset.y,wall);
+			g.drawImage(getActiveImage(),offset.x,offset.y,wall);
 		}
 		catch(OutOfMemoryError e) {
 			reportMemoryError(e,destRect.width*destRect.height);

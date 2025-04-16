@@ -282,7 +282,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
             System.out.println("FAKE Event "+e);
             return;
         }
-        if((e.getModifiers() & InputEvent.BUTTON3_MASK )!= 0) return;
+        if((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK )!= 0) return;
         if(curvertex == -1) return;
         fd.saveOldVerticies();
 
@@ -316,12 +316,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         paintDone = false;
         controller.applyTessellation();
     }
-
-
-//    public Image getImage(String loc) {
-//        return this.appletGetImage(loc);
-//    }
-
 
     protected static boolean first=true;
 

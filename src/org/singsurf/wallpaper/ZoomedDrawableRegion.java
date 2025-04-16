@@ -21,6 +21,7 @@ public class ZoomedDrawableRegion extends DrawableRegion {
     public int zoomDenom;
     public int zoomNumer;
     int[] basePixels;
+    boolean split =false;
     public ZoomedDrawableRegion(Wallpaper wall) {
         super(wall);
         this.zoomNumer = 1;
@@ -237,14 +238,6 @@ public class ZoomedDrawableRegion extends DrawableRegion {
                         basePixels[indexB] = pixA;
                     }
                 }	
-                /*
-			int tmpPix[] = new int[oh*ow];
-			for(int j=0;j<oh;++j)
-				for(int i=0;i<ow;++i) {
-					tmpPix[i+j*ow] = inpixels[(ow-1-i)+(oh-1-j)*ow];
-				}
-			basePixels = tmpPix;
-                 */
             }
             else if(code.equals(Wallpaper.FLIP_270)) {
                 int tmpPix[] = new int[oh*ow];
@@ -323,6 +316,27 @@ public class ZoomedDrawableRegion extends DrawableRegion {
 
     }
 
+    @Override
+	void calcDispRegion() {
+		int minX = viewpointL;
+		int minY = viewpointT;
+		int maxX = (destRect.width > viewpointR ? viewpointR : destRect.width);
+		int maxY = (destRect.height > viewpointB ? viewpointB : destRect.height);
+		int width = maxX-minX;
+		int height = maxY-minY;
+		if(split) {
+			dispRect = new Rectangle(minX+width/2,minY,width/2,height);
+		} else {
+			dispRect = new Rectangle(minX,minY,width,height);
+		}
+		if(DEBUG) System.out.println("CDR w "+destRect.width+" h "+destRect.height+" ");
+		if(DEBUG) System.out.println("vp "+viewpointL+" "+viewpointT+" "+viewpointR+" "+viewpointB);
+		if(DEBUG) System.out.println(""+minX+" "+minY+" "+maxX+" "+maxY);
+	}
+
+	public void setSplit(boolean b) {
+		this.split = b;
+	}
 
 
 }
