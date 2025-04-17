@@ -245,7 +245,7 @@ public abstract class RectRule extends TessRule
     /** Two parallel mirrors. **/
     public static TessRule rectPM = new RectRule("PM",
             "A Reflection along one of the translation directions.\n"
-            +"The other translation is at right angles giving a rectangular\n" 
+            +"The other translation is at right angles giving a rectangular " 
             +"fundamental domain."
     )	{
         //@Override

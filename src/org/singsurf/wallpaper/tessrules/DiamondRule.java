@@ -198,8 +198,7 @@ public abstract class DiamondRule extends TessRule
     public static TessRule rhombCM = new DiamondRule("CM",
             "A reflection through opposite corners of diamond.\n"+
             "The lengths of each side of the diamond are all equal\n"+
-            "Only one side of the fundamental domain needs to be\n"+
-            "a straight line"
+            "Only one side of the fundamental domain needs to be a straight line"
     )
     {
         //@Override
@@ -255,8 +254,8 @@ public abstract class DiamondRule extends TessRule
 
 
     public static TessRule rhombCMM = new DiamondRule("CMM",
-            "Two reflections through opposite corners of diamond."+
-            "The reflections must be at right angles and form\n"+
+            "Two reflections through opposite corners of diamond.\n"+
+            "The reflections must be at right angles and form "+
             "two of the sides of the fundamental domain.\n"+
             "The other side does not needs to be a straight line."
     )

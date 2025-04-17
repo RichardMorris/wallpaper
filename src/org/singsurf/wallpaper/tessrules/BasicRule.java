@@ -198,7 +198,8 @@ public abstract class BasicRule extends TessRule
     };
 
     public static final TessRule reflect = new BasicRule("Reflection",
-    "A reflection of the image.") {
+    "A reflection of the image.\n"
+    + "Reflects along the line through the green point and red point") {
         //@Override
         public final void fun(int x,int y,int[] out)
         {
@@ -243,7 +244,8 @@ public abstract class BasicRule extends TessRule
     }
 
     public static final TessRule glide = new BasicRule("Glide-Reflection",
-    "A reflection of the image") {
+    "First the image is translated along a line and then reflected along the line.\n"
+    + "The lenght of the line specifies the length of the translation.") {
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             Vec[] points = laticePoints();
             for(int i=1;i<points.length;++i) {
@@ -288,7 +290,8 @@ public abstract class BasicRule extends TessRule
     };
 
     public static final TessRule shear = new BasicRule("Linear",
-    "General linear map\nTwo lines ") {
+    "General linear map\n"
+    + "Specified by two vectors") {
         public void calcFrame(FundamentalDomain fd, int selVert, boolean constrained) {
             frameO.set(fd.cellVerts[1]);
             frameU.set(fd.cellVerts[0].sub(fd.cellVerts[1]));
