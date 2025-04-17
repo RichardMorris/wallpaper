@@ -18,8 +18,9 @@
 	<target name="compile" depends="init">
 	       <mkdir dir="${build}" />
 		<javac srcdir="${src}" destdir="${build}" debug="on" 
-		      source="1.5" target="1.5" 
-		      excludes="org/singsurf/wallpaper/WallSaver.java"
+		      source="21" target="21" 
+		      excludes="org/singsurf/wallpaper/WallSaver.java,
+					org/singsurf/wallpaperWallpaperApplet.java"
 		      />
 		
 		<copy todir="${build}">
