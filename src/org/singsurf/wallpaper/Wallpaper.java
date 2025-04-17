@@ -471,10 +471,11 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
             public void itemStateChanged(ItemEvent e) {
                 fd.drawDomain = (e.getStateChange() == ItemEvent.SELECTED);
                 myCanvas.repaint();
+                setViewCheckboxes();
             }});
 
 
-        JCheckBox symmetryCB = new JCheckBox("Draw symmetry");
+        symmetryCB = new JCheckBox("Draw symmetry");
         symmetryCB.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if(e.getStateChange() == ItemEvent.SELECTED)
@@ -493,6 +494,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
                     fd.drawRotationPoints = false;
                     myCanvas.repaint();
                 }
+                setViewCheckboxes();
             }});
         p2.add(symmetryCB);
 
@@ -516,7 +518,22 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         return p2;
     }
 
-    public void tickCheckbox(String name) {
+    protected void setViewCheckboxes() {
+    	System.out.println("setViewCheckboxes");
+    	System.out.println("fd.drawGlideLines "+fd.drawGlideLines);
+    	System.out.println("fd.drawCells "+fd.drawCells);
+    	System.out.println("fd.drawReflectionLines "+fd.drawReflectionLines);
+    	System.out.println("fd.drawRotationPoints "+fd.drawRotationPoints);
+    	System.out.println("fd.drawDomain "+fd.drawDomain);
+    	System.out.println("fd.drawCells "+fd.drawCells);
+    	System.out.println("fd.drawSelectionPoints "+fd.drawSelectionPoints);
+		showFund.setSelected(fd.drawDomain);
+		symmetryCB.setSelected(fd.drawGlideLines &&
+				fd.drawReflectionLines && fd.drawRotationPoints);
+
+	}
+
+	public void tickCheckbox(String name) {
         this.tesselationPanel.tickCheckbox(name);
     }
 
@@ -576,6 +593,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	private final Timer timer = new Timer();
 	boolean animRunning = false;
 	protected JComboBox<String> animateChoice;
+	private JCheckBox symmetryCB;
 
     //@Override
     public String[][] getParameterInfo() {

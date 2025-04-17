@@ -351,49 +351,24 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                 if(label.equals("t"))
                     fd.drawTiles = cbmi.isSelected();
                 if(label.equals("a")) {
-                    fd.drawGlideLines = true;
-                    fd.drawReflectionLines = true;
-                    fd.drawRotationPoints = true;
-                    for(int i=0;i<viewMenu.getItemCount();++i) {
-                        JMenuItem item = viewMenu.getItem(i);
-                        if(item==null) continue;
-                        if("rmg".indexOf(item.getActionCommand())>=0) {
-                            ((JCheckBoxMenuItem)item).setSelected(true);
-                        }
-                    }
+                    fd.drawGlideLines = cbmi.isSelected();
+                    fd.drawReflectionLines = cbmi.isSelected();
+                    fd.drawRotationPoints = cbmi.isSelected();
                 }
                 if(label.equals("h")) {
-                    fd.drawGlideLines = false;
-                    fd.drawReflectionLines = false;
-                    fd.drawRotationPoints = false;
-                    for(int i=0;i<viewMenu.getItemCount();++i) {
-                        JMenuItem item = viewMenu.getItem(i);
-                        if(item==null) continue;
-                        if("rmg".indexOf(item.getActionCommand())>=0) {
-                            ((JCheckBoxMenuItem)item).setSelected(false);
-                        }
-                    }
-                }
-                boolean all = fd.drawGlideLines && fd.drawReflectionLines && fd.drawRotationPoints;
-                boolean hide = !fd.drawGlideLines && !fd.drawReflectionLines && !fd.drawRotationPoints;
-                
-                for(int i=0;i<viewMenu.getItemCount();++i) {
-                    JMenuItem item = viewMenu.getItem(i);
-                    if(item==null) continue;
-                    if("a".equals(item.getActionCommand())) {
-                        ((JCheckBoxMenuItem)item).setSelected(all);
-                    }
-                    if("h".equals(item.getActionCommand())) {
-                        ((JCheckBoxMenuItem)item).setSelected(hide);
-                    }
+                    fd.drawGlideLines = !cbmi.isSelected();
+                    fd.drawReflectionLines = !cbmi.isSelected();
+                    fd.drawRotationPoints = !cbmi.isSelected();
                 }
 
                 imageChanged();
             	recursive=false;
+            	setViewCheckboxes();
             }
         };
 
-        protected JColourPicker colD;
+
+		protected JColourPicker colD;
 
         /**
          * Build the menus for application usage.
@@ -538,6 +513,44 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                 vmi.addItemListener(viewActionListener);
             }
         }
+
+        @Override
+		protected void setViewCheckboxes() {
+			super.setViewCheckboxes();
+			int num = viewMenu.getItemCount();
+			for(int i=0;i<num;++i) {
+				JCheckBoxMenuItem mi = (JCheckBoxMenuItem) viewMenu.getItem(i);
+				if(mi==null) continue;
+				System.out.println("mi "+i+" "+mi.getText()+" "+mi.isSelected());
+				if(mi.getText().equals("Cells")) {
+					mi.setSelected(fd.drawCells);
+				}
+				else if(mi.getText().equals("Tiles")) {
+					mi.setSelected(fd.drawTiles);
+				}
+				else if(mi.getText().equals("Selection domain")) {
+					mi.setSelected(fd.drawDomain);
+				}
+				else if(mi.getText().equals("Selection points")) {
+					mi.setSelected(fd.drawSelectionPoints);
+				}
+				else if(mi.getText().equals("Reflection lines")) {
+					mi.setSelected(fd.drawReflectionLines);
+				}
+				else if(mi.getText().equals("Rotation points")) {
+					mi.setSelected(fd.drawRotationPoints);
+				}
+				else if(mi.getText().equals("Glide-reflection lines")) {
+					mi.setSelected(fd.drawGlideLines);
+				}
+				else if(mi.getText().equals("All symetries")) {
+					mi.setSelected(fd.drawGlideLines && fd.drawReflectionLines && fd.drawRotationPoints);
+				}
+				else if(mi.getText().equals("Hide all symetries")) {
+					mi.setSelected(!fd.drawGlideLines && !fd.drawReflectionLines && !fd.drawRotationPoints);
+				}
+			}
+		}
 
         private JMenu buildImageMenu() {
             JMenu imageMenu = new JMenu("Image");
@@ -699,13 +712,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             jsp.getVerticalScrollBar().addAdjustmentListener(this);
             jsp.getHorizontalScrollBar().addAdjustmentListener(this);
             return jsp;
-//            sp = new ScrollPane();
-//            sp.add(c);
-//            sp.getHAdjustable().addAdjustmentListener(this);
-//            sp.getVAdjustable().addAdjustmentListener(this);
-//            sp.addComponentListener(this);
-//            sp.doLayout();
-//            return sp;
         }
         
         protected JMenu buildAnimationMenu() {
@@ -741,14 +747,10 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             if(res != JFileChooser.APPROVE_OPTION) return;
             File f = fc.getSelectedFile();
             
-            //String dir = fd.getDirectory();
-            //String filename = fd.getFile();
             if (f != null) {
                 System.out.println(f);
                 WallpaperFramed.this.imageFilename = f.getAbsolutePath();
                 WallpaperFramed.this.imageURL = null;
-                //			Image img = Jimi.getImage(dir + filename);
-                //File f = new File(dir,filename);
                 Image img;
                 try {
                     img = ImageIO.read(f);
@@ -788,7 +790,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         
         JFileChooser fc = new JFileChooser();
         {
-//            fc.setFileView(new ImageFileView());
     	    //Add the preview pane.
             fc.setAccessory(new ImagePreview(fc));
 
@@ -822,9 +823,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                                 BufferedImage.TYPE_INT_RGB);
                         Graphics g = bImg.getGraphics();
                         g.setClip(0, 0, img.getWidth(null),img.getHeight(null));
-//                        dr.paint(g,this);
                         paintCanvas(g);
-                        //g.drawImage(img, 0, 0, null);
                         ImageIO.write(bImg,type,f);
 
                     } catch (IOException e) {
