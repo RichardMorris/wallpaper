@@ -39,7 +39,7 @@ public class Controller {
      * Then calls the ate function with self as callback parameter.
      */
     public void applyTessellation() {
-        if(this.constrainVertices)
+        if(constrainVertices)
             tr.constrainVertices(fd.cellVerts, this.wallpaper.curvertex);
         tr.calcFrame(fd,this.wallpaper.curvertex, this.constrainVertices);
         tr.fixVerticies(fd);
@@ -47,7 +47,7 @@ public class Controller {
         if(showCoords)
             setText(fd.toString(dr));
         tr.replicate(dr,fd);
-        if(this.showingOriginal) {
+        if(showingOriginal) {
             wallpaper.origTileButton.setText("Original Image");
         }
         showingOriginal = false;

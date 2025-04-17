@@ -121,7 +121,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             else
                 controller.redraw();
         }
-        else if(com.equals("rescale")) {
+        else if(com.equals("resize")) {
             final RescaleDialog rs = new RescaleDialog(mainFrame,this);
 
             rs.open(dr.baseRect.width, dr.baseRect.height);
@@ -564,9 +564,9 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             expandMI1.setActionCommand("expand");
             imageMenu.add(expandMI1);
 
-            JMenuItem rescaleMI = new JMenuItem("Rescale");
+            JMenuItem rescaleMI = new JMenuItem("Resize");
             rescaleMI.addActionListener(this);
-            rescaleMI.setActionCommand("rescale");
+            rescaleMI.setActionCommand("resize");
             imageMenu.add(rescaleMI);
 
             JCheckBoxMenuItem splitMI = new JCheckBoxMenuItem("Split");
@@ -787,7 +787,12 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         }
         
         JFileChooser fc = new JFileChooser();
+        {
+//            fc.setFileView(new ImageFileView());
+    	    //Add the preview pane.
+            fc.setAccessory(new ImagePreview(fc));
 
+        }
         private void save() {
             fc.setFileFilter(saveFF);
             int res = fc.showSaveDialog(mainFrame);
@@ -800,8 +805,15 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 					fd.zoom(((float) denom)/numer);
 		             ((ZoomedDrawableRegion) dr).zoom(1,1);	
 
-                    controller.calcGeom();
-                    controller.applyFull(dr);
+                     if(controller.showingOriginal) {
+                         controller.showOriginal();
+                     }
+                     else {
+                         controller.applyTessellation();
+                         controller.calcGeom();
+                         controller.applyFull(dr);
+                     }
+
                     String type = getType(f.getName());
                     try {
                         Image img = dr.getActiveImage();
