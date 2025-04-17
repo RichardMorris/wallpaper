@@ -7,11 +7,11 @@
 <div id="head1"></div>
 <div id="col2">
 <p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
-<a href="wallpaper.html">Applet</a> <a href="help.html">help</a> <a
+<a href="help.html">help</a> <a
 	href="maths.html">maths</a></p>
 
 <h1>Wallpaper patterns - Help</h1>
-<p>The wallpaper pattern java application/applet creates repeating
+<p>The wallpaper pattern Java application creates repeating
 patterns based on an image and the 17 mathematical plane symmetry
 groups.</p>
 
@@ -19,9 +19,11 @@ groups.</p>
 	href="mailto:rich@singsurf.org">rich@singsurf.org</a>.</p>
 
 <h2>Installation</h2>
-<p>The package requires a java runtime to load. The sun java runtime
-can be downloaded from Sun's <a
-	href="http://www.java.com/en/download/manual.jsp">download site</a>.</p>
+<p>The package requires a Java JDK version 21 or newer to load. 
+<ul>
+<li><a href="https://www.oracle.com/java/technologies/downloads/">Oracle</a>
+<li><a href="https://adoptium.net/">Eclipse Adoptium</a>
+</ul>
 
 <p>To installation of the package unpack the zip file into a
 directory. No other action should be needed.</p>
@@ -81,7 +83,9 @@ improvement can be made by increasing the size of heap space allocated
 when the program is used using</p>
 <code>java -Xmx512m -jar wallpaper.jar image.jpg 800 600</code>
 <p>to allocate 512 megabytes heap space. Swap space on your computer
-may also be a limiting factor. To allow such large images to be saved
+may also be a limiting factor. 
+
+<p>To allow such large images to be saved
 the <b>Save expanded</b> menu item on the <b>File</b> menu can be used,
 this allows the desired output size to be set. This option only supports
 ppm and bmp format images.</p>
@@ -111,7 +115,24 @@ To start the paint mode select
 
 <h2>Version history</h2>
 <dl>
-	<dt>Version 1.04 - 15 July 2009</dt>
+	<dt>Version 1.6 - 18 April 2025</dt>
+	<dd>
+	<ul>
+		<li>Now uses Java version 21</li>
+		<li>Add smooth Lissajous based animation</li>
+		<li>Add a split screen mode to show the original image and the tiled image side by side
+		<li>Saving works better with zoomed images</li>
+		<li>Add and ImagePreview to the file load and save dialogs</li>
+	</ul>
+	</dd>
+	<dt>Version 1.5 - 17 September 2014</dt>
+	<dd>
+	<ul>
+		<li>Neater teselation panel</li>
+		<li>Use hexagonal based tile for P2</li>
+	</ul>
+	</dd>
+	<dt>Version 1.4 - 15 July 2009</dt>
 	<dd>
 	<ul>
 		<li>Speed up rendering of patterns</li>
@@ -122,13 +143,13 @@ To start the paint mode select
 		<li>The current visible display can be copied to clipboard.</li>
 	</ul>
 	</dd>
-	<dt>Version 1.03 - 26 April 2008</dt>
+	<dt>Version 1.3 - 26 April 2008</dt>
 	<dd>
 	<ul>
 		<li>Allow creation of tillable images.
 	</ul>
 	</dd>
-	<dt>Version 1.02 - 21 June 2007</dt>
+	<dt>Version 1.2 - 21 June 2007</dt>
 	<dd>
 	<ul>
 		<li>Allow uppercase file extensions.</li>
@@ -137,7 +158,7 @@ To start the paint mode select
 		<li>Coordinates can be shown</li>
 	</ul>
 	</dd>
-	<dt>Version 1.01 - 04 June 2007</dt>
+	<dt>Version 1.1 - 04 June 2007</dt>
 	<dd>
 	<ul>
 		<li>Screen-saver version.</li>
@@ -175,7 +196,7 @@ To start the paint mode select
 
 <hr>
 <p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
-<a href="wallpaper.html">Applet</a> <a href="help.html">help</a> <a
+ <a href="help.html">help</a> <a
 	href="maths.html">maths</a></p>
 <p>Copyright R Morris 2007</p>
 </div>
