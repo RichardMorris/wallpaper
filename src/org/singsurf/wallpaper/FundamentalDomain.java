@@ -595,7 +595,13 @@ public //	int[] fundY = {0,0,0,0,0,0};
 	}
 	
 	public void paintRegularTile(Graphics g) {
-	    Rectangle rect = this.tileableRegion(g.getClipBounds());
+		var bounds = g.getClipBounds();
+		if(bounds==null) 
+		{
+			System.out.println("No bounds");
+			return;
+		}
+	    Rectangle rect = tileableRegion(bounds);
 	    g.setColor(Color.green);
 	    if(rect!=null)
 		g.drawRect(rect.x, rect.y, rect.width, rect.height);

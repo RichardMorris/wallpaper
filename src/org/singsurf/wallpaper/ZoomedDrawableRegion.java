@@ -139,6 +139,19 @@ public class ZoomedDrawableRegion extends DrawableRegion {
             this.calcDispRegion();
             this.makeOutImage();
         }
+        else {
+			MemoryImageSource mis = new MemoryImageSource(
+					baseRect.width,baseRect.height,basePixels, 0, baseRect.width);
+			ImageFilter scale = new AreaAveragingScaleFilter(
+					baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
+			ImageProducer prod = new FilteredImageSource(mis,scale);
+			this.makeSrc(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
+			grabSrcPixels(prod);
+			this.makeDest(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
+			this.copySrcDest();
+			this.calcDispRegion();
+			this.makeOutImage();
+		}
 
     }
 

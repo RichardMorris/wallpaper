@@ -30,6 +30,7 @@ import java.awt.print.PrinterJob;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -41,12 +42,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileFilter;
@@ -285,20 +288,26 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
     protected ItemListener zoomItemListener = new ItemListener(){
         public void itemStateChanged(ItemEvent arg0) {
-            int oldZoom = ((ZoomedDrawableRegion) dr).zoomDenom;
-            JCheckBoxMenuItem cbmi = (JCheckBoxMenuItem) arg0.getItemSelectable();
+            int oldZoomD = ((ZoomedDrawableRegion) dr).zoomDenom;
+            int oldZoomN = ((ZoomedDrawableRegion) dr).zoomNumer;
+            JRadioButtonMenuItem cbmi = (JRadioButtonMenuItem) arg0.getItemSelectable();
             String label = cbmi.getText();
             int index = label.indexOf('/');
             if(index>0) {
-                label = label.substring(index+1);
-                int newZoom = Integer.parseInt(label); 
-                fd.zoom(((float)oldZoom)/(newZoom*((ZoomedDrawableRegion) dr).zoomNumer));
-                ((ZoomedDrawableRegion) dr).zoomOut(newZoom);
+            	var numer = label.substring(0,index);
+            	var denom = label.substring(index+1);
+                int newZoomD = Integer.parseInt(denom); 
+                int newZoomN = Integer.parseInt(numer); 
+                fd.zoom(((float)oldZoomD*newZoomN)/
+                		       (oldZoomN*newZoomD));
+                ((ZoomedDrawableRegion) dr).zoom(newZoomN,newZoomD);	
             }
             else {
-                int inZoom = Integer.parseInt(label);
-                fd.zoom(((float)inZoom * ((ZoomedDrawableRegion) dr).zoomDenom)/(((ZoomedDrawableRegion) dr).zoomNumer));
-                ((ZoomedDrawableRegion) dr).zoomIn(inZoom);
+                int newZoomD = 1; 
+                int newZoomN = Integer.parseInt(label); 
+                fd.zoom(((float)oldZoomD*newZoomN)/
+                		(oldZoomN*newZoomD));
+                ((ZoomedDrawableRegion) dr).zoom(newZoomN,newZoomD);	
             }
             imageChanged();
 //TODO             parent = (JMenu) cbmi.getParent();
@@ -534,19 +543,14 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             JMenu imageMenu = new JMenu("Image");
 
             JMenu zoomMenu = new JMenu("Zoom");
-            int factors[] = new int[]{1,2,4,8};
-            for(int i=2;i>=0;--i) {
-                String label = ""+factors[i];
-                JCheckBoxMenuItem mi = new JCheckBoxMenuItem(label);
+            ButtonGroup group = new ButtonGroup();
+            String factors[] = {"4","3","2","3/2","1","2/3","1/2","1/3","1/4","1/8"};
+            for(var label: factors) {
+                JRadioButtonMenuItem mi = new JRadioButtonMenuItem(label);
                 mi.addItemListener(zoomItemListener);
-                if(i==0) mi.setState(true);
+                if(label=="1") mi.setSelected(true);
                 zoomMenu.add(mi);
-            }
-            for(int i=1;i<factors.length;++i) {
-                String label = "1/"+factors[i];
-                JCheckBoxMenuItem mi = new JCheckBoxMenuItem(label);
-                mi.addItemListener(zoomItemListener);
-                zoomMenu.add(mi);
+                group.add(mi);
             }
             imageMenu.add(zoomMenu);
 
@@ -789,30 +793,16 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             int res = fc.showSaveDialog(mainFrame);
             if(res != JFileChooser.APPROVE_OPTION) return;
             File f = fc.getSelectedFile();
-
-            
-//            JFileChooser fid = new JFileChooser(mainFrame, "Save image",
-//                    JFileChooser.SAVE);
-//            fid.setFilenameFilter(saveFF);
-//            fid.setVisible(true);
-//            String dir = fid.getDirectory();
-//            String filename = fid.getFile();
-//            fid.dispose();
             if (f != null)
                 try {
-//                    if(!saveFF.accept(null, filename)) {
-//                        ErrorDialog errorD = new ErrorDialog(mainFrame);
-//                        errorD.open("File type not supported "+filename+".","Only bmp, jpg, png psd tga formats supported.");
-//                        errorD.dispose();
-//                        return;
-//                    }
+                    int denom = ((ZoomedDrawableRegion) dr).zoomDenom;
+					int numer = ((ZoomedDrawableRegion) dr).zoomNumer;
+					fd.zoom(((float) denom)/numer);
+		             ((ZoomedDrawableRegion) dr).zoom(1,1);	
 
-                    fd.zoom(((ZoomedDrawableRegion) dr).zoomDenom);
                     controller.calcGeom();
                     controller.applyFull(dr);
-                    //				Jimi.putImage(dr.getActiveImage(), dir + filename);
                     String type = getType(f.getName());
-//                    File f = new File(dir,filename);
                     try {
                         Image img = dr.getActiveImage();
                         BufferedImage bImg = new BufferedImage(
@@ -820,7 +810,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                                 BufferedImage.TYPE_INT_RGB);
                         Graphics g = bImg.getGraphics();
                         g.setClip(0, 0, img.getWidth(null),img.getHeight(null));
-                        this.paintCanvas(g);
+//                        dr.paint(g,this);
+                        paintCanvas(g);
                         //g.drawImage(img, 0, 0, null);
                         ImageIO.write(bImg,type,f);
 
@@ -833,8 +824,11 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
                     if (DEBUG)
                         System.out.println("Save " + f.getAbsolutePath());
-                    fd.zoom(1/((float) ((ZoomedDrawableRegion) dr).zoomDenom));
+
+                    fd.zoom(((float)numer)/denom);
+                    ((ZoomedDrawableRegion) dr).zoom(numer,denom);	
                     controller.calcGeom();
+                    controller.redraw();
                 } catch (Exception e) {
                     ErrorDialog errorD = new ErrorDialog(mainFrame);
                     errorD.open("Error saving image",e.getMessage());
@@ -908,128 +902,112 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
         }
 
-        /**
-         * Save an expanded version of the image.
-         *
-         */
-        private void saveBig() {
-            final ExpandedSizeDialog esd = new ExpandedSizeDialog(mainFrame);
+		/**
+		 * Save an expanded version of the image.
+		 *
+		 */
+		private void saveBig() {
+			final ExpandedSizeDialog esd = new ExpandedSizeDialog(mainFrame);
 
-            esd.open(dr.baseRect.width, dr.baseRect.height);
-            if (!esd.isOk())
-                return;
-            
-            fc.setFileFilter(ppmFF);
-            int res = fc.showSaveDialog(mainFrame);
-            if(res != JFileChooser.APPROVE_OPTION) return;
-            File f = fc.getSelectedFile();
-            
-//            JFileChooser fid = new JFileChooser(mainFrame, "Save image - only bmp/ppm formats supported", JFileChooser.SAVE);
-//            fid.setFilenameFilter(saveFF);
-//            fid.setVisible(true);
-//            String dir = fid.getDirectory();
-//            String filename = fid.getFile();
-//            fid.dispose();
-            if (f != null) {
-                String filename = f.getName();
-                try {
-//                    if(!ppmFF.accept(null, filename)) {
-//                        ErrorDialog errorD = new ErrorDialog(mainFrame);
-//                        errorD.open("File type not supported "+filename+".","Only ppm/bmp format supported");
-//                        errorD.dispose();
-//                        return;
-//                    }
-                    if(filename.toLowerCase().endsWith(".ppm")) {
-                        //File f = new File(dir, filename);
-                        FileOutputStream fos = new FileOutputStream(f);
-                        BufferedOutputStream bos = new BufferedOutputStream(fos);
-                        int w = esd.getImgWidth();
-                        int h = esd.getImgHeight();
-                        String header = "P6\n#Created by org.singsurf.wallpaper\n" + w
-                        + " " + h + "\n255\n";
-                        bos.write(header.getBytes());
-                        fd.zoom(((ZoomedDrawableRegion) dr).zoomDenom);
-                        controller.calcGeom();
-                        DrawableRegion dr2 = new DrawableRegionTile(dr, w, 1);
-                        for (int j = 0; j < h; ++j) {
-                            controller.tr.replicate(dr2,fd);
-                            for (int i = 0; i < dr2.destRect.width; ++i) {
-                                Color c = new Color(dr2.pixels[i]);
-                                bos.write((byte) c.getRed());
-                                bos.write((byte) c.getGreen());
-                                bos.write((byte) c.getBlue());
-                            }
-                            dr2.offset.y++;
-                        }
-                        fd.zoom(1/((float) ((ZoomedDrawableRegion) dr).zoomNumer));
-                        controller.calcGeom();
+			esd.open(dr.baseRect.width, dr.baseRect.height);
+			if (!esd.isOk())
+				return;
 
-                        bos.flush();
-                        bos.close();
+			fc.setFileFilter(ppmFF);
+			int res = fc.showSaveDialog(mainFrame);
+			if (res != JFileChooser.APPROVE_OPTION)
+				return;
+			File f = fc.getSelectedFile();
 
-                    }
-                    else if(filename.toLowerCase().endsWith(".bmp")) {
-                        //File f = new File(dir, filename);
-                        FileOutputStream fos = new FileOutputStream(f);
-                        BufferedOutputStream bos = new BufferedOutputStream(fos);
-                        int w = esd.getImgWidth();
-                        int h = esd.getImgHeight();
-                        int rowsize = 4 * (( 24 * w + 31) / 32);
-                        int filesize = 54 + rowsize * h;
-                        byte b1 = (byte) filesize;
-                        byte b2 = (byte) (filesize>>>8);
-                        byte b3 = (byte) (filesize>>>16);
-                        byte b4 = (byte) (filesize>>>24);
-                        bos.write(new byte[]{0x42,0x4d, //header
-                                b1,b2,b3,b4, // size of file
-                                0,0,0,0, // app id
-                                54,0,0,0, // offset of image data
-                                40,0,0,0, // remaining header size
-                                (byte) w,(byte)(w>>>8),(byte)(w>>>16),(byte)(w>>>24), // width
-                                (byte) h,(byte)(h>>>8),(byte)(h>>>16),(byte)(h>>>24), // height
-                                1,0, // Number of color planes being used.
-                                24,0, // The number of bits/pixel
-                                0,0,0,0, // BI_RGB, No compression used
-                                16,0,0,0, // The size of the raw BMP data (after this header)
-                                0x13,0x0B,0,0, // The horizontal resolution of the image
-                                0x13,0x0B,0,0, // The vertical resolution of the image
-                                0,0,0,0, // Number of colors in the palette
-                                0,0,0,0, // Means all colors are important
+			if (f == null)
+				return;
+			FileOutputStream fos;
+			try {
+				fos = new FileOutputStream(f);
+			} catch (FileNotFoundException e) {
+				return;
+			}
+			String filename = f.getName();
+			BufferedOutputStream bos = new BufferedOutputStream(fos);
 
-                        });
-                        int fill = (4 - (3*w) % 4)%4;
+			int denom = ((ZoomedDrawableRegion) dr).zoomDenom;
+			int numer = ((ZoomedDrawableRegion) dr).zoomNumer;
+			fd.zoom(((float) denom) / numer);
+			((ZoomedDrawableRegion) dr).zoom(1, 1);
+			controller.calcGeom();
 
-                        fd.zoom(((ZoomedDrawableRegion) dr).zoomDenom);
-                        controller.calcGeom();
-                        DrawableRegion dr2 = new DrawableRegionTile(dr, w, 1);
-                        for (int j = h-1; j >=0; --j) {
-                            dr2.offset.y = j;
-                            controller.tr.replicate(dr2,fd);
-                            for (int i = 0; i < dr2.destRect.width; ++i) {
-                                Color c = new Color(dr2.pixels[i]);
-                                bos.write((byte) c.getBlue());
-                                bos.write((byte) c.getGreen());
-                                bos.write((byte) c.getRed());
-                            }
-                            for(int i=0;i<fill;++i)
-                                bos.write(0);
-                        }
+			int w = esd.getImgWidth();
+			int h = esd.getImgHeight();
+			try {
+				boolean isPPM = filename.toLowerCase().endsWith(".ppm");
+				boolean isBMP = filename.toLowerCase().endsWith(".bmp");
+				if (isPPM) {
+					// File f = new File(dir, filename);
+					String header = "P6\n#Created by org.singsurf.wallpaper\n" + w + " " + h + "\n255\n";
+					bos.write(header.getBytes());
+				} else if (isBMP) {
+					// File f = new File(dir, filename);
+					int rowsize = 4 * ((24 * w + 31) / 32);
+					int filesize = 54 + rowsize * h;
+					byte b1 = (byte) filesize;
+					byte b2 = (byte) (filesize >>> 8);
+					byte b3 = (byte) (filesize >>> 16);
+					byte b4 = (byte) (filesize >>> 24);
+					bos.write(new byte[] { 0x42, 0x4d, // header
+							b1, b2, b3, b4, // size of file
+							0, 0, 0, 0, // app id
+							54, 0, 0, 0, // offset of image data
+							40, 0, 0, 0, // remaining header size
+							(byte) w, (byte) (w >>> 8), (byte) (w >>> 16), (byte) (w >>> 24), // width
+							(byte) h, (byte) (h >>> 8), (byte) (h >>> 16), (byte) (h >>> 24), // height
+							1, 0, // Number of color planes being used.
+							24, 0, // The number of bits/pixel
+							0, 0, 0, 0, // BI_RGB, No compression used
+							16, 0, 0, 0, // The size of the raw BMP data (after this header)
+							0x13, 0x0B, 0, 0, // The horizontal resolution of the image
+							0x13, 0x0B, 0, 0, // The vertical resolution of the image
+							0, 0, 0, 0, // Number of colors in the palette
+							0, 0, 0, 0, // Means all colors are important
 
-                        bos.flush();
-                        bos.close();
-                    }
-                    if (DEBUG)
-                        System.out.println("Save " + f.getAbsolutePath() + filename);
-                } catch (Exception e) {
-                    ErrorDialog errorD = new ErrorDialog(mainFrame);
-                    errorD.open("Error saving image",e.getMessage());
-                    errorD.dispose();
-                    System.out.println(e.getClass().getName() + ": " + e.getMessage());
-                }
-            }
-            
+					});
+				}
+				int fill = (4 - (3 * w) % 4) % 4;
 
-        }
+				DrawableRegion dr2 = new DrawableRegionTile(dr, w, 1);
+				for (int j = 0; j < h; ++j) {
+					controller.tr.replicate(dr2, fd);
+
+					for (int i = 0; i < dr2.destRect.width; ++i) {
+						Color c = new Color(dr2.pixels[i]);
+						if (isPPM) {
+							bos.write((byte) c.getRed());
+							bos.write((byte) c.getGreen());
+							bos.write((byte) c.getBlue());
+						} else if (isBMP) {
+							bos.write((byte) c.getBlue());
+							bos.write((byte) c.getGreen());
+							bos.write((byte) c.getRed());
+						}
+					}
+					dr2.offset.y++;
+					if (isBMP) {
+						for (int i = 0; i < fill; ++i)
+							bos.write(0);
+					}
+				}
+				bos.flush();
+				bos.close();
+
+			} catch (Exception e) {
+				ErrorDialog errorD = new ErrorDialog(mainFrame);
+				errorD.open("Error saving image", e.getMessage());
+				errorD.dispose();
+				System.out.println(e.getClass().getName() + ": " + e.getMessage());
+			}
+			fd.zoom(((float) numer) / denom);
+            controller.calcGeom();
+
+		}
 
         private void savePat() {
             fc.setFileFilter(patFF);
