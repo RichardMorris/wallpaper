@@ -494,13 +494,13 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             viewMenu = new JMenu("View");
 
             String views[] = {"Cells","Tiles","Selection domain","Selection points","-",
-                    "All symetries","Hide all symetries","-",
+                    "All symetries","-",
                     "Reflection lines","Rotation points","Glide-reflection lines"};
             String viewKeys[] = {"l","t","d","s","-",
-                    "a","h","-",
+                    "a","-",
                     "m","r","g"};
             boolean viewStates[] = {false,false,true,true,false,
-                    false,false,false,
+                    false,false,
                     false,false,false};
             for(int i=0;i<views.length;++i) {
                 if(views[i].equals("-")) {
@@ -788,7 +788,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             return null;
         }
         
-        JFileChooser fc = new JFileChooser();
+        JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
         {
     	    //Add the preview pane.
             fc.setAccessory(new ImagePreview(fc));
