@@ -6,9 +6,9 @@
 		<property name="dist" value="dist" />
 		<property name="src" value="src" />
 		<property name="imageDir" value="images" />
-		<property name="productName" value="Mathematical Kaleidoscope" />
-                <property name="appname" value="math-kaleidoscope" />
- 		<property name="productVersion" value="1.5" />
+		<property name="productName" value="Wallpaper Patterns" />
+                <property name="appname" value="wallpaper-app" />
+ 		<property name="productVersion" value="1.6" />
 		<property name="productPublisher" value="R Morris." />
 		<property name="productWebSite" value="http://www.singsurf.org/" />
 	</target>
@@ -20,7 +20,7 @@
 		<javac srcdir="${src}" destdir="${build}" debug="on" 
 		      source="21" target="21" 
 		      excludes="org/singsurf/wallpaper/WallSaver.java,
-					org/singsurf/wallpaperWallpaperApplet.java"
+					org/singsurf/wallpaper/WallpaperApplet.java"
 		      />
 		
 		<copy todir="${build}">
@@ -28,29 +28,6 @@
 			</copy>
 	</target>
 
-	<target name="makeAppletJar" depends="compile">
-		<jar destfile="wallpaperApplet.jar" basedir="${build}">
-			<manifest>
-				<!-- Who is building this jar? -->
-				<attribute name="Built-By" value="${productPublisher}" />
-				<!-- Information about the program itself -->
-				<attribute name="Implementation-Vendor" value="SingSurf.org" />
-				<attribute name="Implementation-Title" value="${productName}" />
-				<attribute name="Implementation-URL" value="${productWebSite}" />
-				<attribute name="Implementation-Version" value="${productVersion}" />
-
-				<attribute name="Main-Class" value="org.singsurf.wallpaper.WallpaperApplet" />
-			</manifest>
-			<exclude name="**/WallpaperFramed*" />
-			<exclude name="**/WallpaperApplication*" />
-<!--			<exclude name="**/ResizeDialog*" />
-			<exclude name="**/RescaleDialog*" />
-			<exclude name="**/Expand*Dialog*" />
-			<exclude name="**/RescaDialog*" /> -->
-			<exclude name="**/ExpandedDrawableRegion*" />
-			<exclude name="**/FixedSizeDrawableRegion*" />
-		</jar>
-	</target>
 
 	<target name="makeJar" depends="compile">
 		<jar destfile="wallpaper.jar" basedir="${build}">
@@ -72,14 +49,6 @@
 	<target name="makeZip" depends="makeJar">
 		<mkdir dir="${dist}/${appname}" />
 		<copy todir="${dist}/${appname}">
-			<fileset dir="${imageDir}">
-				<include name="*" />
-				<exclude name="Thumbs.db" />
-			</fileset>
-			<fileset dir="simpleImages">
-				<include name="*" />
-				<exclude name="Thumbs.db" />
-			</fileset>
 			<fileset dir=".">
 				<include name="index.html" />
 				<include name="wallpaper.html" />
@@ -88,9 +57,19 @@
 				<include name="maths.html" />
 				<include name="style.css" />
 				<include name="wallpaper.jar" />
-				<include name="pipet.gif" />
-                <include name="chub.gif" />
+                <include name="tile.jpg" />
 			</fileset>
+		</copy>
+		<mkdir dir="${dist}/${appname}/images" />
+		<copy todir="${dist}/${appname}/images">
+            <fileset dir="${imageDir}">
+                <include name="*" />
+                <exclude name="Thumbs.db" />
+            </fileset>
+            <fileset dir="simpleImages">
+                <include name="*" />
+                <exclude name="Thumbs.db" />
+            </fileset>
 		</copy>
 		<mkdir dir="${dist}/${appname}/naut" />
 		<copy todir="${dist}/${appname}/naut">
