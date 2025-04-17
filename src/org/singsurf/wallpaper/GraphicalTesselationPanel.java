@@ -369,12 +369,30 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
 
 
     
-    class GraphicalTesselationBox extends JToggleButton implements ActionListener {
+    /**
+	         * Creates an ImageIcon if the path is valid.
+	         * @param String - resource path
+	         * @param String - description of the file
+	         */
+	        static protected ImageIcon createImageIcon(String path,
+	                String description) {
+	            java.net.URL imgURL = GraphicalTesselationPanel.class.getResource(path);
+	            if (imgURL != null) {
+	            	return new ImageIcon(imgURL, description);
+	            } else {
+	//                System.err.println("Couldn't find file: " + path);
+	                return new ImageIcon(path, description);
+	            }
+	        }
+
+
+
+	class GraphicalTesselationBox extends JToggleButton implements ActionListener {
         TessRule tr;
         public GraphicalTesselationBox(TessRule tr, String iconName) {
             super(iconName);
             String iconFileName = iconPrefix + iconName + iconSuffix;
-            ImageIcon icon = createImageIcon(iconFileName,iconName);
+            ImageIcon icon = GraphicalTesselationPanel.createImageIcon(iconFileName,iconName);
             this.setIcon(icon);
             this.setMargin(new Insets(0,0,0,0));
             this.setBorderPainted(true);
@@ -390,22 +408,6 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
             cbg.add(this);
         }
 
-        /**
-         * Creates an ImageIcon if the path is valid.
-         * @param String - resource path
-         * @param String - description of the file
-         */
-        protected ImageIcon createImageIcon(String path,
-                String description) {
-            java.net.URL imgURL = getClass().getResource(path);
-            if (imgURL != null) {
-            	return new ImageIcon(imgURL, description);
-            } else {
-                return new ImageIcon(path, description);
-//                System.err.println("Couldn't find file: " + path);
-//                return null;
-            }
-        }
         public Object getTessName() {
             return tr.name;
         }
