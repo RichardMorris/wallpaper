@@ -51,11 +51,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     protected static final String FLIP_180 = "Rotate 180";
     protected static final String FLIP_270 = "Rotate anti-clockwise";
 
-    /** Mouse mode */
-    static final int MOUSE_NORMAL = 0;
-    protected static final int MOUSE_PIPET = 1;
-    protected int mouseMode = MOUSE_NORMAL;
-
     /** the current vertex for moving the triangle */
     int curvertex=0;
 
@@ -90,7 +85,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     private JCheckBox showFund;
 
     public JComponent myCanvas;
-    private Cursor pipet;
     // This interface is used for objects defining now to do tessellation 
     public JFrame mainFrame=null;
     protected String imageFilename=null;
@@ -278,43 +272,16 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     public void mouseClicked(MouseEvent e) 
     {
         if(DEBUG) System.out.println("Mouse clicked");
-
-        if(mouseMode==MOUSE_PIPET) {
-            int x = e.getX()-offset.x;
-            int y = e.getY()-offset.y;
-            if(x>=dr.destRect.width || y>=dr.destRect.height) {
-                myCanvas.setCursor(Cursor.getDefaultCursor());
-                return;
-            }
-            int outInd = x+y*dr.destRect.width;
-            Color col = new Color(dr.pixels[outInd]);
-            setBGColor(col);
-            mouseMode = MOUSE_NORMAL;
-            controller.redraw();
-        }
+        myCanvas.requestFocus();
     }
 
 
     public void mouseMoved(MouseEvent e)
     {
-        //if(DEBUG) System.out.println("Mouse moved");
+        if(DEBUG) System.out.println("Mouse moved");
 
-        if(mouseMode==MOUSE_PIPET) {
-            int x = e.getX()-offset.x;
-            int y = e.getY()-offset.y;
-            if(x>=dr.destRect.width || y>=dr.destRect.height) {
-                myCanvas.setCursor(Cursor.getDefaultCursor());
-                return;
-            }
-            myCanvas.setCursor(pipet);
-            int outInd = x+y*dr.destRect.width;
-            Color col = new Color(dr.pixels[outInd]);
-            setText(col.toString());
-            return;
-        }
         int x = e.getX()-offset.x;
         int y = e.getY()-offset.y;
-        //if(DEBUG) System.out.println("Mouse moved");
         int index = fd.getClosestVertex(x,y);
         if(index!=-1)
             myCanvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

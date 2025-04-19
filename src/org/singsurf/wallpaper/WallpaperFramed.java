@@ -54,6 +54,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
 import org.singsurf.wallpaper.dialogs.ErrorDialog;
@@ -69,7 +70,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
 	public WallpaperFramed(String imgfilename, int w, int h) {
 		super(frameGetImage(imgfilename), w, h);
-		myCanvas.requestFocus();
+		//myCanvas.requestFocus();
+//		this.addKeyListener(this);
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -171,9 +173,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                 colD.open(backgroundColour);
                 if(colD.isOk())
                     col = colD.getCol();
-            }
-            else if(label.equals("pick")) {
-                mouseMode = MOUSE_PIPET;
             }
             setBGColor(col);
             controller.redraw();
@@ -682,6 +681,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                     ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             jsp.getVerticalScrollBar().addAdjustmentListener(this);
             jsp.getHorizontalScrollBar().addAdjustmentListener(this);
+            jsp.setBorder(new EmptyBorder(0, 0, 0, 0));
             return jsp;
         }
         
@@ -1215,7 +1215,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
         JMenu viewMenu;
 
-        JMenu drawMenu;
         public void componentHidden(ComponentEvent arg0) {/*ignore*/}
 
         public void componentMoved(ComponentEvent arg0) {/*ignore*/}
@@ -1224,14 +1223,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             //if(DEBUG) 
             System.out.println("Comp resize");
             System.out.println(jsp.getViewportBorderBounds());
-            //		System.out.println(sp.getScrollPosition());
-            //                System.out.println(this.myCanvas.getSize());
-            //                System.out.println(this.myCanvas.getPreferredSize());
-            //                System.out.println(this.myCanvas.getSize());
-            //Point p = (Point) jsp.getScrollPosition().clone();
-            //p.move(this.offset.x,this.offset.y);
-            //dr.setViewport(new Rectangle(p,sp.getViewportSize()));
-            //                System.out.println(this.myCanvas.getSize());
+
             dr.setViewport(jsp.getViewportBorderBounds());
             if(first) {
                 fd.resetDomain(dr.dispRect);
@@ -1240,12 +1232,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                 first=false;
             }
             myCanvas.setSize(dr.destRect.width, dr.destRect.height);
-            //sp.doLayout();
-
-            //sp.doLayout();
-            //                System.out.println(this.myCanvas.getSize());
             controller.redraw();
-            //                System.out.println(this.myCanvas.getSize());
         }
 
         public void componentShown(ComponentEvent arg0) {/*ignore*/}
@@ -1303,7 +1290,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 			frame.setUndecorated(true);
 			Rectangle bounds = frame.getGraphicsConfiguration().getBounds();
 			System.out.println("Full-Screen"+bounds);
-			oldBounds = dr.dispRect.getBounds();
+			oldBounds = dr.baseRect.getBounds();
 			dr.resize(bounds.width, bounds.height, bounds.x, bounds.y);
 			clearViewCheckboxes();
 			imageChanged();

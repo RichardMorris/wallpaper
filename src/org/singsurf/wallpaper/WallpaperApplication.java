@@ -1,4 +1,6 @@
 package org.singsurf.wallpaper;
+import java.awt.Color;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -21,11 +23,14 @@ public class WallpaperApplication {
         app = new WallpaperFramed(image, w, h);
         app.mainFrame = mainFrame;
         app.clickCount = 2;
+        app.setBackground(Color.green);
+        mainFrame.setBackground(Color.red);
         var menu = app.buildMenu();
 		mainFrame.setJMenuBar(menu);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.add(app);
         mainFrame.pack();
+        mainFrame.setFocusable(true);
         mainFrame.setVisible(true);
     }
 
