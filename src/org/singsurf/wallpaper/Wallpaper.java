@@ -510,14 +510,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     }
 
     protected void setViewCheckboxes() {
-    	System.out.println("setViewCheckboxes");
-    	System.out.println("fd.drawGlideLines "+fd.drawGlideLines);
-    	System.out.println("fd.drawCells "+fd.drawCells);
-    	System.out.println("fd.drawReflectionLines "+fd.drawReflectionLines);
-    	System.out.println("fd.drawRotationPoints "+fd.drawRotationPoints);
-    	System.out.println("fd.drawDomain "+fd.drawDomain);
-    	System.out.println("fd.drawCells "+fd.drawCells);
-    	System.out.println("fd.drawSelectionPoints "+fd.drawSelectionPoints);
 		showFund.setSelected(fd.drawDomain);
 		symmetryCB.setSelected(fd.drawGlideLines &&
 				fd.drawReflectionLines && fd.drawRotationPoints);
@@ -592,7 +584,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-        System.out.println("WP: Key Pressed: " + code);
+//        System.out.println("WP: Key Pressed: " + code);
 
         if(code == KeyEvent.VK_LEFT) fd.shift(-1,0);
         else if(code == KeyEvent.VK_RIGHT) fd.shift(1,0);

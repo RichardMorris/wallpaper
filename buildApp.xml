@@ -40,7 +40,7 @@
 				<attribute name="Implementation-URL" value="${productWebSite}" />
 				<attribute name="Implementation-Version" value="${productVersion}" />
 
-				<attribute name="Main-Class" value="WallpaperApplication" />
+				<attribute name="Main-Class" value="org.singsurf.wallpaper.WallpaperApplication" />
 			</manifest>
 		</jar>
 	</target>

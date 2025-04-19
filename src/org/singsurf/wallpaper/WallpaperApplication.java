@@ -1,8 +1,6 @@
+package org.singsurf.wallpaper;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-
-import org.singsurf.wallpaper.Wallpaper;
-import org.singsurf.wallpaper.WallpaperFramed;
 
 /*
  Created 10 Apr 2007 - Richard Morris

@@ -84,7 +84,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
     @Override
     public void keyPressed(KeyEvent e) {
-        int code = e.getKeyCode();
+//        int code = e.getKeyCode();
 //        System.out.println("WF: Key Pressed: " + code);
 		if (e.getKeyCode() == KeyEvent.VK_F11) {
 			toggleFullScreen(mainFrame);
