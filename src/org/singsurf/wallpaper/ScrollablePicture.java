@@ -57,15 +57,13 @@ public class ScrollablePicture extends JPanel
         //setAutoscrolls(true); //enable synthetic drag events
     }
 
-    @Override
-    public Dimension getPreferredSize() {
-            return super.getPreferredSize();
-    }
 
+    @Override
     public Dimension getPreferredScrollableViewportSize() {
         return getPreferredSize();
     }
 
+    @Override
     public int getScrollableUnitIncrement(Rectangle visibleRect,
                                           int orientation,
                                           int direction) {
@@ -117,20 +115,6 @@ public class ScrollablePicture extends JPanel
       if(Wallpaper.DEBUG) System.out.println("paintComponent " + g.getClipBounds() + " "+ this.getSize());
       wall.paintCanvas(g);
   }
-
-//@Override
-//public void update(Graphics g)
-//{
-//    if(wall.DEBUG) System.out.println("update");
-//    wall.paintCanvas(g);
-//}
-//
-//@Override
-//public void paint(Graphics g) 
-//{
-//    if(wall.DEBUG) System.out.println("paint");
-//    wall.paintCanvas(g);
-//}
 
 
     public void setMaxUnitIncrement(int pixels) {

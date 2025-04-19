@@ -4,9 +4,10 @@ Created 28 Apr 2007 - Richard Morris
 package org.singsurf.wallpaper;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -46,6 +47,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -64,8 +66,13 @@ import org.singsurf.wallpaper.tessrules.TessRule;
 
 
 public class WallpaperFramed extends Wallpaper implements ActionListener, ComponentListener, AdjustmentListener {
-    private static final long serialVersionUID = 1L;
-    static final boolean DO_PAINTING=false; 
+
+	public WallpaperFramed(String imgfilename, int w, int h) {
+		super(frameGetImage(imgfilename), w, h);
+		myCanvas.requestFocus();
+	}
+
+	private static final long serialVersionUID = 1L;
     /** Scrollable pane */
     protected JScrollPane jsp;
 
@@ -78,10 +85,18 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-        if(code == KeyEvent.VK_SPACE) {
-            stopAnim();
-            return;
-        }
+//        System.out.println("WF: Key Pressed: " + code);
+		if (e.getKeyCode() == KeyEvent.VK_F11) {
+			toggleFullScreen(mainFrame);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE && isFullScreen) {
+			toggleFullScreen(mainFrame);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+			animController.stopStartAnim();
+		}
+
+
         super.keyPressed(e);
     }
 
@@ -167,7 +182,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             String label = com.substring(5);
             //"up","down","left","right","rotate","Stop"
             if(label.equals("Stop")) {
-                stopAnim();
+                animController.stopAnim();
             }
             else startAnim(label);
 
@@ -210,6 +225,22 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
 
 
+	@Override
+	public void hideControls() {
+		super.hideControls();
+		viewMenu.setVisible(false);
+		jsp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		jsp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+	}
+
+	@Override
+	public void showControls() {
+		super.showControls();
+		viewMenu.setVisible(true);
+		jsp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		jsp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+	}	
+	
 	protected FileFilter saveFF = new FileFilter() {
         public boolean accept(File dir, String name) {
             String lcname = name.toLowerCase();
@@ -372,6 +403,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
         /**
          * Build the menus for application usage.
+         * @param wallpaperApplication 
          * @return the MenuBar
          */
         public JMenuBar buildMenu() {
@@ -396,47 +428,25 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
             JMenu animateMenu = buildAnimationMenu();
             mb.add(animateMenu);
-            if(DO_PAINTING){
-                JMenu paintMenu = buildDrawMenu();
-                mb.add(paintMenu);
-            }
+
+            JMenu winMenu = buildWindowMenu();
+            mb.add(winMenu);
+
             //JMenu helpMenu = buildHelpMenu();
             //mb.setHelpMenu(helpMenu);
             return (mb);
         }
 
-        PaintMouseListener pml=null;
-        private JMenu buildDrawMenu() {
-            drawMenu = new JMenu("Paint");
-            
-            JCheckBoxMenuItem fg2bgmi = new JCheckBoxMenuItem("FG -> BG");
-            drawMenu.add(fg2bgmi);
-            fg2bgmi.addItemListener(new ItemListener() {
-
-                public void itemStateChanged(ItemEvent e) {
-                    if(e.getStateChange() == ItemEvent.SELECTED) {
-                        pml = new PaintMouseListener(
-                                WallpaperFramed.this.controller);
-                        myCanvas.addMouseMotionListener(pml);
-                        myCanvas.addMouseListener(pml);
-                        myCanvas.removeMouseListener(WallpaperFramed.this);
-                        myCanvas.removeMouseMotionListener(WallpaperFramed.this);
-                        myCanvas.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-                    }
-                    else {
-                        myCanvas.removeMouseMotionListener(pml);
-                        myCanvas.removeMouseListener(pml);
-                        myCanvas.addMouseListener(WallpaperFramed.this);
-                        myCanvas.addMouseMotionListener(WallpaperFramed.this);
-                        myCanvas.setCursor(Cursor.getDefaultCursor());
-                        
-                    }
-                    
-                }});
-            return drawMenu;
-        }
         
-        private JMenu buildOptionsMenu() {
+        private JMenu buildWindowMenu() {
+            JMenu menu = new JMenu("Window");
+            JMenuItem mi = new JMenuItem("Full Screen");
+            mi.addActionListener((e) -> toggleFullScreen(mainFrame));
+            menu.add(mi);
+			return menu;
+		}
+
+		private JMenu buildOptionsMenu() {
             JMenu optionsMenu = new JMenu("Options");
             JMenu backgroundMenu = new JMenu("BG colour");
             String colours[] = {"tile","black","white","other ...","pick"};
@@ -514,43 +524,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             }
         }
 
-        @Override
-		protected void setViewCheckboxes() {
-			super.setViewCheckboxes();
-			int num = viewMenu.getItemCount();
-			for(int i=0;i<num;++i) {
-				JCheckBoxMenuItem mi = (JCheckBoxMenuItem) viewMenu.getItem(i);
-				if(mi==null) continue;
-				System.out.println("mi "+i+" "+mi.getText()+" "+mi.isSelected());
-				if(mi.getText().equals("Cells")) {
-					mi.setSelected(fd.drawCells);
-				}
-				else if(mi.getText().equals("Tiles")) {
-					mi.setSelected(fd.drawTiles);
-				}
-				else if(mi.getText().equals("Selection domain")) {
-					mi.setSelected(fd.drawDomain);
-				}
-				else if(mi.getText().equals("Selection points")) {
-					mi.setSelected(fd.drawSelectionPoints);
-				}
-				else if(mi.getText().equals("Reflection lines")) {
-					mi.setSelected(fd.drawReflectionLines);
-				}
-				else if(mi.getText().equals("Rotation points")) {
-					mi.setSelected(fd.drawRotationPoints);
-				}
-				else if(mi.getText().equals("Glide-reflection lines")) {
-					mi.setSelected(fd.drawGlideLines);
-				}
-				else if(mi.getText().equals("All symetries")) {
-					mi.setSelected(fd.drawGlideLines && fd.drawReflectionLines && fd.drawRotationPoints);
-				}
-				else if(mi.getText().equals("Hide all symetries")) {
-					mi.setSelected(!fd.drawGlideLines && !fd.drawReflectionLines && !fd.drawRotationPoints);
-				}
-			}
-		}
 
         private JMenu buildImageMenu() {
             JMenu imageMenu = new JMenu("Image");
@@ -702,10 +675,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             return fileMenu;
         }
 
-        //@Override
         @Override
-        protected JComponent buildCanvas() {
-            JComponent c = super.buildCanvas();
+        protected JComponent buildCanvasComponent(JComponent c) {
             jsp = new JScrollPane(c,
                     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                     ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -713,6 +684,9 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             jsp.getHorizontalScrollBar().addAdjustmentListener(this);
             return jsp;
         }
+        
+        public void addCanvas(JComponent c) {
+		}
         
         protected JMenu buildAnimationMenu() {
     	    stopBut.setVisible(true);
@@ -750,7 +724,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             if (f != null) {
                 System.out.println(f);
                 WallpaperFramed.this.imageFilename = f.getAbsolutePath();
-                WallpaperFramed.this.imageURL = null;
+                //WallpaperFramed.this.imageURL = null;
                 Image img;
                 try {
                     img = ImageIO.read(f);
@@ -1101,7 +1075,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
          * @param imgloc either a URL or filename
          * @return loaded image or null on error
          */
-        public Image frameGetImage(String imgloc) {
+        public static Image frameGetImage(String imgloc) {
             URI imgurl=null;
             String filename=null;
             Image imgin;
@@ -1110,7 +1084,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             try
             {
                 imgurl = new URI(imgloc);
-                imageURL = imgurl.toURL();
+                var imageURL = imgurl.toURL();
                 imgin = Toolkit.getDefaultToolkit().getImage(imageURL);
             }
             catch(MalformedURLException | URISyntaxException | IllegalArgumentException e)
@@ -1123,7 +1097,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                 if(imgurl!=null) System.out.println("URL "+imgurl.toString());
                 else System.out.println(filename);
             }
-            imageFilename = filename;
+//            imageFilename = filename;
 
             if(imgin==null)
             {
@@ -1286,7 +1260,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         }
 
         public String titleFilename="";
-        protected void imageChanged() {
+		private boolean isFullScreen;
+        public void imageChanged() {
             //		imgout = dr.getActiveImage();
             myCanvas.setSize(dr.destRect.width, dr.destRect.height);
             myCanvas.setPreferredSize(dr.destRect.getSize());
@@ -1304,5 +1279,114 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             this.mainFrame.setTitle("Wallpaper patterns: "+titleFilename+" "+dr.baseRect.width+" X "+dr.baseRect.height);
         }
 
+	    public void toggleFullScreen(JFrame frame) {
+			if (gd.isFullScreenSupported()) {
+				if (isFullScreen) {
+					showNormalScreen(frame);
+
+				} else {
+					showFullScreen(frame);
+				}
+			}
+		}
+
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		Rectangle oldBounds = null;
+		
+		public void showFullScreen(JFrame frame) {
+			System.out.println("Entering Full-Screen");
+			frame.dispose();
+			hideControls();
+			var menu = frame.getJMenuBar();
+			menu.setVisible(false);
+			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			frame.setUndecorated(true);
+			Rectangle bounds = frame.getGraphicsConfiguration().getBounds();
+			System.out.println("Full-Screen"+bounds);
+			oldBounds = dr.dispRect.getBounds();
+			dr.resize(bounds.width, bounds.height, bounds.x, bounds.y);
+			clearViewCheckboxes();
+			imageChanged();
+			gd.setFullScreenWindow(frame);
+			myCanvas.requestFocus();
+			isFullScreen = true;
+		}
+
+		public void showNormalScreen(JFrame frame) {
+			System.out.println("Exiting Full-Screen");
+			frame.dispose();
+			frame.setUndecorated(false);
+			frame.setExtendedState(JFrame.NORMAL);
+			dr.resize(oldBounds.width, oldBounds.height, oldBounds.x, oldBounds.y);
+
+			showControls();
+			var menu = frame.getJMenuBar();
+			menu.setVisible(true);
+			frame.setVisible(true);
+			gd.setFullScreenWindow(null);
+			setDefaultViewCheckboxes();
+			isFullScreen = false;
+			myCanvas.requestFocus();
+		}
+
+		private void clearViewCheckboxes() {
+			fd.drawCells = false;
+			fd.drawTiles = false;
+			fd.drawDomain = false;
+			fd.drawSelectionPoints = false;
+			fd.drawGlideLines = false;
+			fd.drawReflectionLines = false;
+			fd.drawRotationPoints = false;
+			setViewCheckboxes();
+		}
+
+		private void setDefaultViewCheckboxes() {
+			fd.drawCells = false;
+			fd.drawTiles = false;
+			fd.drawDomain = true;
+			fd.drawSelectionPoints = true;
+			fd.drawGlideLines = false;
+			fd.drawReflectionLines = false;
+			fd.drawRotationPoints = false;
+			setViewCheckboxes();
+		}
+
+        @Override
+		protected void setViewCheckboxes() {
+			super.setViewCheckboxes();
+			int num = viewMenu.getItemCount();
+			for(int i=0;i<num;++i) {
+				JCheckBoxMenuItem mi = (JCheckBoxMenuItem) viewMenu.getItem(i);
+				if(mi==null) continue;
+//				System.out.println("mi "+i+" "+mi.getText()+" "+mi.isSelected());
+				if(mi.getText().equals("Cells")) {
+					mi.setSelected(fd.drawCells);
+				}
+				else if(mi.getText().equals("Tiles")) {
+					mi.setSelected(fd.drawTiles);
+				}
+				else if(mi.getText().equals("Selection domain")) {
+					mi.setSelected(fd.drawDomain);
+				}
+				else if(mi.getText().equals("Selection points")) {
+					mi.setSelected(fd.drawSelectionPoints);
+				}
+				else if(mi.getText().equals("Reflection lines")) {
+					mi.setSelected(fd.drawReflectionLines);
+				}
+				else if(mi.getText().equals("Rotation points")) {
+					mi.setSelected(fd.drawRotationPoints);
+				}
+				else if(mi.getText().equals("Glide-reflection lines")) {
+					mi.setSelected(fd.drawGlideLines);
+				}
+				else if(mi.getText().equals("All symetries")) {
+					mi.setSelected(fd.drawGlideLines && fd.drawReflectionLines && fd.drawRotationPoints);
+				}
+				else if(mi.getText().equals("Hide all symetries")) {
+					mi.setSelected(!fd.drawGlideLines && !fd.drawReflectionLines && !fd.drawRotationPoints);
+				}
+			}
+		}
 
 }

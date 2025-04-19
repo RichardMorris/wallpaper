@@ -133,4 +133,8 @@ public class Controller {
 //			redraw();
 		}
 	}
+
+	public FundamentalDomain getFD() {
+		return fd;
+	}
 }

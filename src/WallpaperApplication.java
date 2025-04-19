@@ -1,6 +1,3 @@
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -13,95 +10,55 @@ import org.singsurf.wallpaper.WallpaperFramed;
 
 public class WallpaperApplication {
     // This interface is used for objects defining now to do tessellation
-    static JFrame mainFrame = null;
-    static String args[] = null;
-    static String image;
+    JFrame mainFrame = null;
+    String image;
 
-    static void createAndShowGUI() {
-//        System.out.println("Created GUI on EDT? "
-//                + SwingUtilities.isEventDispatchThread());
+	private WallpaperFramed app;
+	
 
-        JFrame mainFrame = new JFrame("Wallpaper patterns");
-        int w = 800, h = 600;
-        if (args.length >= 3) {
-            w = Integer.parseInt(args[1]);
-            h = Integer.parseInt(args[2]);
-        }
+    public WallpaperApplication(String image,int w,int h) {
+		this.image = image;
+        mainFrame = new JFrame("Wallpaper patterns");
         mainFrame.setBounds(0, 0, w, h);
-        // mainFrame.resize(200,200);
-        WallpaperFramed app = new WallpaperFramed();
+        app = new WallpaperFramed(image, w, h);
         app.mainFrame = mainFrame;
         app.clickCount = 2;
-        app.initialize(app.frameGetImage(image), w, h);
-        app.setTitle(image);
-        mainFrame.setJMenuBar(app.buildMenu());
-
+        var menu = app.buildMenu();
+		mainFrame.setJMenuBar(menu);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.add(app);
         mainFrame.pack();
         mainFrame.setVisible(true);
-
-        mainFrame.addWindowListener(new WindowAdapter() {
-            // @Override
-            @Override
-            public void windowClosing(WindowEvent arg0) {
-                System.exit(0);
-            }
-
-            // @Override
-            @Override
-            public void windowDeiconified(WindowEvent arg0) {
-                // System.out.println("de-icon");
-                super.windowDeiconified(arg0);
-            }
-
-            // @Override
-            @Override
-            public void windowIconified(WindowEvent arg0) {
-                // System.out.println("icon");
-                super.windowIconified(arg0);
-            }
-
-        });
-        mainFrame.setVisible(true);
-
     }
 
-    /**
+    
+
+
+	/**
      * @param progargs
      */
     public static void main(String progargs[]) {
-
-        // try {
-        // for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-        // if ("Nimbus".equals(info.getName())) {
-        // UIManager.setLookAndFeel(info.getClassName());
-        // break;
-        // }
-        // }
-        // } catch (UnsupportedLookAndFeelException e) {
-        // // handle exception
-        // } catch (ClassNotFoundException e) {
-        // // handle exception
-        // } catch (InstantiationException e) {
-        // // handle exception
-        // } catch (IllegalAccessException e) {
-        // // handle exception
-        // }
-
-        // System.getProperties().list(System.out);
+        String args[] = null;
+    	final String image;
         System.out.println(Wallpaper.programInfo());
         args = progargs;
         if (args.length == 0) {
             System.out.println(Wallpaper.helpInfo());
-            // String path = System.getProperty(key)
             image = "tile.jpg";
         } else
             image = args[0];
+        final int w,h;
+        if (args.length >= 3) {
+            w = Integer.parseInt(args[1]);
+            h = Integer.parseInt(args[2]);
+        } else {
+			w = 800;
+			h = 600;
+		}
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                new WallpaperApplication(image,w,h);
             }
         });
 

@@ -49,7 +49,7 @@ public class LissajousAnimation extends AnimationPath {
 		double dxdt = m * Math.cos(m*t) * rect.width/2;
 		double dydt = n * Math.cos(n*t) * rect.height/2;
 		double d = Math.sqrt(dxdt*dxdt + dydt*dydt);
-		System.out.printf("x0=%f y0=%f\n",x0,y0);
+//		System.out.printf("x0=%f y0=%f\n",x0,y0);
 		t += 3* dt*speed/d;
 		
 		for(int i=0;i<6;++i)

@@ -11,12 +11,12 @@ import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import org.singsurf.wallpaper.WallpaperFramed;
+import org.singsurf.wallpaper.Wallpaper;
 
 public class JColourPicker  {
     JDialog jcd;
     
-    public JColourPicker(JFrame parent, WallpaperFramed wallpaperFramed) {
+    public JColourPicker(JFrame parent, Wallpaper wallpaperFramed) {
         jColorChooser = new JColorChooser();
         jcd = JColorChooser.createDialog(parent, "Pick background colour", true, 
                 jColorChooser, new ActionListener() {

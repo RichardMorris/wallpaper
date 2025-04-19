@@ -19,9 +19,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.net.URL;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -33,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import org.singsurf.wallpaper.animation.AnimationController;
 import org.singsurf.wallpaper.animation.AnimationPath;
 import org.singsurf.wallpaper.tessrules.TessRule;
 
@@ -82,7 +80,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
 
 
-    JTextArea ta;
+    JTextArea infoPanel;
     /** whether the paint method has been completed. */
     private boolean paintDone = true;
     /** If interactive kaleidoscope more */
@@ -96,11 +94,100 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     // This interface is used for objects defining now to do tessellation 
     public JFrame mainFrame=null;
     protected String imageFilename=null;
-    protected URL imageURL=null;
+//    protected URL imageURL=null;
 
     public int clickCount = 0;
+	public AnimationController animController;
 
-    public void paintCanvas(Graphics g) {
+    public Wallpaper(Image img,int w,int h) {
+        if(DEBUG) System.out.println("img w "+w+" h "+h);
+
+        this.setLayout(new BorderLayout());
+        JPanel pan = new JPanel();
+        pan.setLayout(new BorderLayout());
+        infoPanel = new JTextArea(
+                "This applet calculate a symmetry pattern based on one of 17 different patterns.\n"
+                +"Click and drag the Red, Green or Blue points to move the yellow polygon.\n"
+                +"Select a button on left to change the type.\n"
+                +"The blue polygon gives the 'Fundamental Domain'. The patten is created by\n"
+                +"taking this region and reflecting, rotating and translating it.\n"
+                +"The yellow polygon gives the region which is repeated by translation only.\n"
+                +"Double click to redraw and right click to revert back to original image.",
+                3,60);
+        //TODO ta.setS,TextArea.SCROLLBARS_VERTICAL_ONLY);
+        infoPanel.setEditable(false);
+        infoPanel.setBackground(Color.white); // use lower case colors for compatability with old jdk
+        infoPanel.setBorder(BorderFactory.createEtchedBorder());
+        //ta.setMargin(new Insets(2, 4, 2, 2));
+        //ta.set
+        myCanvas = buildCanvas();
+        JComponent mainWin = buildCanvasComponent(myCanvas);
+
+        controller = new Controller(this,dr,fd);
+        tesselationPanel = new GraphicalTesselationPanel(controller);
+        buttonBar = buildButtonBar();
+
+        add("West",tesselationPanel);
+        add("Center",pan);
+        pan.add("North",buttonBar);
+        pan.add("Center",mainWin);
+        pan.add("South",infoPanel);
+
+//        add("West",tesselationPanel);
+//        add("Center",mainWin);
+//        add("North",p2);
+//        add("South",ta);
+
+        
+        this.validate();
+        this.doLayout();
+        //System.out.println(myCanvas.getBounds());
+
+        dr = buildDrawableRegion();
+        if(!dr.loadImage(img)) {
+            System.out.println("Using default image");
+            dr.loadImage(DefaultImage.createDefaultImage());
+        }
+        fd = new FundamentalDomain();
+        controller.setDr(dr);
+        controller.setFd(fd);
+        myCanvas.setSize(dr.destRect.width,dr.destRect.height); 
+        myCanvas.setPreferredSize(dr.destRect.getSize()); 
+        //myCanvas.set.setPreferedSize(dr.destRect.width,dr.destRect.height); 
+        dr.setViewport(dr.destRect);//new Rectangle(0,0,dr.destRect.width,dr.destRect.height));
+
+        fd.resetDomain(dr.dispRect);
+        controller.setTesselation(tesselationPanel.getCurrentTesselation());
+        controller.calcGeom();
+        controller.showOriginal();
+		animController = new AnimationController(this,controller);
+
+        if(DEBUG) System.out.println("initialise done");
+        //this.validate();
+    }
+
+	public void hideControls() {
+		buttonBar.setVisible(false);
+		tesselationPanel.setVisible(false);
+		infoPanel.setVisible(false);
+	}
+
+	public void showControls() {
+		buttonBar.setVisible(true);
+		tesselationPanel.setVisible(true);
+		infoPanel.setVisible(true);
+	}
+
+
+	public void setImage(DrawableRegion dr) {
+		if(DEBUG) System.out.println("setImage "+dr);
+		this.dr = dr;
+		fd.resetDomain(dr.dispRect);
+		controller.calcGeom();
+		controller.redraw();
+	}
+
+	public void paintCanvas(Graphics g) {
         if(DEBUG) System.out.println("paintCanvas" + dr.dispRect);
         
         //System.out.printf("cp %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
@@ -319,75 +406,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     protected static boolean first=true;
 
-    public void initialize(Image img,int w,int h) {
-        if(DEBUG) System.out.println("img w "+w+" h "+h);
-//        Image pip = null; // getImage("pipet.gif");
-// TODO       if(pip!=null)
-//            pipet = Toolkit.getDefaultToolkit().createCustomCursor(
-//                    pip,new Point(8,25), "pipet");
-//        else
-//            pipet = Cursor.getDefaultCursor();
-
-        this.setLayout(new BorderLayout());
-        JPanel pan = new JPanel();
-        pan.setLayout(new BorderLayout());
-        ta = new JTextArea(
-                "This applet calculate a symmetry pattern based on one of 17 different patterns.\n"
-                +"Click and drag the Red, Green or Blue points to move the yellow polygon.\n"
-                +"Select a button on left to change the type.\n"
-                +"The blue polygon gives the 'Fundamental Domain'. The patten is created by\n"
-                +"taking this region and reflecting, rotating and translating it.\n"
-                +"The yellow polygon gives the region which is repeated by translation only.\n"
-                +"Double click to redraw and right click to revert back to original image.",
-                3,60);
-        //TODO ta.setS,TextArea.SCROLLBARS_VERTICAL_ONLY);
-        ta.setEditable(false);
-        ta.setBackground(Color.white); // use lower case colors for compatability with old jdk
-        ta.setBorder(BorderFactory.createEtchedBorder());
-        //ta.setMargin(new Insets(2, 4, 2, 2));
-        //ta.set
-        JComponent mainWin = buildCanvas();
-
-        controller = new Controller(this,dr,fd);
-        tesselationPanel = new GraphicalTesselationPanel(controller);
-        JPanel p2 = buildButtonBar();
-
-        add("West",tesselationPanel);
-        add("Center",pan);
-        pan.add("North",p2);
-        pan.add("Center",mainWin);
-        pan.add("South",ta);
-
-//        add("West",tesselationPanel);
-//        add("Center",mainWin);
-//        add("North",p2);
-//        add("South",ta);
-
-        
-        this.validate();
-        this.doLayout();
-        //System.out.println(myCanvas.getBounds());
-
-        dr = buildDrawableRegion();
-        if(!dr.loadImage(img)) {
-            System.out.println("Using default image");
-            dr.loadImage(DefaultImage.createDefaultImage());
-        }
-        fd = new FundamentalDomain();
-        controller.setDr(dr);
-        controller.setFd(fd);
-        myCanvas.setSize(dr.destRect.width,dr.destRect.height); 
-        myCanvas.setPreferredSize(dr.destRect.getSize()); 
-        //myCanvas.set.setPreferedSize(dr.destRect.width,dr.destRect.height); 
-        dr.setViewport(dr.destRect);//new Rectangle(0,0,dr.destRect.width,dr.destRect.height));
-
-        fd.resetDomain(dr.dispRect);
-        controller.setTesselation(tesselationPanel.getCurrentTesselation());
-        controller.calcGeom();
-        controller.showOriginal();
-        if(DEBUG) System.out.println("initialise done");
-        //this.validate();
-    }
 
     protected DrawableRegion buildDrawableRegion() {
         //return new FixedSizeDrawableRegion(this,myCanvas.getSize());
@@ -395,39 +413,12 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     }
 
     protected JComponent buildCanvas() {
-        myCanvas = new ScrollablePicture(this);
-//        myCanvas = new JPanel() {
-//            /**
-//             * 
-//             */
-//            private static final long serialVersionUID = 1L;
-// 
-//            @Override
-//            public void update(Graphics g)
-//            {
-//                if(DEBUG) System.out.println("update");
-//                paintCanvas(g);
-//            }
-//
-//            @Override
-//            public void paint(Graphics g) 
-//            {
-//                if(DEBUG) System.out.println("paint");
-//                paintCanvas(g);
-//            }
-//
-//            @Override
-//            protected void paintComponent(Graphics g) {
-//                if(DEBUG) System.out.println("paintComponent " + g.getClipBounds() + " "+ myCanvas.getSize());
-//                paintCanvas(g);
-//            }
-//            
-//        };
-        myCanvas.addMouseListener(this);
-        myCanvas.addMouseMotionListener(this);
-        myCanvas.addKeyListener(this);
+        var canvas = new ScrollablePicture(this);
+        canvas.addMouseListener(this);
+        canvas.addMouseMotionListener(this);
+        canvas.addKeyListener(this);
         
-        return myCanvas;
+        return canvas;
     }
 
     protected JPanel buildButtonBar() {
@@ -504,7 +495,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         stopBut = new JButton("Start");
         stopBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                stopStartAnim();
+                animController.stopStartAnim();
             }
 
         });
@@ -550,7 +541,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
      * @param message
      */
     public void setText(String message) {
-        ta.setText(message);
+        infoPanel.setText(message);
     }
 
 
@@ -587,13 +578,11 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	/** Current path of animations */
 	AnimationPath path;
 	/** Button to stop animations */
-	protected JButton stopBut;
-	private TimerTask animateTask = null;
-	public Thread animate = null;
-	private final Timer timer = new Timer();
+	public JButton stopBut;
 	boolean animRunning = false;
 	protected JComboBox<String> animateChoice;
 	private JCheckBox symmetryCB;
+	private JPanel buttonBar;
 
     //@Override
     public String[][] getParameterInfo() {
@@ -603,11 +592,15 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
+        System.out.println("WP: Key Pressed: " + code);
+
         if(code == KeyEvent.VK_LEFT) fd.shift(-1,0);
         else if(code == KeyEvent.VK_RIGHT) fd.shift(1,0);
         else if(code == KeyEvent.VK_UP) fd.shift(0,-1);
         else if(code == KeyEvent.VK_DOWN) fd.shift(0,1);
-        else return;
+        else {
+        	return;
+        }
 
         controller.calcGeom();
         if(!interactiveMode)
@@ -637,79 +630,27 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
 	public void keyTyped(KeyEvent e) {/*ignore*/}
 
-	protected void stopStartAnim() {
-		System.out.println("startStopAnim");
-	    if(animRunning)
-	        stopAnim();
-	    else if(path!=null)
-	        startAnim();
-	    else
-	    	startAnim((String) animateChoice.getSelectedItem());
-	}
 
 	protected void startAnim(String label) {
 		System.out.println("StartAnim: "+label);
 	    path = AnimationPath.getPathByName(label, 1,dr.srcRect);
-	    startAnim();
+	    animController.setAnimationPath(path);
+	    animController.startAnim();
 	}
 
-	private void startAnim() {
-	    //if(DEBUG) 
-	    	System.out.println("Start anim");
-	    
-	    path.firstItteration(fd);
-	
-	    if (animateTask != null)
-	        animateTask.cancel();
-	
-	    myCanvas.requestFocus();
-	    setText("Hit space bar to stop");
-	    TessRule.tileBackground=true;
-	    animateTask = new TimerTask() {
-	        long count=0;
-	        long sum = 0;
-	        //long lastTime = System.currentTimeMillis();
-	        //@Override
-	        @Override
-	        public void run() {
-	            long t1 = System.currentTimeMillis();
-	            //long diff = (t1-lastTime)/50;
-	            //for(long i=count;i<=diff;++i)
-	            path.nextItteration(fd);
-	            controller.applyTessellation();
-	            long t2 = System.currentTimeMillis();
-	            long elapsed = t2-t1;
-	            sum += elapsed;
-	            if(count%10==0) {
-	                if(DEBUG) System.out.println("Elapse " + sum);
-	                if(DEBUG) System.out.flush();
-	                sum=0;
-	            }
-	            ++count;
-	            //lastTime = System.currentTimeMillis();
-	        }
-	
-	    };
-	
-	    //timer.scheduleAtFixedRate(animateTask, 0, 50);
-	    timer.schedule(animateTask, 0, 50);
-	    animRunning = true;
-	    stopBut.setEnabled(true);
-	    stopBut.setText("Stop");
-	}
 
-	public void stopAnim() {
-	    if(DEBUG) System.out.println("Stop anim");
-	    if (animateTask != null)
-	        animateTask.cancel();
-	    animRunning = false;
-	    stopBut.setText("Start");
-	}
-		
 	public void itemStateChanged(ItemEvent ev) {
 		
 	    path = AnimationPath.getPathByName((String) ev.getItem(), 1,dr.srcRect);
+	    animController.setAnimationPath(path);
+	    animController.startAnim();
 	}
+
+	protected JComponent buildCanvasComponent(JComponent c) {
+		return c;
+	}
+
+
 
 
 } // end of class def
