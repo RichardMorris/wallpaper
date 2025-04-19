@@ -6,6 +6,7 @@ package org.singsurf.wallpaper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +31,7 @@ public class WallpaperML {
 
 //	public boolean restart=false;
 
-	static final Pattern vertexRE = Pattern.compile(".*\\[\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\]");
+	static final Pattern vertexRE = Pattern.compile(".*\\[\\s*-?(\\d+)\\s*,\\s*-?(\\d+)\\s*\\]");
 ;
 
 	public WallpaperML()
@@ -50,11 +51,6 @@ public class WallpaperML {
 
 	}
 
-	public void writeRestart(PrintWriter pr) {
-			pr.println("frame:");
-			pr.println("restart:");
-		}
-
 	public void write(PrintWriter pr) {
 		if(anim!= null) {
 			pr.println("frame:");
@@ -67,7 +63,18 @@ public class WallpaperML {
 		pr.println("  - [" + fd.cellVerts[1].x+","+fd.cellVerts[1].y+"]");
 		pr.println("  - [" + fd.cellVerts[2].x+","+fd.cellVerts[2].y+"]");
 		if(wallpaper.imageFilename!=null) {
-			pr.println("filename: "+wallpaper.imageFilename);
+			Path cdw = Path.of(System.getProperty("user.dir"));
+			Path absPath = Path.of(wallpaper.imageFilename).toAbsolutePath();
+			Path relativePath;
+			if(absPath.startsWith(cdw)) {
+				relativePath = cdw.relativize(Path.of(wallpaper.imageFilename));
+			} else {
+				relativePath = absPath;
+			}
+			System.out.println("Relative path: " + relativePath);
+			System.out.println("Absolute path: " + absPath);
+			System.out.println("Current working directory: " + cdw);
+			pr.println("filename: "+relativePath);
 		}
 		pr.println("zoom: ["+((ZoomedDrawableRegion) wallpaper.dr).zoomNumer + "," +((ZoomedDrawableRegion) wallpaper.dr).zoomDenom+"]");
 		if(anim!= null) {

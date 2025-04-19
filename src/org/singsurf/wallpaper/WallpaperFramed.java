@@ -223,14 +223,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                 //File f = new File(dir, filename);
                 FileWriter fw = new FileWriter(f,true);
                 PrintWriter pw = new PrintWriter(fw);
-                if(esd.restart) {
-                	WallpaperML yaml = new WallpaperML();
-					yaml.writeRestart(pw);
-				}
-				else {
-	                WallpaperML yaml = new WallpaperML(this,path.getLabel(),esd.time);
-					yaml.write(pw);
-				}
+                WallpaperML yaml = new WallpaperML(this,path.getLabel(),esd.time);
+				yaml.write(pw);
                 pw.close();
             } catch (Exception e) {
                 ErrorDialog errorD = new ErrorDialog(mainFrame);

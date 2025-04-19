@@ -35,7 +35,6 @@ public class AnimDialog extends JDialog implements ChangeListener {
 //	JCheckBox repeatCB;
 	Wallpaper wall;
 
-	public boolean restart = false;
 	public AnimDialog(JFrame frame,Wallpaper wall) {
 		super(frame,"Animation Length",true);
 		this.setPreferredSize(new Dimension(300,200));

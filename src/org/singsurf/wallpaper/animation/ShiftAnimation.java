@@ -16,7 +16,6 @@ public class ShiftAnimation extends AnimationPath {
 	int count=0;
 
 	public void nextItteration(FundamentalDomain fd) {
-		//System.out.println("count "+(count%360));
 		for(int i=0;i<6;++i)
 		{
 			fd.cellVerts[i].x += dx;
