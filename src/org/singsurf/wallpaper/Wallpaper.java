@@ -155,7 +155,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         controller.calcGeom();
         controller.showOriginal();
 		animController = new AnimationController(this,controller);
-
+		path = animController.path;
         if(DEBUG) System.out.println("initialise done");
         //this.validate();
     }
@@ -607,6 +607,16 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
 	protected JComponent buildCanvasComponent(JComponent c) {
 		return c;
+	}
+
+	public void stopAll() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void startAll() {
+		// TODO Auto-generated method stub
+		
 	}
 
 

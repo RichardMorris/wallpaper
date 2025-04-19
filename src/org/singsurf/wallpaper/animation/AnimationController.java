@@ -27,7 +27,7 @@ public class AnimationController implements ActionListener {
 		timer = new Timer(50, this);
 	}
 	
-    AnimationPath path = null;
+    public AnimationPath path = null;
     boolean first = true;
     boolean stop = false;
 //	private Timer timer = new Timer();
@@ -57,11 +57,13 @@ public class AnimationController implements ActionListener {
 	    wall.stopBut.setEnabled(true);
 	    wall.stopBut.setText("Stop");
 	    timer.start();
+	    wall.startAll();
 	}
 
 	public void stopAnim() {
 	    if(DEBUG) System.out.println("Stop anim");
 	    timer.stop();
+	    wall.stopAll();
 	    animRunning = false;
 	    wall.myCanvas.requestFocus();
 
@@ -94,5 +96,6 @@ public class AnimationController implements ActionListener {
         }
         ++count;
 	}
+
 
 }

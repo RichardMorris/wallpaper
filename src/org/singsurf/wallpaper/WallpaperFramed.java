@@ -41,6 +41,7 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
@@ -54,9 +55,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
+import org.singsurf.wallpaper.animation.AnimationPath;
+import org.singsurf.wallpaper.dialogs.AnimDialog;
 import org.singsurf.wallpaper.dialogs.ErrorDialog;
 import org.singsurf.wallpaper.dialogs.ExpandDialog;
 import org.singsurf.wallpaper.dialogs.ExpandedSizeDialog;
@@ -114,6 +118,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             loadPat();
         else if(com.equals("save pattern"))
             savePat();
+        else if(com.equals("append animation"))
+            appendAnim();
         else if(com.equals("print"))
             printImage();
         else if(com.equals("exit"))
@@ -193,7 +199,50 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
          }
     }
 
-    Printable printable = new Printable() {
+
+	private void appendAnim() {
+		final AnimDialog esd = new AnimDialog(mainFrame, this);
+
+		esd.open();
+		if (!esd.isOk())
+			return;
+
+        fc.setFileFilter(patFF);
+        int res = fc.showSaveDialog(mainFrame);
+        if(res != JFileChooser.APPROVE_OPTION) return;
+        File f = fc.getSelectedFile();
+
+//        JFileChooser fid = new JFileChooser(mainFrame, "Save pattern",
+//                JFileChooser.SAVE);
+//        fid.setVisible(true);
+//        String dir = fid.getDirectory();
+//        String filename = fid.getFile();
+//        fid.dispose();
+        if (f != null) {
+            try {
+                //File f = new File(dir, filename);
+                FileWriter fw = new FileWriter(f,true);
+                PrintWriter pw = new PrintWriter(fw);
+                if(esd.restart) {
+                	WallpaperML yaml = new WallpaperML();
+					yaml.writeRestart(pw);
+				}
+				else {
+	                WallpaperML yaml = new WallpaperML(this,path.getLabel(),esd.time);
+					yaml.write(pw);
+				}
+                pw.close();
+            } catch (Exception e) {
+                ErrorDialog errorD = new ErrorDialog(mainFrame);
+                errorD.open("Error loading pattern",e.getMessage());
+                errorD.dispose();
+                System.out.println(e.getMessage());
+            }
+        }
+		
+	}
+
+	Printable printable = new Printable() {
 
     	public int print(Graphics g, PageFormat pageFormat, int pageIndex)
     	throws PrinterException {
@@ -651,6 +700,11 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             saveGMI.addActionListener(this);
             saveGMI.setActionCommand("save pattern");
 
+            JMenuItem appendGMI = new JMenuItem("Append animation");
+//            appendGMI.setMnemonic(KeyEvent.VK_L);
+            appendGMI.addActionListener(this);
+            appendGMI.setActionCommand("append animation");
+
             JMenuItem printMI = new JMenuItem("Print ...");
             printMI.setMnemonic(KeyEvent.VK_P);
             printMI.addActionListener(this);
@@ -667,6 +721,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             fileMenu.add(savetileMI);
             fileMenu.add(saveBigMI);
             fileMenu.add(saveGMI);
+            fileMenu.add(appendGMI);
             fileMenu.add(printMI);
             //fileMenu.add(webMI);
             fileMenu.addSeparator();
@@ -722,11 +777,14 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             File f = fc.getSelectedFile();
             
             if (f != null) {
-                System.out.println(f);
-                WallpaperFramed.this.imageFilename = f.getAbsolutePath();
+                imageFilename = f.getPath();
+                System.out.println("name "+f.getName());
+                System.out.println("path "+f.getPath());
+                System.out.println("absolute "+f.getAbsoluteFile());
                 //WallpaperFramed.this.imageURL = null;
                 Image img;
                 try {
+                	System.out.println("canocal "+f.getCanonicalFile());
                     img = ImageIO.read(f);
                 } catch (IOException e) {
                     ErrorDialog errorD = new ErrorDialog(mainFrame);
@@ -763,6 +821,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         }
         
         JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+		private int yamlListPoss;
         {
     	    //Add the preview pane.
             fc.setAccessory(new ImagePreview(fc));
@@ -1011,7 +1070,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                     //File f = new File(dir, filename);
                     FileWriter fw = new FileWriter(f);
                     PrintWriter pw = new PrintWriter(fw);
-                    Yaml yaml = new Yaml(this);
+                    WallpaperML yaml = new WallpaperML(this);
                     yaml.write(pw);
                     pw.close();
                 } catch (Exception e) {
@@ -1023,6 +1082,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             }
         }
 
+        
         private void loadPat() {
             fc.setFileFilter(patFF);
             int res = fc.showOpenDialog(mainFrame);
@@ -1040,26 +1100,10 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                     //File f = new File(dir, filename);
                     FileReader fr = new FileReader(f);
                     BufferedReader br = new BufferedReader(fr);
-                    Yaml yaml = new Yaml(this);
-                    yaml.read(br);
+                    yamlList = WallpaperML.read(br);
+                    yamlListPoss = 0;
                     br.close();
-                    if(yaml.group!=null) {
-                        TessRule tr1 = TessRule.getTessRuleByName(yaml.group);
-                        this.tickCheckbox(yaml.group);
-                        ((ZoomedDrawableRegion) dr).zoom(yaml.zNumer,yaml.zDenom);
-
-                        for(int i=0;i<3;++i)
-                            fd.setVertex(i, yaml.vertX[i],yaml.vertY[i]);
-
-                        this.curvertex = -1;
-                        //System.out.printf("fd %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
-
-                        this.controller.setTesselation(tr1);
-                        //System.out.printf("fd %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
-                        controller.applyTessellation();
-                        //System.out.printf("fd %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
-                        imageChanged();
-                    }
+                    nextYaml();
                 } catch (Exception e) {
                     ErrorDialog errorD = new ErrorDialog(mainFrame);
                     errorD.open("Error loading pattern",e.getMessage());
@@ -1069,6 +1113,105 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
         }
 
+		@Override
+		public void stopAll() {
+			super.stopAll();
+			if(timer2!=null)
+			timer2.stop();
+		}
+
+		
+		@Override
+		public void startAll() {
+			super.startAll();
+//			if(timer2!=null)
+//				timer2.start();
+		}
+
+		public void processYaml(WallpaperML yaml) {
+//			if(yaml.restart)	 {
+//				if(yamlList!=null) {
+//					yamlListPoss = 0;
+//					nextYaml();
+//				}
+//				return;
+//			}
+			if(yaml.group!=null) {
+			    TessRule tr1 = TessRule.getTessRuleByName(yaml.group);
+			    this.tickCheckbox(yaml.group);
+			    ((ZoomedDrawableRegion) dr).zoom(yaml.zNumer,yaml.zDenom);
+
+			    for(int i=0;i<3;++i)
+			        fd.setVertex(i, yaml.vertX[i],yaml.vertY[i]);
+
+			    this.curvertex = -1;
+			    //System.out.printf("fd %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
+
+			    this.controller.setTesselation(tr1);
+			    //System.out.printf("fd %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
+			    controller.applyTessellation();
+			    //System.out.printf("fd %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
+			    imageChanged();
+			}
+			if(yaml.filename!=null) {
+                BufferedImage img;
+				try {
+					img = ImageIO.read(new File(yaml.filename));
+				} catch (IOException e) {
+					System.out.println("Error loading image "+yaml.filename+".");
+					return;
+				}
+
+//				var img = frameGetImage(yaml.filename);
+				if (img != null && dr.loadImage(img)) {
+					Rectangle bounds = mainFrame.getGraphicsConfiguration().getBounds();
+					System.out.println("Full-Screen"+bounds);
+					dr.resize(bounds.width, bounds.height, bounds.x, bounds.y);
+					imageChanged();
+					if(this.isFullScreen) {
+//					oldBounds = dr.baseRect.getBounds();
+					
+					}
+				}
+				else {
+					System.out.println("Error loading image "+yaml.filename+".");
+					return;
+				}
+			}
+			if(yaml.anim!=null) {
+				var path = AnimationPath.getPathByName(yaml.anim, yaml.animSpeed, dr.dispRect);
+				animController.setAnimationPath(path);
+				animController.startAnim();
+			}
+			if(yaml.repeat!=-1) {
+				setRepeat(yaml.repeat);
+			}
+		}
+
+		void nextYaml() {
+			if(yamlList==null) return;
+			if(yamlListPoss>=yamlList.size()) {
+				yamlListPoss = 0;
+			}
+			WallpaperML yaml = yamlList.get(yamlListPoss);
+			++yamlListPoss;
+			processYaml(yaml);
+		}
+		
+		public void setRepeat(int repeat) {
+			timer2 = new Timer(repeat*1000, (e) -> {
+				if (animRunning) {
+					animController.stopAnim();
+				}
+				else {
+					animController.stopStartAnim();
+				}
+				nextYaml();
+			});
+			timer2.setRepeats(false);
+			timer2.start();
+			
+		}
 
         /**
          * Gets an image in application/frame context 
@@ -1279,6 +1422,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		Rectangle oldBounds = null;
+		private List<WallpaperML> yamlList;
+		private Timer timer2;
 		
 		public void showFullScreen(JFrame frame) {
 			System.out.println("Entering Full-Screen");

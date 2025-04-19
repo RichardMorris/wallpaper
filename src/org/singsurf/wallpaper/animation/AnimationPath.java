@@ -9,6 +9,8 @@ import org.singsurf.wallpaper.FundamentalDomain;
 
 public abstract class AnimationPath {
 
+	private String label;
+
 	public void firstItteration(FundamentalDomain fd) { /* do nothing by default */ }
 
 	abstract public void nextItteration(FundamentalDomain fd);
@@ -49,6 +51,11 @@ public abstract class AnimationPath {
 		else if(label.equals("smooth")) {
 			path = new LissajousAnimation(rect,speed);
 		}
+		path.label = label;
 		return path;
+	}
+
+	public String getLabel() {
+		return label;
 	}
 }

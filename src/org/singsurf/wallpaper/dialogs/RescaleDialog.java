@@ -70,7 +70,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 		
 		gbc.gridwidth = 2;
 		gbc.gridx = 0; gbc.gridy++;
-		JCheckBox cb = new JCheckBox("Lock aspect ratio");
+		JCheckBox cb = new JCheckBox("Lock aspect ratio",true);
 		this.add(cb,gbc);
 		gbc.gridwidth = 1;
 	
