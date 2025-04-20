@@ -147,17 +147,13 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         controller.setFd(fd);
         myCanvas.setSize(dr.destRect.width,dr.destRect.height); 
         myCanvas.setPreferredSize(dr.destRect.getSize()); 
-        //myCanvas.set.setPreferedSize(dr.destRect.width,dr.destRect.height); 
-        dr.setViewport(dr.destRect);//new Rectangle(0,0,dr.destRect.width,dr.destRect.height));
-
+        dr.setViewport(dr.destRect);
         fd.resetDomain(dr.dispRect);
         controller.setTesselation(tesselationPanel.getCurrentTesselation());
         controller.calcGeom();
         controller.showOriginal();
 		animController = new AnimationController(this,controller);
-		path = animController.path;
         if(DEBUG) System.out.println("initialise done");
-        //this.validate();
     }
 
 	public void hideControls() {
@@ -535,7 +531,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     private GraphicalTesselationPanel tesselationPanel;
     JButton origTileButton;
 	/** Current path of animations */
-	AnimationPath path;
+//	AnimationPath path;
 	/** Button to stop animations */
 	public JButton stopBut;
 	boolean animRunning = false;
@@ -577,7 +573,8 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     protected JComboBox<String> buildAnimationChoice() {
 	    animateChoice = new JComboBox<String>();
-	    String animations[] = {"bounce","smooth","up","down","left","right","NE","NW","SE","SW", "rotate"};
+	    String animations[] = AnimationPath.getPathNames();	
+//	    	{"bounce","smooth","up","down","left","right","NE","NW","SE","SW", "rotate"};
 	    for(int i=0;i<animations.length;++i) {
 	        animateChoice.addItem(animations[i]);
 	    }
@@ -592,7 +589,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
 	protected void startAnim(String label) {
 		System.out.println("StartAnim: "+label);
-	    path = AnimationPath.getPathByName(label, 1,dr.srcRect);
+	    var path = AnimationPath.getPathByName(label, 1,dr.srcRect);
 	    animController.setAnimationPath(path);
 	    animController.startAnim();
 	}
@@ -600,7 +597,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
 	public void itemStateChanged(ItemEvent ev) {
 		
-	    path = AnimationPath.getPathByName((String) ev.getItem(), 1,dr.srcRect);
+	    var path = AnimationPath.getPathByName((String) ev.getItem(), 1,dr.srcRect);
 	    animController.setAnimationPath(path);
 	    animController.startAnim();
 	}

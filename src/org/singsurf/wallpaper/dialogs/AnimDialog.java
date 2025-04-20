@@ -55,7 +55,7 @@ public class AnimDialog extends JDialog implements ChangeListener {
 		gbc.gridx = 0; gbc.gridy++; 
 		this.add(new JLabel("Elapse Time"), gbc);
 		++gbc.gridx;
-                timeSS = new JSpinner(new SpinnerNumberModel(10, 0, null, 1));
+                timeSS = new JSpinner(new SpinnerNumberModel(30, 0, null, 1));
 		this.add(timeSS,gbc);
 		gbc.gridx++;
 

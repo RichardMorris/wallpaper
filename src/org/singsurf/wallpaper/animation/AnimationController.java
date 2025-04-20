@@ -17,31 +17,26 @@ public class AnimationController implements ActionListener {
 	Timer timer;
 	boolean animRunning = false;
 
-	public Thread animate = null;
+    public AnimationPath path = null;
+    long count=0;
+    long sum = 0;
 
 	
 	public AnimationController(Wallpaper w,Controller controller) {
 		this.controller = controller;
 		this.wall = w;
-		path = new BounceAnimation(wall.dr.dispRect,1);
+		path = AnimationPath.getDefaultPath(w);
 		timer = new Timer(50, this);
 	}
 	
-    public AnimationPath path = null;
-    boolean first = true;
-    boolean stop = false;
-//	private Timer timer = new Timer();
     
 	public void setAnimationPath(AnimationPath path) {
 			this.path = path;
-			first = true;
 	}
-    long count=0;
-    long sum = 0;
 	
 
 	public void startAnim() {
-	    //if(DEBUG) 
+	    if(DEBUG) 
 	    	System.out.println("Start anim");
 	    
 	    path.firstItteration(controller.getFD());
@@ -71,7 +66,7 @@ public class AnimationController implements ActionListener {
 	}
 
 	public void stopStartAnim() {
-		System.out.println("startStopAnim");
+		if(DEBUG) System.out.println("startStopAnim");
 	    if(animRunning)
 	    	stopAnim();
 	    else 

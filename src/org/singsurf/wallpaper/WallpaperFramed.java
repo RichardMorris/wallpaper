@@ -223,7 +223,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                 //File f = new File(dir, filename);
                 FileWriter fw = new FileWriter(f,true);
                 PrintWriter pw = new PrintWriter(fw);
-                WallpaperML yaml = new WallpaperML(this,path.getLabel(),esd.time);
+                WallpaperML yaml = new WallpaperML(this,animController.path.getLabel(),esd.time);
 				yaml.write(pw);
                 pw.close();
             } catch (Exception e) {
@@ -742,7 +742,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
     	    stopBut.setEnabled(true);
     	
     	    JMenu animateMenu = new JMenu("Animation");
-    	    String animations[] = {"up","down","left","right","NE","NW","SE","SW","rotate","bounce","smooth"};
+//    	    String animations[] = {"up","down","left","right","NE","NW","SE","SW","rotate","bounce","smooth"};
+    	    String animations[] = AnimationPath.getPathNames();	
     	    for(int i=0;i<animations.length;++i) {
     	        JMenuItem mi = new JMenuItem(animations[i]);
     	        mi.setActionCommand("anim/"+animations[i]);
@@ -1132,7 +1133,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 //			}
 			if(yaml.group!=null) {
 			    TessRule tr1 = TessRule.getTessRuleByName(yaml.group);
-			    this.tickCheckbox(yaml.group);
+			    tickCheckbox(yaml.group);
 			    ((ZoomedDrawableRegion) dr).zoom(yaml.zNumer,yaml.zDenom);
 
 			    for(int i=0;i<3;++i)

@@ -9,22 +9,21 @@ import org.singsurf.wallpaper.FundamentalDomain;
 
 public class BounceAnimation extends AnimationPath {
 
-	int dx,dy,speed;
+	int dx,dy;
 	private final Rectangle rect;
 
-	public BounceAnimation(Rectangle rect,int speed) {
+	public BounceAnimation(Rectangle rect,int dx, int dy) {
 		this.rect = rect;
-		this.dx = speed;
-		this.dy = speed;
-		this.speed = speed;
+		this.dx = dx;
+		this.dy = dy;
 	}
 
 	public void nextItteration(FundamentalDomain fd) {
 		Rectangle fdBB = fd.getFDBoundingBox();
-		if(fdBB.x<=rect.x) dx=speed;
-		if(fdBB.y<=rect.y) dy=speed;
-		if(fdBB.x+fdBB.width >= rect.x+rect.width-1) dx = -speed;
-		if(fdBB.y+fdBB.height >= rect.y+rect.height-1) dy = -speed;
+		if(fdBB.x<=rect.x) dx=-dx;
+		if(fdBB.y<=rect.y) dy=-dy;
+		if(fdBB.x+fdBB.width >= rect.x+rect.width-1) dx = -dx;
+		if(fdBB.y+fdBB.height >= rect.y+rect.height-1) dy = -dy;
 		for(int i=0;i<6;++i)
 		{
 			fd.cellVerts[i].x += dx;

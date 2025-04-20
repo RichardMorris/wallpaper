@@ -33,7 +33,11 @@ import org.singsurf.wallpaper.tessrules.TessRule;
 
 public class GraphicalTesselationPanel extends JPanel implements ItemListener {
 
-    final ButtonGroup cbg = new ButtonGroup();
+    private static final String FRIEZE_GROUPS = "Frieze groups";
+	private static final String CYCLIC_GROUPS = "Cyclic groups";
+	private static final String BASICS_TRANSFORMATIONS = "Basics transformations";
+	private static final String DIHEDRAL_GROUPS = "Dihedral groups";
+	final ButtonGroup cbg = new ButtonGroup();
     JComboBox<String> friezeChoice;
     JComboBox<String> cycleChoice;
     JComboBox<String> dyhChoice;
@@ -114,10 +118,10 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         ++gbc.gridx; 					p1.add(P6Mcb,gbc);
 
         friezeChoice = new JComboBox<String>();
-        String descript[] = {"Frieze groups"," - pppp"," - pbpb"," - cccc"," - pqpq"," - pdpd"," - pdbq"," - xxxx"};
-        friezeChoice.addItem(descript[0]);
+        String descript[] = {" - pppp"," - pbpb"," - cccc"," - pqpq"," - pdpd"," - pdbq"," - xxxx"};
+        friezeChoice.addItem(FRIEZE_GROUPS);
         for(int i=1;i<=7;++i) {
-            friezeChoice.addItem("F"+i+descript[i]);
+            friezeChoice.addItem("F"+i+descript[i-1]);
         }
         friezeChoice.addItemListener(this);
 
@@ -127,7 +131,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         p1.add(friezeChoice,gbc);
 
         cycleChoice = new JComboBox<String>();
-        cycleChoice.addItem("Cyclic groups");
+        cycleChoice.addItem(CYCLIC_GROUPS);
         for(int i=2;i<11;++i) {
             String label = "C" + i;
             cycleChoice.addItem(label);
@@ -138,7 +142,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         p1.add(cycleChoice,gbc);
 
         dyhChoice = new JComboBox<String>();
-        dyhChoice.addItem("Dihedral groups");
+        dyhChoice.addItem(DIHEDRAL_GROUPS);
         for(int i=1;i<11;++i) {
             String label = "D" + i;
             if(i==1) label = label + "- a reflection";
@@ -150,7 +154,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         p1.add(dyhChoice,gbc);
 
         basicChoice = new JComboBox<String>();
-        basicChoice.addItem("Basics transformations");
+        basicChoice.addItem(BASICS_TRANSFORMATIONS);
         for(int i=0;i<TessRule.basicNames.length;++i) {
             basicChoice.addItem(TessRule.basicNames[i]);
         }
@@ -233,6 +237,9 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         ItemSelectable sel = e.getItemSelectable();
         String label;
             label = (String) ((JComboBox<?>) sel).getSelectedItem();
+        if( label == FRIEZE_GROUPS || label == CYCLIC_GROUPS || label == DIHEDRAL_GROUPS || label == BASICS_TRANSFORMATIONS) {
+			return;
+		}
         currentTr = null;
         if(Character.isDigit(label.charAt(1)))
         {
@@ -302,7 +309,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         for(int i=0;i<allBoxes.size();++i) {
             GraphicalTesselationBox tb = allBoxes.elementAt(i);
             if(name.equals(tb.getTessName())) {
-                //TODO cbg.setSelectedCheckbox(tb);
+            	tb.setSelected(true);
                 currentTr = tb.tr;
                 friezeChoice.setSelectedIndex(0);
                 cycleChoice.setSelectedIndex(0);
