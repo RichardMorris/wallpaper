@@ -19,8 +19,8 @@ public class WallpaperML {
 	public String group;
 	public int vertX[]=new int[3],vertY[] = new int[3];
 
-	public int zNumer=1;
-	public int zDenom=1;
+	public int zNumer=-1;
+	public int zDenom=-1;
 
 	public String filename;
 
@@ -65,18 +65,14 @@ public class WallpaperML {
 		if(wallpaper.imageFilename!=null) {
 			Path cdw = Path.of(System.getProperty("user.dir"));
 			Path absPath = Path.of(wallpaper.imageFilename).toAbsolutePath();
-			Path relativePath;
-			if(absPath.startsWith(cdw)) {
-				relativePath = cdw.relativize(Path.of(wallpaper.imageFilename));
-			} else {
-				relativePath = absPath;
-			}
-			System.out.println("Relative path: " + relativePath);
-			System.out.println("Absolute path: " + absPath);
-			System.out.println("Current working directory: " + cdw);
+			Path relativePath =
+				absPath.startsWith(cdw) 
+				? cdw.relativize(Path.of(wallpaper.imageFilename))
+				: absPath;
+			
 			pr.println("filename: "+relativePath);
+			pr.println("zoom: ["+((ZoomedDrawableRegion) wallpaper.dr).zoomNumer + "," +((ZoomedDrawableRegion) wallpaper.dr).zoomDenom+"]");
 		}
-		pr.println("zoom: ["+((ZoomedDrawableRegion) wallpaper.dr).zoomNumer + "," +((ZoomedDrawableRegion) wallpaper.dr).zoomDenom+"]");
 		if(anim!= null) {
 			pr.println("anim: "+anim);
 			pr.println("repeat: "+repeat);

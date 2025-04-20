@@ -18,34 +18,32 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.singsurf.wallpaper.Wallpaper;
 
-public class AnimDialog extends JDialog implements ChangeListener {
+public class AnimDialog extends JDialog  {
 	private static final long serialVersionUID = 1L;
 
 	public int time;
 
 
 	public boolean ok=false;
-	JLabel heading = new JLabel();
+	JLabel heading = new JLabel("Time animation runs for");
 	JSpinner timeSS;
 //	JCheckBox repeatCB;
 	Wallpaper wall;
 
 	public AnimDialog(JFrame frame,Wallpaper wall) {
-		super(frame,"Animation Length",true);
-		this.setPreferredSize(new Dimension(300,200));
+		super(frame,"Animation time",true);
+		this.setPreferredSize(new Dimension(300,120));
 		this.wall = wall;
 		GridBagLayout gbl = new GridBagLayout();
 		this.setLayout(gbl);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = 4;
-	        gbc.weightx=1;
-	        gbc.insets=new Insets(2,2,2,2);
-	        gbc.fill = GridBagConstraints.HORIZONTAL;
+	    gbc.weightx=1;
+	    gbc.insets=new Insets(2,2,2,2);
+	    gbc.fill = GridBagConstraints.HORIZONTAL;
 	        
 		gbc.gridx = 0; gbc.gridy = 0; 
 		gbc.gridwidth = 2;
@@ -53,7 +51,7 @@ public class AnimDialog extends JDialog implements ChangeListener {
 		gbc.gridwidth = 1;
 
 		gbc.gridx = 0; gbc.gridy++; 
-		this.add(new JLabel("Elapse Time"), gbc);
+		this.add(new JLabel("Elapse Time (s)"), gbc);
 		++gbc.gridx;
                 timeSS = new JSpinner(new SpinnerNumberModel(30, 0, null, 1));
 		this.add(timeSS,gbc);
@@ -116,12 +114,6 @@ public class AnimDialog extends JDialog implements ChangeListener {
         return ok;
     }
 
-	public void stateChanged(ChangeEvent ce) {
-
-		if(ce.getSource() == timeSS) {
-//			timeSS.setValue(((Integer)rSS.getValue())-((Integer)xoffSS.getValue()));
-		}
-	}
 
 
 }

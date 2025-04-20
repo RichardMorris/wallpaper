@@ -27,27 +27,15 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 //import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -57,13 +45,10 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileFilter;
 
 import org.singsurf.wallpaper.animation.AnimationPath;
-import org.singsurf.wallpaper.dialogs.AnimDialog;
 import org.singsurf.wallpaper.dialogs.ErrorDialog;
 import org.singsurf.wallpaper.dialogs.ExpandDialog;
-import org.singsurf.wallpaper.dialogs.ExpandedSizeDialog;
 import org.singsurf.wallpaper.dialogs.JColourPicker;
 import org.singsurf.wallpaper.dialogs.RescaleDialog;
 import org.singsurf.wallpaper.dialogs.ResizeDialog;
@@ -72,10 +57,20 @@ import org.singsurf.wallpaper.tessrules.TessRule;
 
 public class WallpaperFramed extends Wallpaper implements ActionListener, ComponentListener, AdjustmentListener {
 
+	FileController fileController;
+	private static final boolean DEBUG = false;
+
+	public static final String programName = "Wallpaper";
+	public static final String programVersion = "1.7";
+	public static final String programInfo = programName + " version " + programVersion;
+
+	/** The main frame */
+	JFrame mainFrame;
+
 	public WallpaperFramed(String imgfilename, int w, int h) {
 		super(frameGetImage(imgfilename), w, h);
-		//myCanvas.requestFocus();
-//		this.addKeyListener(this);
+		fileController = new FileController(this);
+
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -108,24 +103,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
     public void actionPerformed(ActionEvent e) {
         String com = e.getActionCommand();
-        if(com.equals("load image"))
-            load();
-        else if(com.equals("save image"))
-            save();
-        else if(com.equals("save tile"))
-            saveTile();
-        else if(com.equals("load pattern"))
-            loadPat();
-        else if(com.equals("save pattern"))
-            savePat();
-        else if(com.equals("append animation"))
-            appendAnim();
-        else if(com.equals("print"))
-            printImage();
-        else if(com.equals("exit"))
+        if(com.equals("exit"))
             System.exit(0);
-        else if(com.equals("save big"))
-            saveBig();
         else if(com.equals("crop")) {
             final ResizeDialog rd = new ResizeDialog(mainFrame,this);
 
@@ -200,42 +179,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
     }
 
 
-	private void appendAnim() {
-		final AnimDialog esd = new AnimDialog(mainFrame, this);
-
-		esd.open();
-		if (!esd.isOk())
-			return;
-
-        fc.setFileFilter(patFF);
-        int res = fc.showSaveDialog(mainFrame);
-        if(res != JFileChooser.APPROVE_OPTION) return;
-        File f = fc.getSelectedFile();
-
-//        JFileChooser fid = new JFileChooser(mainFrame, "Save pattern",
-//                JFileChooser.SAVE);
-//        fid.setVisible(true);
-//        String dir = fid.getDirectory();
-//        String filename = fid.getFile();
-//        fid.dispose();
-        if (f != null) {
-            try {
-                //File f = new File(dir, filename);
-                FileWriter fw = new FileWriter(f,true);
-                PrintWriter pw = new PrintWriter(fw);
-                WallpaperML yaml = new WallpaperML(this,animController.path.getLabel(),esd.time);
-				yaml.write(pw);
-                pw.close();
-            } catch (Exception e) {
-                ErrorDialog errorD = new ErrorDialog(mainFrame);
-                errorD.open("Error loading pattern",e.getMessage());
-                errorD.dispose();
-                System.out.println(e.getMessage());
-            }
-        }
-		
-	}
-
 	Printable printable = new Printable() {
 
     	public int print(Graphics g, PageFormat pageFormat, int pageIndex)
@@ -254,20 +197,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
     		}
   	}};
 
-    private void printImage() {
-    	PrinterJob printJob = PrinterJob.getPrinterJob();
-        printJob.setPrintable(printable);
-        if (printJob.printDialog())
-          try { 
-            printJob.print();
-          } catch(PrinterException pe) {
-            System.out.println("Error printing: " + pe);
-          }
-	}
-
-
-
-	@Override
+    @Override
 	public void hideControls() {
 		super.hideControls();
 		viewMenu.setVisible(false);
@@ -283,83 +213,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 		jsp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 	}	
 	
-	protected FileFilter saveFF = new FileFilter() {
-        public boolean accept(File dir, String name) {
-            String lcname = name.toLowerCase();
-            if (lcname.endsWith(".jpg"))
-                return true;
-            if (lcname.endsWith(".png"))
-                return true;
-            if (lcname.endsWith(".bmp"))
-                return true;
-            if (lcname.endsWith(".jpeg"))
-                return true;
-            if (lcname.endsWith(".tga"))
-                return true;
-            if (lcname.endsWith(".psd"))
-                return true;
-
-            return false;
-        }
-
-        @Override
-        public boolean accept(File file) {
-            if(file.isDirectory()) return true;
-            return(accept(file.getParentFile(),file.getName()));
-        }
-
-        @Override
-        public String getDescription() {
-            return "jpg, png, bmp, tga, psd images";
-        }
-    };
-
-    protected FileFilter ppmFF = new FileFilter() {
-        public boolean accept(File dir, String name) {
-            String lcname = name.toLowerCase();
-            if (lcname.endsWith(".ppm") || lcname.endsWith(".bmp"))
-                return true;
-            return false;
-        }
-        @Override
-        public boolean accept(File file) {
-            if(file.isDirectory()) return true;
-            return(accept(file.getParentFile(),file.getName()));
-        }
-        @Override
-        public String getDescription() {
-            return "ppm or bmp images";
-        }
-
-    };
-
-    protected FileFilter patFF = new FileFilter() {
-        @Override
-        public boolean accept(File file) {
-            if(file.isDirectory()) return true;
-            return(file.getName().toLowerCase().endsWith(".pat"));
-        }
-        @Override
-        public String getDescription() {
-            return "Wallpaper patter files .pat";
-        }
-
-    };
-
-    protected FileFilter loadFF = new FileFilter() {
-        @Override
-        public boolean accept(File file) {
-            if(file.isDirectory()) return true;
-            return(saveFF.accept(file));
-        }
-        @Override
-        public String getDescription() {
-            return "gif, " +saveFF.getDescription();
-        }
-
-    };
-
-    protected ItemListener zoomItemListener = new ItemListener(){
+	protected ItemListener zoomItemListener = new ItemListener(){
         public void itemStateChanged(ItemEvent arg0) {
             int oldZoomD = ((ZoomedDrawableRegion) dr).zoomDenom;
             int oldZoomN = ((ZoomedDrawableRegion) dr).zoomNumer;
@@ -666,59 +520,81 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
             JMenuItem loadMI = new JMenuItem("Load");
             loadMI.setMnemonic(KeyEvent.VK_L);
-            loadMI.addActionListener(this);
+            loadMI.addActionListener((e) -> {
+            	fileController.load();
+            });
             loadMI.setActionCommand("load image");
+            fileMenu.add(loadMI);
 
             JMenuItem loadGMI = new JMenuItem("Load pattern");
             loadGMI.setMnemonic(KeyEvent.VK_P);
-            loadGMI.addActionListener(this);
+            loadGMI.addActionListener((e) -> {
+				fileController.loadPat();
+			});
             loadGMI.setActionCommand("load pattern");
-
+            fileMenu.add(loadGMI);
+            
+            JMenuItem loadSeqMI = new JMenuItem("Load sequence");
+            //loadSeqMI.setMnemonic(KeyEvent.VK_P);
+            loadSeqMI.addActionListener((e) -> {
+            	fileController.loadAnimSequence();
+            });
+            loadSeqMI.setActionCommand("load sequence");
+            fileMenu.add(loadSeqMI);
+            
             JMenuItem saveMI = new JMenuItem("Save");
             saveMI.setMnemonic(KeyEvent.VK_S);
-            saveMI.addActionListener(this);
+            saveMI.addActionListener((e) -> {
+				fileController.save();
+			});
             saveMI.setActionCommand("save image");
-
+            fileMenu.add(saveMI);
+            
             JMenuItem savetileMI = new JMenuItem("Save Tile");
             savetileMI.setMnemonic(KeyEvent.VK_T);
-            savetileMI.addActionListener(this);
+            savetileMI.addActionListener((e) -> {	
+            	fileController.saveTile();
+            });
             savetileMI.setActionCommand("save tile");
-
+            fileMenu.add(savetileMI);
+            
             JMenuItem saveBigMI = new JMenuItem("Save Expanded");
             saveBigMI.setMnemonic(KeyEvent.VK_E);
-            saveBigMI.addActionListener(this);
+            saveBigMI.addActionListener((e) -> {
+				fileController.saveBig();	
+			});
             saveBigMI.setActionCommand("save big");
-
+            fileMenu.add(saveBigMI);
+            
             JMenuItem saveGMI = new JMenuItem("Save Pattern");
             saveGMI.setMnemonic(KeyEvent.VK_L);
-            saveGMI.addActionListener(this);
+            saveGMI.addActionListener((e) -> {
+            	fileController.savePat();	
+            });	
             saveGMI.setActionCommand("save pattern");
-
-            JMenuItem appendGMI = new JMenuItem("Append animation");
+            fileMenu.add(saveGMI);
+            
+            JMenuItem appendGMI = new JMenuItem("Append anim-sequence");
 //            appendGMI.setMnemonic(KeyEvent.VK_L);
-            appendGMI.addActionListener(this);
-            appendGMI.setActionCommand("append animation");
-
+            appendGMI.addActionListener((e) -> {
+				fileController.appendAnim(this);
+			});
+            fileMenu.add(appendGMI);
+            
             JMenuItem printMI = new JMenuItem("Print ...");
             printMI.setMnemonic(KeyEvent.VK_P);
-            printMI.addActionListener(this);
+            printMI.addActionListener((e) -> {
+				fileController.printImage();
+			});
             printMI.setActionCommand("print");
-
+            fileMenu.add(printMI);
+            
+            fileMenu.addSeparator();
+            
             JMenuItem exitMI = new JMenuItem("Exit");
             exitMI.setMnemonic(KeyEvent.VK_X);
             exitMI.addActionListener(this);
             exitMI.setActionCommand("exit");
-
-            fileMenu.add(loadMI);
-            fileMenu.add(loadGMI);
-            fileMenu.add(saveMI);
-            fileMenu.add(savetileMI);
-            fileMenu.add(saveBigMI);
-            fileMenu.add(saveGMI);
-            fileMenu.add(appendGMI);
-            fileMenu.add(printMI);
-            //fileMenu.add(webMI);
-            fileMenu.addSeparator();
             fileMenu.add(exitMI);
             return fileMenu;
         }
@@ -764,350 +640,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             return frameGetImage(loc);
         }
 
-        private void load() {
-            System.out.println("load ...");
-            fc.setFileFilter(loadFF);
-            int res = fc.showOpenDialog(mainFrame);
-            if(res != JFileChooser.APPROVE_OPTION) return;
-            File f = fc.getSelectedFile();
-            
-            if (f != null) {
-                imageFilename = f.getPath();
-                System.out.println("name "+f.getName());
-                System.out.println("path "+f.getPath());
-                System.out.println("absolute "+f.getAbsoluteFile());
-                //WallpaperFramed.this.imageURL = null;
-                Image img;
-                try {
-                	System.out.println("canocal "+f.getCanonicalFile());
-                    img = ImageIO.read(f);
-                } catch (IOException e) {
-                    ErrorDialog errorD = new ErrorDialog(mainFrame);
-                    errorD.open("Error loading image "+imageFilename+".","");
-                    errorD.dispose();
-                    return;
-                }
-                if (img != null && dr.loadImage(img)) {
-                    imageChanged();
-                }
-                else {
-                    ErrorDialog errorD = new ErrorDialog(mainFrame);
-                    errorD.open("Error loading image "+imageFilename+".","");
-                    errorD.dispose();
-                    return;
-                }
-                setTitle(f.getName());
-                System.out.println("load done");
-            }
-
-        }
-
-        private String getType(String name) {
-            String lcname = name.toLowerCase();
-            if (lcname.endsWith(".jpg"))
-                return "jpg";
-            if (lcname.endsWith(".png"))
-                return "png";
-            if (lcname.endsWith(".bmp"))
-                return "bmp";
-            if (lcname.endsWith(".jpeg"))
-                return "jpg";
-            return null;
-        }
-        
-        JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
-		private int yamlListPoss;
-        {
-    	    //Add the preview pane.
-            fc.setAccessory(new ImagePreview(fc));
-
-        }
-        private void save() {
-            fc.setFileFilter(saveFF);
-            int res = fc.showSaveDialog(mainFrame);
-            if(res != JFileChooser.APPROVE_OPTION) return;
-            File f = fc.getSelectedFile();
-            if (f != null)
-                try {
-                    int denom = ((ZoomedDrawableRegion) dr).zoomDenom;
-					int numer = ((ZoomedDrawableRegion) dr).zoomNumer;
-					fd.zoom(((float) denom)/numer);
-		             ((ZoomedDrawableRegion) dr).zoom(1,1);	
-
-                     if(controller.showingOriginal) {
-                         controller.showOriginal();
-                     }
-                     else {
-                         controller.applyTessellation();
-                         controller.calcGeom();
-                         controller.applyFull(dr);
-                     }
-
-                    String type = getType(f.getName());
-                    try {
-                        Image img = dr.getActiveImage();
-                        BufferedImage bImg = new BufferedImage(
-                                img.getWidth(null),img.getHeight(null),
-                                BufferedImage.TYPE_INT_RGB);
-                        Graphics g = bImg.getGraphics();
-                        g.setClip(0, 0, img.getWidth(null),img.getHeight(null));
-                        paintCanvas(g);
-                        ImageIO.write(bImg,type,f);
-
-                    } catch (IOException e) {
-                        ErrorDialog errorD = new ErrorDialog(mainFrame);
-                        errorD.open("Error loading image "+f.getAbsolutePath()+".","");
-                        errorD.dispose();
-                        return;
-                    }
-
-                    if (DEBUG)
-                        System.out.println("Save " + f.getAbsolutePath());
-
-                    fd.zoom(((float)numer)/denom);
-                    ((ZoomedDrawableRegion) dr).zoom(numer,denom);	
-                    controller.calcGeom();
-                    controller.redraw();
-                } catch (Exception e) {
-                    ErrorDialog errorD = new ErrorDialog(mainFrame);
-                    errorD.open("Error saving image",e.getMessage());
-                    errorD.dispose();
-                    System.out.println(e.getMessage());
-                }
-
-        }
-
-        private void saveTile() {
-            Rectangle rect = fd.tileableRegion(dr.dispRect); 
-            if(rect==null) {
-                ErrorDialog errorD = new ErrorDialog(mainFrame);
-                errorD.open("A rectangular tile cannot be created for this geometry.","Select options->show cordinates show when rectangular tiles can be created.");
-                errorD.dispose();
-                return;
-            }
-            fc.setFileFilter(saveFF);
-            int res = fc.showSaveDialog(mainFrame);
-            if(res != JFileChooser.APPROVE_OPTION) return;
-            File f = fc.getSelectedFile();
-
-//            JFileChooser fid = new JFileChooser(mainFrame, "Save image",
-//                    JFileChooser.SAVE);
-//            fid.setFilenameFilter(saveFF);
-//            fid.setVisible(true);
-//            String dir = fid.getDirectory();
-//            String filename = fid.getFile();
-//            fid.dispose();
-            if (f != null)
-                try {
-//                    if(!saveFF.accept(null, filename)) {
-//                        ErrorDialog errorD = new ErrorDialog(mainFrame);
-//                        errorD.open("File type not supported "+filename+".","Only bmp, jpg, png psd tga formats supported.");
-//                        errorD.dispose();
-//                        return;
-//                    }
-
-                    fd.zoom(((ZoomedDrawableRegion) dr).zoomDenom);
-                    controller.calcGeom();
-                    controller.applyFull(dr);
-                    //				Jimi.putImage(dr.getActiveImage(), dir + filename);
-                    String type = getType(f.getName());
-//                    File f = new File(dir,filename);
-                    try {
-                        Image img = dr.getActiveImage();
-                        BufferedImage bImg = new BufferedImage(
-                                rect.width,rect.height,
-                                BufferedImage.TYPE_INT_RGB);
-                        Graphics g = bImg.getGraphics();
-                        g.drawImage(img, 0, 0, null);
-                        ImageIO.write(bImg,type,f);
-
-                    } catch (IOException e) {
-                        ErrorDialog errorD = new ErrorDialog(mainFrame);
-                        errorD.open("Error loading image "+f.getAbsolutePath()+".","");
-                        errorD.dispose();
-                        return;
-                    }
-
-                    if (DEBUG)
-                        System.out.println("Save " + f.getAbsolutePath());
-                    fd.zoom(1/((float) ((ZoomedDrawableRegion) dr).zoomDenom));
-                    controller.calcGeom();
-                } catch (Exception e) {
-                    ErrorDialog errorD = new ErrorDialog(mainFrame);
-                    errorD.open("Error saving image",e.getMessage());
-                    errorD.dispose();
-                    System.out.println(e.getMessage());
-                }
-
-        }
-
-		/**
-		 * Save an expanded version of the image.
-		 *
-		 */
-		private void saveBig() {
-			final ExpandedSizeDialog esd = new ExpandedSizeDialog(mainFrame);
-
-			esd.open(dr.baseRect.width, dr.baseRect.height);
-			if (!esd.isOk())
-				return;
-
-			fc.setFileFilter(ppmFF);
-			int res = fc.showSaveDialog(mainFrame);
-			if (res != JFileChooser.APPROVE_OPTION)
-				return;
-			File f = fc.getSelectedFile();
-
-			if (f == null)
-				return;
-			FileOutputStream fos;
-			try {
-				fos = new FileOutputStream(f);
-			} catch (FileNotFoundException e) {
-				return;
-			}
-			String filename = f.getName();
-			BufferedOutputStream bos = new BufferedOutputStream(fos);
-
-			int denom = ((ZoomedDrawableRegion) dr).zoomDenom;
-			int numer = ((ZoomedDrawableRegion) dr).zoomNumer;
-			fd.zoom(((float) denom) / numer);
-			((ZoomedDrawableRegion) dr).zoom(1, 1);
-			controller.calcGeom();
-
-			int w = esd.getImgWidth();
-			int h = esd.getImgHeight();
-			try {
-				boolean isPPM = filename.toLowerCase().endsWith(".ppm");
-				boolean isBMP = filename.toLowerCase().endsWith(".bmp");
-				if (isPPM) {
-					// File f = new File(dir, filename);
-					String header = "P6\n#Created by org.singsurf.wallpaper\n" + w + " " + h + "\n255\n";
-					bos.write(header.getBytes());
-				} else if (isBMP) {
-					// File f = new File(dir, filename);
-					int rowsize = 4 * ((24 * w + 31) / 32);
-					int filesize = 54 + rowsize * h;
-					byte b1 = (byte) filesize;
-					byte b2 = (byte) (filesize >>> 8);
-					byte b3 = (byte) (filesize >>> 16);
-					byte b4 = (byte) (filesize >>> 24);
-					bos.write(new byte[] { 0x42, 0x4d, // header
-							b1, b2, b3, b4, // size of file
-							0, 0, 0, 0, // app id
-							54, 0, 0, 0, // offset of image data
-							40, 0, 0, 0, // remaining header size
-							(byte) w, (byte) (w >>> 8), (byte) (w >>> 16), (byte) (w >>> 24), // width
-							(byte) h, (byte) (h >>> 8), (byte) (h >>> 16), (byte) (h >>> 24), // height
-							1, 0, // Number of color planes being used.
-							24, 0, // The number of bits/pixel
-							0, 0, 0, 0, // BI_RGB, No compression used
-							16, 0, 0, 0, // The size of the raw BMP data (after this header)
-							0x13, 0x0B, 0, 0, // The horizontal resolution of the image
-							0x13, 0x0B, 0, 0, // The vertical resolution of the image
-							0, 0, 0, 0, // Number of colors in the palette
-							0, 0, 0, 0, // Means all colors are important
-
-					});
-				}
-				int fill = (4 - (3 * w) % 4) % 4;
-
-				DrawableRegion dr2 = new DrawableRegionTile(dr, w, 1);
-				for (int j = 0; j < h; ++j) {
-					controller.tr.replicate(dr2, fd);
-
-					for (int i = 0; i < dr2.destRect.width; ++i) {
-						Color c = new Color(dr2.pixels[i]);
-						if (isPPM) {
-							bos.write((byte) c.getRed());
-							bos.write((byte) c.getGreen());
-							bos.write((byte) c.getBlue());
-						} else if (isBMP) {
-							bos.write((byte) c.getBlue());
-							bos.write((byte) c.getGreen());
-							bos.write((byte) c.getRed());
-						}
-					}
-					dr2.offset.y++;
-					if (isBMP) {
-						for (int i = 0; i < fill; ++i)
-							bos.write(0);
-					}
-				}
-				bos.flush();
-				bos.close();
-
-			} catch (Exception e) {
-				ErrorDialog errorD = new ErrorDialog(mainFrame);
-				errorD.open("Error saving image", e.getMessage());
-				errorD.dispose();
-				System.out.println(e.getClass().getName() + ": " + e.getMessage());
-			}
-			fd.zoom(((float) numer) / denom);
-            controller.calcGeom();
-
-		}
-
-        private void savePat() {
-            fc.setFileFilter(patFF);
-            int res = fc.showSaveDialog(mainFrame);
-            if(res != JFileChooser.APPROVE_OPTION) return;
-            File f = fc.getSelectedFile();
-
-//            JFileChooser fid = new JFileChooser(mainFrame, "Save pattern",
-//                    JFileChooser.SAVE);
-//            fid.setVisible(true);
-//            String dir = fid.getDirectory();
-//            String filename = fid.getFile();
-//            fid.dispose();
-            if (f != null) {
-                try {
-                    //File f = new File(dir, filename);
-                    FileWriter fw = new FileWriter(f);
-                    PrintWriter pw = new PrintWriter(fw);
-                    WallpaperML yaml = new WallpaperML(this);
-                    yaml.write(pw);
-                    pw.close();
-                } catch (Exception e) {
-                    ErrorDialog errorD = new ErrorDialog(mainFrame);
-                    errorD.open("Error loading pattern",e.getMessage());
-                    errorD.dispose();
-                    System.out.println(e.getMessage());
-                }
-            }
-        }
-
-        
-        private void loadPat() {
-            fc.setFileFilter(patFF);
-            int res = fc.showOpenDialog(mainFrame);
-            if(res != JFileChooser.APPROVE_OPTION) return;
-            File f = fc.getSelectedFile();
-
-//            JFileChooser fid = new JFileChooser(mainFrame, "Load pattern",
-//                    JFileChooser.LOAD);
-//            fid.setVisible(true);
-//            String dir = fid.getDirectory();
-//            String filename = fid.getFile();
-//            fid.dispose();
-            if (f != null)
-                try {
-                    //File f = new File(dir, filename);
-                    FileReader fr = new FileReader(f);
-                    BufferedReader br = new BufferedReader(fr);
-                    yamlList = WallpaperML.read(br);
-                    yamlListPoss = 0;
-                    br.close();
-                    nextYaml();
-                } catch (Exception e) {
-                    ErrorDialog errorD = new ErrorDialog(mainFrame);
-                    errorD.open("Error loading pattern",e.getMessage());
-                    errorD.dispose();
-                    System.out.println(e.getMessage());
-                }
-
-        }
-
+      
 		@Override
 		public void stopAll() {
 			super.stopAll();
@@ -1123,75 +656,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 //				timer2.start();
 		}
 
-		public void processYaml(WallpaperML yaml) {
-//			if(yaml.restart)	 {
-//				if(yamlList!=null) {
-//					yamlListPoss = 0;
-//					nextYaml();
-//				}
-//				return;
-//			}
-			if(yaml.group!=null) {
-			    TessRule tr1 = TessRule.getTessRuleByName(yaml.group);
-			    tickCheckbox(yaml.group);
-			    ((ZoomedDrawableRegion) dr).zoom(yaml.zNumer,yaml.zDenom);
-
-			    for(int i=0;i<3;++i)
-			        fd.setVertex(i, yaml.vertX[i],yaml.vertY[i]);
-
-			    this.curvertex = -1;
-			    //System.out.printf("fd %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
-
-			    this.controller.setTesselation(tr1);
-			    //System.out.printf("fd %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
-			    controller.applyTessellation();
-			    //System.out.printf("fd %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
-			    imageChanged();
-			}
-			if(yaml.filename!=null) {
-                BufferedImage img;
-				try {
-					img = ImageIO.read(new File(yaml.filename));
-				} catch (IOException e) {
-					System.out.println("Error loading image "+yaml.filename+".");
-					return;
-				}
-
-//				var img = frameGetImage(yaml.filename);
-				if (img != null && dr.loadImage(img)) {
-					Rectangle bounds = mainFrame.getGraphicsConfiguration().getBounds();
-					System.out.println("Full-Screen"+bounds);
-					dr.resize(bounds.width, bounds.height, bounds.x, bounds.y);
-					imageChanged();
-					if(this.isFullScreen) {
-//					oldBounds = dr.baseRect.getBounds();
-					
-					}
-				}
-				else {
-					System.out.println("Error loading image "+yaml.filename+".");
-					return;
-				}
-			}
-			if(yaml.anim!=null) {
-				var path = AnimationPath.getPathByName(yaml.anim, yaml.animSpeed, dr.dispRect);
-				animController.setAnimationPath(path);
-				animController.startAnim();
-			}
-			if(yaml.repeat!=-1) {
-				setRepeat(yaml.repeat);
-			}
-		}
-
-		void nextYaml() {
-			if(yamlList==null) return;
-			if(yamlListPoss>=yamlList.size()) {
-				yamlListPoss = 0;
-			}
-			WallpaperML yaml = yamlList.get(yamlListPoss);
-			++yamlListPoss;
-			processYaml(yaml);
-		}
 		
 		public void setRepeat(int repeat) {
 			timer2 = new Timer(repeat*1000, (e) -> {
@@ -1201,7 +665,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 				else {
 					animController.stopStartAnim();
 				}
-				nextYaml();
+				fileController.nextYaml(this);
 			});
 			timer2.setRepeats(false);
 			timer2.start();
@@ -1385,7 +849,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         }
 
         public String titleFilename="";
-		private boolean isFullScreen;
+		boolean isFullScreen;
         public void imageChanged() {
             //		imgout = dr.getActiveImage();
             myCanvas.setSize(dr.destRect.width, dr.destRect.height);
@@ -1417,7 +881,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		Rectangle oldBounds = null;
-		private List<WallpaperML> yamlList;
 		private Timer timer2;
 		
 		public void showFullScreen(JFrame frame) {
