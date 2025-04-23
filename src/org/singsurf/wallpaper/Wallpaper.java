@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -42,17 +43,17 @@ using a portion of an image.
 public class Wallpaper extends JPanel implements MouseListener, MouseMotionListener, KeyListener, ItemListener
 {
     private static final long serialVersionUID = 1L;
-    protected static final boolean DEBUG = false;
+    private static final boolean DEBUG = false;
 
     /** Labels and action commands for flip/rotate */
     public static final String FLIP_X = "Flip X";
     public static final String FLIP_Y = "Flip Y";
-    protected static final String FLIP_90 = "Rotate clockwise";
-    protected static final String FLIP_180 = "Rotate 180";
-    protected static final String FLIP_270 = "Rotate anti-clockwise";
+    public static final String FLIP_90 = "Rotate clockwise";
+    public static final String FLIP_180 = "Rotate 180";
+    public static final String FLIP_270 = "Rotate anti-clockwise";
 
     /** the current vertex for moving the triangle */
-    int curvertex=0;
+    public int curvertex=0;
 
     /** Whether we are in interactive mode */
     boolean interactiveMode = true;
@@ -68,12 +69,9 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     protected Color backgroundColour = Color.black;
 
-    protected Controller controller;
+    public Controller controller;
     public DrawableRegion dr;
-    protected FundamentalDomain fd;
-
-
-
+    public FundamentalDomain fd;
 
     JTextArea infoPanel;
     /** whether the paint method has been completed. */
@@ -92,6 +90,23 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     public int clickCount = 0;
 	public AnimationController animController;
+
+    private final String[][] info = { { "image", "URL", "URL for image" }, };
+    private GraphicalTesselationPanel tesselationPanel;
+    JButton origTileButton;
+	/** Current path of animations */
+//	AnimationPath path;
+	/** Button to stop animations */
+	public JButton stopBut;
+	protected JComboBox<String> animateChoice;
+	private JCheckBox symmetryCB;
+	private JPanel buttonBar;
+	
+    /** Mouse mode */
+    static final int MOUSE_NORMAL = 0;
+    protected static final int MOUSE_PIPET = 1;
+    protected int mouseMode = MOUSE_NORMAL;
+
 
     public Wallpaper(Image img,int w,int h) {
         if(DEBUG) System.out.println("img w "+w+" h "+h);
@@ -153,7 +168,14 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         controller.calcGeom();
         controller.showOriginal();
 		animController = new AnimationController(this,controller);
-        if(DEBUG) System.out.println("initialise done");
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();  
+        var size = toolkit.getBestCursorSize(32, 32);
+        Image img2 = toolkit.getImage(getClass().getResource("pipet.gif"));
+        var mul = size.width/32.0;
+        pipet = toolkit.createCustomCursor(img2, new Point((int) (6*mul),(int) (23*mul)), "Custom Cursor");  
+		
+		if(DEBUG) System.out.println("initialise done");
     }
 
 	public void hideControls() {
@@ -254,6 +276,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     //}
 
     private boolean mousePressed = false;
+	protected Cursor pipet;
 
     public void mouseEntered(MouseEvent e) {/*ignore*/}
     public void mouseExited(MouseEvent e) {/*ignore*/}
@@ -268,6 +291,21 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     public void mouseClicked(MouseEvent e) 
     {
         if(DEBUG) System.out.println("Mouse clicked");
+        
+        if(mouseMode==MOUSE_PIPET) {
+            int x = e.getX()-offset.x;
+            int y = e.getY()-offset.y;
+            if(x>=dr.destRect.width || y>=dr.destRect.height) {
+                myCanvas.setCursor(Cursor.getDefaultCursor());
+                return;
+            }
+            int outInd = x+y*dr.destRect.width;
+            Color col = new Color(dr.pixels[outInd]);
+            setBGColor(col);
+            mouseMode = MOUSE_NORMAL;
+            controller.redraw();
+        }
+
         myCanvas.requestFocus();
     }
 
@@ -275,6 +313,20 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     public void mouseMoved(MouseEvent e)
     {
         if(DEBUG) System.out.println("Mouse moved");
+
+        if(mouseMode==MOUSE_PIPET) {
+            int x = e.getX()-offset.x;
+            int y = e.getY()-offset.y;
+            if(x>=dr.destRect.width || y>=dr.destRect.height) {
+                myCanvas.setCursor(Cursor.getDefaultCursor());
+                return;
+            }
+            myCanvas.setCursor(pipet);
+            int outInd = x+y*dr.destRect.width;
+            Color col = new Color(dr.pixels[outInd]);
+            setText(col.toString());
+            return;
+        }
 
         int x = e.getX()-offset.x;
         int y = e.getY()-offset.y;
@@ -527,17 +579,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         return programInfo();
     }
 
-    private final String[][] info = { { "image", "URL", "URL for image" }, };
-    private GraphicalTesselationPanel tesselationPanel;
-    JButton origTileButton;
-	/** Current path of animations */
-//	AnimationPath path;
-	/** Button to stop animations */
-	public JButton stopBut;
-	boolean animRunning = false;
-	protected JComboBox<String> animateChoice;
-	private JCheckBox symmetryCB;
-	private JPanel buttonBar;
 
     //@Override
     public String[][] getParameterInfo() {
@@ -606,14 +647,29 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 		return c;
 	}
 
-	public void stopAll() {
+
+
+	public void nextFrame() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void startAll() {
-		// TODO Auto-generated method stub
+	public void imageChanged() {
+	    myCanvas.setSize(dr.destRect.width, dr.destRect.height);
+	    myCanvas.setPreferredSize(dr.destRect.getSize());
+	    AnimationPath path = AnimationPath.getPathByName(
+	    		animateChoice.getSelectedItem().toString() , 1,dr.destRect);
+	    animController.setAnimationPath(path);
+	    controller.redraw();
+	    setTitle();
+	}
+
+	void setTitle() {
 		
+	}
+
+	public boolean isFullScreen() {
+		return false;
 	}
 
 

@@ -3,8 +3,17 @@ Created 2 Apr 2007 - Richard Morris
  */
 package org.singsurf.wallpaper;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import org.singsurf.wallpaper.WallpaperFramed.ImageSelection;
 import org.singsurf.wallpaper.tessrules.TessRule;
 
 public class Controller {
@@ -136,5 +145,73 @@ public class Controller {
 
 	public FundamentalDomain getFD() {
 		return fd;
+	}
+
+	void flip(String com) {
+	    fd.flip(com,dr.destRect.width,dr.destRect.height,tr);
+	    dr.flip(com);
+	    wallpaper.imageChanged();
+	}
+
+	protected void copy() {
+		if(!showingOriginal) {
+			applyFull(dr);
+		}
+	    copyImageToClipboard(dr.getActiveImage());
+	}
+
+    protected void paste() {
+        Image img = getClipboardImage();
+        if (img != null && dr.loadImage(img)) {
+            wallpaper.imageChanged();
+        }
+    }
+
+	protected void copyFull() {
+	    copyFullImageToClipboard(dr.getActiveImage());
+	}
+
+	private void copyFullImageToClipboard(Image image) {
+	    // Work around a Sun bug that causes a hang in "sun.awt.image.ImageRepresentation.reconstruct".
+	    new javax.swing.ImageIcon(image); // Force load.
+	    BufferedImage newImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+	
+	    Graphics2D g = newImage.createGraphics();
+	    g.setClip(0, 0, image.getWidth(null), image.getHeight(null));
+	    wallpaper.paintCanvas(g);
+	    //	          g.drawImage(image, 0, 0, null);
+	    //	          fd.paintSymetries(g, this.controller.tr);
+	
+	    ImageSelection imageSelection = new ImageSelection(newImage);
+	    Toolkit toolkit = Toolkit.getDefaultToolkit();
+	    toolkit.getSystemClipboard().setContents(imageSelection, null);
+	}
+
+	private void copyImageToClipboard(Image image) {
+	    // Work around a Sun bug that causes a hang in "sun.awt.image.ImageRepresentation.reconstruct".
+	    new javax.swing.ImageIcon(image); // Force load.
+	    BufferedImage newImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+	
+	    Graphics2D g = newImage.createGraphics();
+	    g.setClip(0, 0, image.getWidth(null), image.getHeight(null));
+	    g.drawImage(image, 0, 0, null);
+	
+	    ImageSelection imageSelection = new ImageSelection(newImage);
+	    Toolkit toolkit = Toolkit.getDefaultToolkit();
+	    toolkit.getSystemClipboard().setContents(imageSelection, null);
+	}
+
+	private Image getClipboardImage() {
+	    Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+	
+	    try {
+	        if (t != null && t.isDataFlavorSupported(DataFlavor.imageFlavor)) {
+	            Image text = (Image)t.getTransferData(DataFlavor.imageFlavor);
+	            return text;
+	        }
+	    } catch (UnsupportedFlavorException e) {/*ignore*/
+	    } catch (IOException e) {/*ignore*/
+	    }
+	    return null;
 	}
 }

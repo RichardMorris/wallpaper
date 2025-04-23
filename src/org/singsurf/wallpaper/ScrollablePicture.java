@@ -67,8 +67,6 @@ public class ScrollablePicture extends JPanel
     public int getScrollableUnitIncrement(Rectangle visibleRect,
                                           int orientation,
                                           int direction) {
-        if(Wallpaper.DEBUG) 
-            System.out.println("gsui");
         //Get the current position.
         int currentPosition = 0;
         if (orientation == SwingConstants.HORIZONTAL) {
@@ -94,7 +92,6 @@ public class ScrollablePicture extends JPanel
     public int getScrollableBlockIncrement(Rectangle visibleRect,
                                            int orientation,
                                            int direction) {
-        if(Wallpaper.DEBUG) System.out.println("gsbi");
         if (orientation == SwingConstants.HORIZONTAL) {
             return visibleRect.width - maxUnitIncrement;
         } else {
@@ -112,7 +109,6 @@ public class ScrollablePicture extends JPanel
     
   @Override
   protected void paintComponent(Graphics g) {
-      if(Wallpaper.DEBUG) System.out.println("paintComponent " + g.getClipBounds() + " "+ this.getSize());
       wall.paintCanvas(g);
   }
 

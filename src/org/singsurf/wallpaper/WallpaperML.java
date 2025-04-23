@@ -44,7 +44,7 @@ public class WallpaperML {
 		this.wallpaper = w;
 	}
 	
-	public WallpaperML(WallpaperFramed w, String path, int time) {
+	public WallpaperML(Wallpaper w, String path, int time) {
 		this.wallpaper = w;
 		this.anim = path;
 		this.repeat = time;
@@ -70,7 +70,10 @@ public class WallpaperML {
 				? cdw.relativize(Path.of(wallpaper.imageFilename))
 				: absPath;
 			
-			pr.println("filename: "+relativePath);
+			String str = relativePath.toString();
+			String converted = str.replaceAll("\\\\","/");
+			//System.out.println("filename: "+str + " converted "+converted);
+			pr.println("filename: "+converted);
 			pr.println("zoom: ["+((ZoomedDrawableRegion) wallpaper.dr).zoomNumer + "," +((ZoomedDrawableRegion) wallpaper.dr).zoomDenom+"]");
 		}
 		if(anim!= null) {

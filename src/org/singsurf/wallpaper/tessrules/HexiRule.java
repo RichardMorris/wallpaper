@@ -132,7 +132,7 @@ public abstract class HexiRule extends TessRule
     }
 
 
-    ////@Override
+    @Override
     public void fixFlip(String code, FundamentalDomain fd) {
         if((code == Wallpaper.FLIP_X || code == Wallpaper.FLIP_Y)) {
             this.calcFrame(fd,0, true);

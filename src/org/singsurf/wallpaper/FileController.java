@@ -22,11 +22,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import org.singsurf.wallpaper.animation.AnimationPath;
 import org.singsurf.wallpaper.dialogs.AnimDialog;
 import org.singsurf.wallpaper.dialogs.ErrorDialog;
 import org.singsurf.wallpaper.dialogs.ExpandedSizeDialog;
-import org.singsurf.wallpaper.tessrules.TessRule;
 
 public class FileController {
 
@@ -47,18 +45,6 @@ public class FileController {
 		this.wall = wall;
 	}
 
-	protected FileFilter loadFF = new FileFilter() {
-	    @Override
-	    public boolean accept(File file) {
-	        if(file.isDirectory()) return true;
-	        return(saveFF.accept(file));
-	    }
-	    @Override
-	    public String getDescription() {
-	        return "gif, " +saveFF.getDescription();
-	    }
-	
-	};
 	protected FileFilter patFF = new FileFilter() {
 	    @Override
 	    public boolean accept(File file) {
@@ -86,7 +72,7 @@ public class FileController {
 	};
 
 	protected FileFilter ppmFF = new FileFilter() {
-	    public boolean accept(File dir, String name) {
+	    public boolean accept(String name) {
 	        String lcname = name.toLowerCase();
 	        if (lcname.endsWith(".ppm") || lcname.endsWith(".bmp"))
 	            return true;
@@ -95,7 +81,7 @@ public class FileController {
 	    @Override
 	    public boolean accept(File file) {
 	        if(file.isDirectory()) return true;
-	        return(accept(file.getParentFile(),file.getName()));
+	        return(accept(file.getName()));
 	    }
 	    @Override
 	    public String getDescription() {
@@ -103,10 +89,12 @@ public class FileController {
 	    }
 	
 	};
-	protected FileFilter saveFF = new FileFilter() {
-	    public boolean accept(File dir, String name) {
+	protected FileFilter imageFF = new FileFilter() {
+	    public boolean accept(String name) {
 	        String lcname = name.toLowerCase();
 	        if (lcname.endsWith(".jpg"))
+	            return true;
+	        if (lcname.endsWith(".gif"))
 	            return true;
 	        if (lcname.endsWith(".png"))
 	            return true;
@@ -125,31 +113,26 @@ public class FileController {
 	    @Override
 	    public boolean accept(File file) {
 	        if(file.isDirectory()) return true;
-	        return(accept(file.getParentFile(),file.getName()));
+	        return(accept(file.getName()));
 	    }
 	
 	    @Override
 	    public String getDescription() {
-	        return "jpg, png, bmp, tga, psd images";
+	        return "gif, jpg, png, bmp, tga, psd images";
 	    }
 	};
 
 	void load() {
 	    System.out.println("load ...");
-	    fc.setFileFilter(loadFF);
+	    fc.setFileFilter(imageFF);
 	    int res = fc.showOpenDialog(wall.mainFrame);
 	    if(res != JFileChooser.APPROVE_OPTION) return;
 	    File f = fc.getSelectedFile();
 	    
 	    if (f != null) {
 	        wall.imageFilename = f.getPath();
-	        System.out.println("name "+f.getName());
-	        System.out.println("path "+f.getPath());
-	        System.out.println("absolute "+f.getAbsoluteFile());
-	        //WallpaperFramed.this.imageURL = null;
 	        Image img;
 	        try {
-	        	System.out.println("canocal "+f.getCanonicalFile());
 	            img = ImageIO.read(f);
 	        } catch (IOException e) {
 	            ErrorDialog errorD = new ErrorDialog(wall.mainFrame);
@@ -194,9 +177,8 @@ public class FileController {
 	                    FileReader fr = new FileReader(f);
 	                    BufferedReader br = new BufferedReader(fr);
 	                    yamlList = WallpaperML.read(br);
-	                    yamlListPoss = 0;
+	                    wall.animController.setYamlList(yamlList);
 	                    br.close();
-	                    nextYaml(wall);
 	                } catch (Exception e) {
 	                    ErrorDialog errorD = new ErrorDialog(wall.mainFrame);
 	                    errorD.open("Error loading pattern",e.getMessage());
@@ -215,11 +197,13 @@ public class FileController {
             return "bmp";
         if (lcname.endsWith(".jpeg"))
             return "jpg";
+        if (lcname.endsWith(".gif"))
+            return "gif";
         return null;
     }
 
 	void save() {
-	    fc.setFileFilter(saveFF);
+	    fc.setFileFilter(imageFF);
 	    int res = fc.showSaveDialog(wall.mainFrame);
 	    if(res != JFileChooser.APPROVE_OPTION) return;
 	    File f = fc.getSelectedFile();
@@ -414,7 +398,7 @@ public class FileController {
 	                errorD.dispose();
 	                return;
 	            }
-	            fc.setFileFilter(saveFF);
+	            fc.setFileFilter(imageFF);
 	            int res = fc.showSaveDialog(wall.mainFrame);
 	            if(res != JFileChooser.APPROVE_OPTION) return;
 	            File f = fc.getSelectedFile();
@@ -504,73 +488,7 @@ public class FileController {
 	    }
 		
 	}
-	void nextYaml(WallpaperFramed wallpaperFramed) {
-		if(yamlList==null) return;
-		if(yamlListPoss>=yamlList.size()) {
-			yamlListPoss = 0;
-		}
-		WallpaperML yaml = yamlList.get(yamlListPoss);
-		++yamlListPoss;
-		wallpaperFramed.fileController.processYaml(wallpaperFramed, yaml);
-	}
-	public void processYaml(WallpaperFramed wallpaperFramed, WallpaperML yaml) {
-	//			if(yaml.restart)	 {
-	//				if(yamlList!=null) {
-	//					yamlListPoss = 0;
-	//					nextYaml();
-	//				}
-	//				return;
-	//			}
-		if(yaml.group!=null) {
-		    TessRule tr1 = TessRule.getTessRuleByName(yaml.group);
-		    wallpaperFramed.tickCheckbox(yaml.group);
-		    if(yaml.zNumer != -1)
-		    {
-		    	((ZoomedDrawableRegion) wallpaperFramed.dr).zoom(yaml.zNumer,yaml.zDenom);
-		    }
-		    for(int i=0;i<3;++i)
-		        wallpaperFramed.fd.setVertex(i, yaml.vertX[i],yaml.vertY[i]);
-	
-		    wallpaperFramed.curvertex = -1;
-		    wallpaperFramed.controller.setTesselation(tr1);
-		    wallpaperFramed.controller.applyTessellation();
-		    wallpaperFramed.imageChanged();
-		}
-		if(yaml.filename!=null) {
-	        BufferedImage img;
-			try {
-				img = ImageIO.read(new File(yaml.filename));
-			} catch (IOException e) {
-				System.out.println("Error loading image "+yaml.filename+".");
-				return;
-			}
-	
-	//				var img = frameGetImage(yaml.filename);
-			if (img != null && wallpaperFramed.dr.loadImage(img)) {
-				Rectangle bounds = wallpaperFramed.mainFrame.getGraphicsConfiguration().getBounds();
-				System.out.println("Full-Screen"+bounds);
-				wallpaperFramed.dr.resize(bounds.width, bounds.height, bounds.x, bounds.y);
-				wallpaperFramed.imageChanged();
-				if(wallpaperFramed.isFullScreen) {
-	//					oldBounds = dr.baseRect.getBounds();
-				
-				}
-			}
-			else {
-				System.out.println("Error loading image "+yaml.filename+".");
-				return;
-			}
-		}
-		if(yaml.anim!=null) {
-			var path = AnimationPath.getPathByName(yaml.anim, yaml.animSpeed, wallpaperFramed.dr.dispRect);
-			wallpaperFramed.animController.setAnimationPath(path);
-			wallpaperFramed.animController.startAnim();
-		}
-		if(yaml.repeat!=-1) {
-			wallpaperFramed.setRepeat(yaml.repeat);
-		}
-	}
-	public void loadAnimSequence() {
+	void loadAnimSequence() {
         fc.setFileFilter(seqFF);
         loadPatSeq();
 	}

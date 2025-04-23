@@ -1,12 +1,19 @@
 package org.singsurf.wallpaper.animation;
 
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.Timer;
 
 import org.singsurf.wallpaper.Controller;
 import org.singsurf.wallpaper.Wallpaper;
+import org.singsurf.wallpaper.WallpaperML;
 import org.singsurf.wallpaper.tessrules.TessRule;
 
 
@@ -15,11 +22,15 @@ public class AnimationController implements ActionListener {
 	Controller controller;
 	Wallpaper wall;
 	Timer timer;
+	public Timer timer2;
+
 	boolean animRunning = false;
 
     public AnimationPath path = null;
     long count=0;
     long sum = 0;
+	private List<WallpaperML> yamlList;
+	private int yamlListPoss;
 
 	
 	public AnimationController(Wallpaper w,Controller controller) {
@@ -52,13 +63,13 @@ public class AnimationController implements ActionListener {
 	    wall.stopBut.setEnabled(true);
 	    wall.stopBut.setText("Stop");
 	    timer.start();
-	    wall.startAll();
 	}
 
 	public void stopAnim() {
 	    if(DEBUG) System.out.println("Stop anim");
 	    timer.stop();
-	    wall.stopAll();
+	    if(timer2 != null)
+	    	timer2.stop();
 	    animRunning = false;
 	    wall.myCanvas.requestFocus();
 
@@ -90,6 +101,100 @@ public class AnimationController implements ActionListener {
             sum=0;
         }
         ++count;
+	}
+
+
+	public void setRepeat(int repeat) {
+		if(timer2 != null) {
+			timer2.stop();
+		}
+		timer2 = new Timer(repeat*1000, (e) -> {
+			if (animRunning) {
+				stopAnim();
+			}
+			else {
+				startAnim();
+			}
+			wall.nextFrame();
+		});
+		timer2.setRepeats(false);
+		timer2.start();
+		
+	}
+
+
+	public void setYamlList(List<WallpaperML> yamlList) {
+		this.yamlList = yamlList;
+		this.yamlListPoss = 0;
+		nextYaml();
+	}
+
+
+	public void nextYaml() {
+		if(yamlList==null) return;
+		if(yamlListPoss>=yamlList.size()) {
+			yamlListPoss = 0;
+		}
+		WallpaperML yaml = yamlList.get(yamlListPoss);
+		++yamlListPoss;
+		processYaml(yaml);
+	}
+
+
+	void processYaml(WallpaperML yaml) {
+	//			if(yaml.restart)	 {
+	//				if(yamlList!=null) {
+	//					yamlListPoss = 0;
+	//					nextYaml();
+	//				}
+	//				return;
+	//			}
+		if(yaml.group!=null) {
+		    TessRule tr1 = TessRule.getTessRuleByName(yaml.group);
+		    wall.tickCheckbox(yaml.group);
+		    for(int i=0;i<3;++i)
+		        wall.fd.setVertex(i, yaml.vertX[i],yaml.vertY[i]);
+	
+		    wall.curvertex = -1;
+		    wall.controller.setTesselation(tr1);
+		    wall.controller.applyTessellation();
+		    wall.imageChanged();
+		}
+		if(yaml.filename!=null) {
+	        BufferedImage img;
+			try {
+				img = ImageIO.read(new File(yaml.filename));
+			} catch (IOException e) {
+				System.out.println("Error loading image "+yaml.filename+".");
+				return;
+			}
+	
+	//				var img = frameGetImage(yaml.filename);
+			if (img != null && wall.dr.loadImage(img)) {
+				Rectangle bounds = wall.mainFrame.getGraphicsConfiguration().getBounds();
+				System.out.println("Full-Screen"+bounds);
+				wall.dr.resize(bounds.width, bounds.height, bounds.x, bounds.y);
+				wall.imageChanged();
+				if(wall.isFullScreen()) {
+	//					oldBounds = dr.baseRect.getBounds();
+				
+				}
+			}
+			else {
+				System.out.println("Error loading image "+yaml.filename+".");
+				return;
+			}
+			
+
+		}
+		if(yaml.anim!=null) {
+			var path = AnimationPath.getPathByName(yaml.anim, yaml.animSpeed, wall.dr.dispRect);
+			setAnimationPath(path);
+			startAnim();
+		}
+		if(yaml.repeat!=-1) {
+			setRepeat(yaml.repeat);
+		}
 	}
 
 

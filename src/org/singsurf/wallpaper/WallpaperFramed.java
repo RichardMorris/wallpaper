@@ -23,7 +23,6 @@ import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -43,7 +42,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 import org.singsurf.wallpaper.animation.AnimationPath;
@@ -57,16 +55,15 @@ import org.singsurf.wallpaper.tessrules.TessRule;
 
 public class WallpaperFramed extends Wallpaper implements ActionListener, ComponentListener, AdjustmentListener {
 
-	FileController fileController;
+	public FileController fileController;
 	private static final boolean DEBUG = false;
 
 	public static final String programName = "Wallpaper";
 	public static final String programVersion = "1.7";
 	public static final String programInfo = programName + " version " + programVersion;
 
-	/** The main frame */
-	JFrame mainFrame;
 
+    
 	public WallpaperFramed(String imgfilename, int w, int h) {
 		super(frameGetImage(imgfilename), w, h);
 		fileController = new FileController(this);
@@ -132,15 +129,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             else
                 controller.redraw();
         }
-        else if(com.equals("copy")) {
-            copy();
-        }
-        else if(com.equals("copyfull")) {
-            copyFull();
-        }
-        else if(com.equals("paste")) {
-            paste();
-        }
         else if(com.startsWith("bg/")) {
             Color col=backgroundColour;
             String label = com.substring(3);
@@ -158,6 +146,10 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                 colD.open(backgroundColour);
                 if(colD.isOk())
                     col = colD.getCol();
+            }
+            else if(label.equals("pick")) {
+                mouseMode = MOUSE_PIPET;
+                myCanvas.setCursor(pipet);  
             }
             setBGColor(col);
             controller.redraw();
@@ -250,7 +242,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         protected ActionListener flipActionListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                flip(e.getActionCommand());
+                controller.flip(e.getActionCommand());
             }
         };
 
@@ -451,15 +443,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             rescaleMI.setActionCommand("resize");
             imageMenu.add(rescaleMI);
 
-            JCheckBoxMenuItem splitMI = new JCheckBoxMenuItem("Split");
-            splitMI.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
-					int state = e.getStateChange();
-					controller.split(state==ItemEvent.SELECTED);
-				}});
-            splitMI.addActionListener(this);
-            splitMI.setActionCommand("split");
-            imageMenu.add(splitMI);
 
             JMenu flipMI = new JMenu("Flip/Rotate");
             JMenuItem flipX = new JMenuItem(Wallpaper.FLIP_X);
@@ -488,8 +471,18 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             rot270.addActionListener(flipActionListener);
             rot270.setActionCommand(Wallpaper.FLIP_270);
             flipMI.add(rot270);
-
             imageMenu.add(flipMI);
+
+            JCheckBoxMenuItem splitMI = new JCheckBoxMenuItem("Split");
+            splitMI.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+					int state = e.getStateChange();
+					controller.split(state==ItemEvent.SELECTED);
+				}});
+            splitMI.addActionListener(this);
+            splitMI.setActionCommand("split");
+            imageMenu.add(splitMI);
+
             return imageMenu;
         }
 
@@ -497,28 +490,34 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             JMenu editMenu = new JMenu("Edit");
             JMenuItem copyMI = new JMenuItem("Copy");
             copyMI.setMnemonic(KeyEvent.VK_C);
-            copyMI.addActionListener(this);
+            copyMI.addActionListener((e) -> {
+				controller.copy();
+			});
             copyMI.setActionCommand("copy");
+            editMenu.add(copyMI);
 
-            JMenuItem copyFullMI = new JMenuItem("Copy visable");
-            copyFullMI.addActionListener(this);
+            JMenuItem copyFullMI = new JMenuItem("Copy full");
+            copyFullMI.addActionListener((e) -> {
+            	controller.copyFull();
+            });
             copyFullMI.setActionCommand("copyfull");
+            editMenu.add(copyFullMI);
 
             JMenuItem pasteMI = new JMenuItem("Paste");
             pasteMI.setMnemonic(KeyEvent.VK_V);
-            pasteMI.addActionListener(this);
+            pasteMI.addActionListener((e) -> {
+				controller.paste();
+			});
             pasteMI.setActionCommand("paste");
-
-            editMenu.add(copyMI);
-            editMenu.add(copyFullMI);
             editMenu.add(pasteMI);
+            
             return editMenu;
         }
 
         private JMenu buildFileMenu() {
             JMenu fileMenu = new JMenu("File");
 
-            JMenuItem loadMI = new JMenuItem("Load");
+            JMenuItem loadMI = new JMenuItem("Load Image");
             loadMI.setMnemonic(KeyEvent.VK_L);
             loadMI.addActionListener((e) -> {
             	fileController.load();
@@ -526,7 +525,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             loadMI.setActionCommand("load image");
             fileMenu.add(loadMI);
 
-            JMenuItem loadGMI = new JMenuItem("Load pattern");
+            JMenuItem loadGMI = new JMenuItem("Load Pattern");
             loadGMI.setMnemonic(KeyEvent.VK_P);
             loadGMI.addActionListener((e) -> {
 				fileController.loadPat();
@@ -534,7 +533,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             loadGMI.setActionCommand("load pattern");
             fileMenu.add(loadGMI);
             
-            JMenuItem loadSeqMI = new JMenuItem("Load sequence");
+            JMenuItem loadSeqMI = new JMenuItem("Load Sequence");
             //loadSeqMI.setMnemonic(KeyEvent.VK_P);
             loadSeqMI.addActionListener((e) -> {
             	fileController.loadAnimSequence();
@@ -542,7 +541,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             loadSeqMI.setActionCommand("load sequence");
             fileMenu.add(loadSeqMI);
             
-            JMenuItem saveMI = new JMenuItem("Save");
+            JMenuItem saveMI = new JMenuItem("Save Image");
             saveMI.setMnemonic(KeyEvent.VK_S);
             saveMI.addActionListener((e) -> {
 				fileController.save();
@@ -574,7 +573,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             saveGMI.setActionCommand("save pattern");
             fileMenu.add(saveGMI);
             
-            JMenuItem appendGMI = new JMenuItem("Append anim-sequence");
+            JMenuItem appendGMI = new JMenuItem("Append Sequence");
 //            appendGMI.setMnemonic(KeyEvent.VK_L);
             appendGMI.addActionListener((e) -> {
 				fileController.appendAnim(this);
@@ -609,10 +608,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             jsp.setBorder(new EmptyBorder(0, 0, 0, 0));
             return jsp;
         }
-        
-        public void addCanvas(JComponent c) {
-		}
-        
+                
         protected JMenu buildAnimationMenu() {
     	    stopBut.setVisible(true);
     	    stopBut.setEnabled(true);
@@ -631,8 +627,18 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
     	    mi.setActionCommand("anim/Stop");
     	    mi.addActionListener(this);
     	    animateMenu.add(mi);
-    	
+    	    
+    	    JMenuItem mi2 = new JMenuItem("Next frame");
+    	    mi2.addActionListener((e) -> {
+		    	animController.nextYaml();
+		    });
+    	    animateMenu.add(mi2);
+    	    
     	    return animateMenu;
+    	}
+
+    	public boolean isFullScreen() {
+    		return isFullScreen;
     	}
 
         //@Override
@@ -641,38 +647,14 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         }
 
       
-		@Override
-		public void stopAll() {
-			super.stopAll();
-			if(timer2!=null)
-			timer2.stop();
-		}
 
 		
 		@Override
-		public void startAll() {
-			super.startAll();
-//			if(timer2!=null)
-//				timer2.start();
-		}
+	public void nextFrame() {
+			animController.nextYaml();
+	}
 
-		
-		public void setRepeat(int repeat) {
-			timer2 = new Timer(repeat*1000, (e) -> {
-				if (animRunning) {
-					animController.stopAnim();
-				}
-				else {
-					animController.stopStartAnim();
-				}
-				fileController.nextYaml(this);
-			});
-			timer2.setRepeats(false);
-			timer2.start();
-			
-		}
-
-        /**
+		/**
          * Gets an image in application/frame context 
          * @param imgloc either a URL or filename
          * @return loaded image or null on error
@@ -709,12 +691,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             return imgin;
         }
 
-        protected void paste() {
-            Image img = getClipboardImage();
-            if (img != null && dr.loadImage(img)) {
-                imageChanged();
-            }
-        }
 
         // This class is used to hold an image while on the clipboard.
         public static class ImageSelection implements Transferable {
@@ -743,59 +719,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             }
         }
 
-        protected void copy() {
-            controller.applyFull(dr);
-            copyImageToClipboard(dr.getActiveImage());
-        }
-
-        protected void copyFull() {
-            copyFullImageToClipboard(dr.getActiveImage());
-        }
-
-        private void copyImageToClipboard(Image image) {
-            // Work around a Sun bug that causes a hang in "sun.awt.image.ImageRepresentation.reconstruct".
-            new javax.swing.ImageIcon(image); // Force load.
-            BufferedImage newImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-
-            Graphics2D g = newImage.createGraphics();
-            g.setClip(0, 0, image.getWidth(null), image.getHeight(null));
-            g.drawImage(image, 0, 0, null);
-
-            ImageSelection imageSelection = new ImageSelection(newImage);
-            Toolkit toolkit = Toolkit.getDefaultToolkit();
-            toolkit.getSystemClipboard().setContents(imageSelection, null);
-        }
-
-        private void copyFullImageToClipboard(Image image) {
-            // Work around a Sun bug that causes a hang in "sun.awt.image.ImageRepresentation.reconstruct".
-            new javax.swing.ImageIcon(image); // Force load.
-            BufferedImage newImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-
-            Graphics2D g = newImage.createGraphics();
-            g.setClip(0, 0, image.getWidth(null), image.getHeight(null));
-            this.paintCanvas(g);
-            //	          g.drawImage(image, 0, 0, null);
-            //	          fd.paintSymetries(g, this.controller.tr);
-
-            ImageSelection imageSelection = new ImageSelection(newImage);
-            Toolkit toolkit = Toolkit.getDefaultToolkit();
-            toolkit.getSystemClipboard().setContents(imageSelection, null);
-        }
-
-        private Image getClipboardImage() {
-            Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-
-            try {
-                if (t != null && t.isDataFlavorSupported(DataFlavor.imageFlavor)) {
-                    Image text = (Image)t.getTransferData(DataFlavor.imageFlavor);
-                    return text;
-                }
-            } catch (UnsupportedFlavorException e) {/*ignore*/
-            } catch (IOException e) {/*ignore*/
-            }
-            return null;
-        }
-
         protected void resizeImage(int w, int h, int xoff, int yoff) {
             dr.resize(w, h, xoff, yoff);
             fd.shift(xoff,yoff);
@@ -806,12 +729,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         protected void rescaleImage(int w, int h) {
             fd.rescale(w/((float) dr.baseRect.width), h/((float) dr.baseRect.height));
             dr.rescale(w, h);
-            imageChanged();
-        }
-
-        void flip(String com) {
-            fd.flip(com,dr.destRect.width,dr.destRect.height,controller.tr);
-            dr.flip(com);
             imageChanged();
         }
 
@@ -849,17 +766,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         }
 
         public String titleFilename="";
-		boolean isFullScreen;
-        public void imageChanged() {
-            //		imgout = dr.getActiveImage();
-            myCanvas.setSize(dr.destRect.width, dr.destRect.height);
-            myCanvas.setPreferredSize(dr.destRect.getSize());
-            //TODO sp.doLayout();
-            //controller.showOriginal();
-            controller.redraw();
-            setTitle();
-        }
-
+		boolean isFullScreen = false;
         public void setTitle(String newTitle) {
             this.titleFilename = newTitle;
             setTitle();
@@ -881,7 +788,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		Rectangle oldBounds = null;
-		private Timer timer2;
 		
 		public void showFullScreen(JFrame frame) {
 			System.out.println("Entering Full-Screen");
@@ -894,12 +800,14 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 			Rectangle bounds = frame.getGraphicsConfiguration().getBounds();
 			System.out.println("Full-Screen"+bounds);
 			oldBounds = dr.baseRect.getBounds();
-			dr.resize(bounds.width, bounds.height, bounds.x, bounds.y);
+			dr.makeDest(bounds.width, bounds.height);
+			dr.makeOutImage();
+//			dr.resize(bounds.width, bounds.height, bounds.x, bounds.y);
 			clearViewCheckboxes();
+			isFullScreen = true;
 			imageChanged();
 			gd.setFullScreenWindow(frame);
 			myCanvas.requestFocus();
-			isFullScreen = true;
 		}
 
 		public void showNormalScreen(JFrame frame) {

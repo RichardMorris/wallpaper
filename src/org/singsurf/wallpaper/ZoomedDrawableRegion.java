@@ -72,7 +72,7 @@ public class ZoomedDrawableRegion extends DrawableRegion {
             calcDispRegion();
             makeOutImage();
             if(DEBUG) System.out.println("loadImage successful: Width "+w+" height "+h);
-            this.img_ok = true;
+            img_ok = true;
         }
         catch(OutOfMemoryError e) {
             reportMemoryError(e,w*h*(1+2*(zoomNumer/zoomDenom)));
@@ -84,8 +84,8 @@ public class ZoomedDrawableRegion extends DrawableRegion {
         img_ok=false;
 
         PixelGrabber pg = new PixelGrabber(imgin, 0, 0,
-                this.srcRect.width,this.srcRect.height,
-                this.inpixels,0,this.srcRect.width);
+                srcRect.width,srcRect.height,
+                inpixels,0,srcRect.width);
         if(DEBUG) System.out.println("OK");
         try
         {
@@ -108,23 +108,17 @@ public class ZoomedDrawableRegion extends DrawableRegion {
 
     public void calcZoomedImages() {
         if(zoomNumer == 1 && zoomDenom == 1) {
-            this.makeSrc(baseRect.width,baseRect.height);
+            makeSrc(baseRect.width,baseRect.height);
             System.arraycopy(basePixels,0,inpixels,0,baseRect.width*baseRect.height);
-            this.makeDest(baseRect.width,baseRect.height);
-            this.copySrcDest();
-            this.calcDispRegion();
-            this.makeOutImage();
+            makeDest(baseRect.width,baseRect.height);
         }
         else if(zoomNumer ==1) {
             MemoryImageSource mis = new MemoryImageSource(baseRect.width,baseRect.height,basePixels, 0, baseRect.width);
             ImageFilter scale = new AreaAveragingScaleFilter(baseRect.width/zoomDenom,baseRect.height/zoomDenom);
             ImageProducer prod = new FilteredImageSource(mis,scale);
-            this.makeSrc(baseRect.width/zoomDenom,baseRect.height/zoomDenom);
+            makeSrc(baseRect.width/zoomDenom,baseRect.height/zoomDenom);
             grabSrcPixels(prod);
-            this.makeDest(baseRect.width/zoomDenom,baseRect.height/zoomDenom);
-            this.copySrcDest();
-            this.calcDispRegion();
-            this.makeOutImage();
+            makeDest(baseRect.width/zoomDenom,baseRect.height/zoomDenom);
         }
         else if(zoomDenom ==1) {
             MemoryImageSource mis = new MemoryImageSource(
@@ -132,12 +126,9 @@ public class ZoomedDrawableRegion extends DrawableRegion {
             ImageFilter scale = new ReplicateScaleFilter(
                     baseRect.width*zoomNumer,baseRect.height*zoomNumer);
             ImageProducer prod = new FilteredImageSource(mis,scale);
-            this.makeSrc(baseRect.width*zoomNumer,baseRect.height*zoomNumer);
+            makeSrc(baseRect.width*zoomNumer,baseRect.height*zoomNumer);
             grabSrcPixels(prod);
-            this.makeDest(baseRect.width*zoomNumer,baseRect.height*zoomNumer);
-            this.copySrcDest();
-            this.calcDispRegion();
-            this.makeOutImage();
+            makeDest(baseRect.width*zoomNumer,baseRect.height*zoomNumer);
         }
         else {
 			MemoryImageSource mis = new MemoryImageSource(
@@ -145,22 +136,22 @@ public class ZoomedDrawableRegion extends DrawableRegion {
 			ImageFilter scale = new AreaAveragingScaleFilter(
 					baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
 			ImageProducer prod = new FilteredImageSource(mis,scale);
-			this.makeSrc(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
+			makeSrc(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
 			grabSrcPixels(prod);
-			this.makeDest(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
-			this.copySrcDest();
-			this.calcDispRegion();
-			this.makeOutImage();
+			makeDest(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
 		}
+        copySrcDest();
+        calcDispRegion();
+        makeOutImage();
 
     }
 
     public void zoom(int numerator,int denom) {
         // nothing to do
-        if(numerator == this.zoomNumer && denom == this.zoomDenom) return;
+        if(numerator == zoomNumer && denom == zoomDenom) return;
         try {
-            this.zoomDenom = denom;
-            this.zoomNumer = numerator;
+            zoomDenom = denom;
+            zoomNumer = numerator;
             calcZoomedImages();
         }
         catch(OutOfMemoryError e) {
@@ -170,8 +161,8 @@ public class ZoomedDrawableRegion extends DrawableRegion {
     }
     public void zoomOut(int zoomFactor) {
         try {
-            this.zoomDenom = zoomFactor;
-            this.zoomNumer = 1;
+            zoomDenom = zoomFactor;
+            zoomNumer = 1;
             calcZoomedImages();
         }
         catch(OutOfMemoryError e) {
@@ -181,8 +172,8 @@ public class ZoomedDrawableRegion extends DrawableRegion {
 
     public void zoomIn(int zoomFactor) {
         try {
-            this.zoomNumer = zoomFactor;
-            this.zoomDenom = 1;
+            zoomNumer = zoomFactor;
+            zoomDenom = 1;
             calcZoomedImages();
         }
         catch(OutOfMemoryError e) {
@@ -265,8 +256,8 @@ public class ZoomedDrawableRegion extends DrawableRegion {
                 for(int j=0;j<h;++j)
                     for(int i=0;i<w;++i)
                         pixels[i+j*w] = inpixels[j+i*ow];
-                this.destRect = new Rectangle(0,0,w,h);
-                this.srcRect = new Rectangle(0,0,w,h);
+                destRect = new Rectangle(0,0,w,h);
+                srcRect = new Rectangle(0,0,w,h);
             }
             calcZoomedImages();
         }
@@ -281,7 +272,7 @@ public class ZoomedDrawableRegion extends DrawableRegion {
     public void rescale(int w, int h) {
         try {
             MemoryImageSource mis = new MemoryImageSource(
-                    this.baseRect.width,this.baseRect.height,inpixels, 0, this.baseRect.width);
+                    baseRect.width,baseRect.height,inpixels, 0, baseRect.width);
             ImageFilter scale = new AreaAveragingScaleFilter(w,h);
             ImageProducer prod = new FilteredImageSource(mis,scale);
             Image img = Toolkit.getDefaultToolkit().createImage(prod);
@@ -302,21 +293,21 @@ public class ZoomedDrawableRegion extends DrawableRegion {
             if(TessRule.tileBackground) {
                 for(int i=0;i<w;++i)
                     for(int j=0;j<h;++j) {
-                        int sx = (i-xoff) % this.baseRect.width; if(sx<0) sx+= this.baseRect.width;
-                        int sy = (j-yoff) % this.baseRect.height; if(sy<0) sy+= this.baseRect.height;
-                        tmpPix[i+j*w] = basePixels[sx+sy*this.baseRect.width];
+                        int sx = (i-xoff) % baseRect.width; if(sx<0) sx+= baseRect.width;
+                        int sy = (j-yoff) % baseRect.height; if(sy<0) sy+= baseRect.height;
+                        tmpPix[i+j*w] = basePixels[sx+sy*baseRect.width];
                     }
             }
             else {
                 for(int i=0;i<w;++i)
                     for(int j=0;j<h;++j)
-                        tmpPix[i+j*w]=this.backgroundRGB;
-                for(int i=0;i<this.baseRect.width;++i)
-                    for(int j=0;j<this.baseRect.height;++j) {
+                        tmpPix[i+j*w]=backgroundRGB;
+                for(int i=0;i<baseRect.width;++i)
+                    for(int j=0;j<baseRect.height;++j) {
                         int x = i+xoff;
                         int y = j+yoff;
                         if(x>=0 && x<w && y>=0 && y<h)
-                            tmpPix[x+y*w] = basePixels[i+j*this.baseRect.width];
+                            tmpPix[x+y*w] = basePixels[i+j*baseRect.width];
                     }
             }
             basePixels = tmpPix;
@@ -342,13 +333,13 @@ public class ZoomedDrawableRegion extends DrawableRegion {
 		} else {
 			dispRect = new Rectangle(minX,minY,width,height);
 		}
-		if(DEBUG) System.out.println("CDR w "+destRect.width+" h "+destRect.height+" ");
-		if(DEBUG) System.out.println("vp "+viewpointL+" "+viewpointT+" "+viewpointR+" "+viewpointB);
 		if(DEBUG) System.out.println(""+minX+" "+minY+" "+maxX+" "+maxY);
+    	if(DEBUG) System.out.println("CDR w "+destRect.width+" h "+destRect.height+" ");
+		if(DEBUG) System.out.println("vp "+viewpointL+" "+viewpointT+" "+viewpointR+" "+viewpointB);
 	}
 
 	public void setSplit(boolean b) {
-		this.split = b;
+		split = b;
 	}
 
 
