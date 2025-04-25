@@ -10,10 +10,36 @@ public abstract class DiamondRule extends TessRule
 {
     static final boolean DEBUG = false;
     int det=1;
+    int lastSelectedVertex = -1;
     public DiamondRule(String name,String message) { super(name,message); }
+    static class DVec {
+    	double x,y;
+    	public DVec() { x=0; y=0; }
+    	public DVec(double x, double y) { this.x=x; this.y=y; }
+    	public DVec rotate(double angle) {
+			double cos = Math.cos(angle);
+			double sin = Math.sin(angle);
+			return new DVec(x*cos-y*sin,x*sin+y*cos);
+		}
+    	public DVec reflect(DVec v) {
+    		var dot = x*v.x+y*v.y;
+    		var lensq = x*x+y*y;
+			return new DVec(2*dot*x/lensq - v.x, 2*dot*y/lensq - v.y);
+		}
+    	public double angle(DVec v) {
+    		var cos = x * v.x + y * v.y;
+    		var sin = x * v.y - y * v.x;
+    		
+    		return Math.atan2(sin, cos);
+    	}
+    	public DVec add(DVec v) {
+    		return new DVec(x+v.x,y+v.y);
+		}
+    }
 
-
-    double cosUV,sinUV,lenW,perp;
+    DVec ud, vd, P;
+	private double angd;
+//    double cosUV,sinUV,lenW,perp;
     //@Override
     public void calcFrame(FundamentalDomain fd,int selectedVertex, boolean constrained)
     {
@@ -33,76 +59,51 @@ public abstract class DiamondRule extends TessRule
         u2 =	fd.cellVerts[2].y - fd.cellVerts[1].y;
         v1 =	fd.cellVerts[0].x - fd.cellVerts[1].x;
         v2 =	fd.cellVerts[0].y - fd.cellVerts[1].y;
-        w1 =  fd.cellVerts[2].x - fd.cellVerts[0].x;
-        w2 =  fd.cellVerts[2].y - fd.cellVerts[0].y;
+        
+        if( selectedVertex != lastSelectedVertex) {
+			firstCall = true;
+			lastSelectedVertex = selectedVertex;
+		}
+        if(firstCall) {
+			ud = new DVec(u1,u2);
+			vd = new DVec(v1,v2);
+			angd = ud.angle(vd);
+			P = ud.add(vd);
+		}
+
         if(DEBUG) {
             System.out.println("sel "+selectedVertex+" fc "+firstCall);
-            System.out.println("u "+u1+","+u2+" v "+v1+","+v2+" c "+cosUV+" "+lenW+" "+perp);
+            System.out.println("u "+u1+","+u2+" v "+v1+","+v2);
         }
-        double lenU = Math.sqrt((double) u1*u1+u2*u2);
-        double lenV = Math.sqrt((double) v1*v1+v2*v2);
-        det = u1 * v2 - v1 * u2;
 
-        if(selectedVertex != 0 || firstCall) {
-            cosUV = ((u1*v1+u2*v2)) / (lenU * lenV);
-            sinUV = ((u1*v2-u2*v1)) / (lenU * lenV);
-        }
-        if(selectedVertex != 1 || firstCall) {
-            lenW = Math.sqrt(w1*w1+w2*w2);
-        }
-        if(selectedVertex != 2 || firstCall) {
-            double a1 = -w2/Math.sqrt(w1*w1+w2*w2);
-            double a2 = w1/Math.sqrt(w1*w1+w2*w2);
-            perp = v1 * a1 + v2 * a2;
-        }
-        if(DEBUG) {
-            System.out.println("u "+u1+","+u2+" v "+v1+","+v2+" c "+cosUV+" "+lenW+" "+perp);
-        }
         if(selectedVertex==0) {
-            u1 = (int) (cosUV * v1 + sinUV * v2);
-            u2 = (int) (-sinUV * v1 + cosUV * v2);
+            var vec = new DVec(v1,v2);
+            var rot = vec.rotate(-angd);
+            u1 = (int) Math.rint(rot.x);
+            u2 = (int) Math.rint(rot.y);
         }
         else if(selectedVertex==1) {
+            w1 =  fd.cellVerts[2].x - fd.cellVerts[0].x;
+            w2 =  fd.cellVerts[2].y - fd.cellVerts[0].y;
+            double lenV = Math.sqrt((double) v1*v1+v2*v2);
+            double lenW = Math.sqrt(w1*w1+w2*w2);
+
             double sinHalf = 0.5 * lenW / lenV;
             double theta = -2 * Math.asin(sinHalf); 
             if(det<0) theta = -theta; 
-            u1 = (int) (Math.cos(theta) * v1 - Math.sin(theta) * v2);
-            u2 = (int) (Math.sin(theta) * v1 + Math.cos(theta) * v2);
+            u1 = (int) Math.rint(Math.cos(theta) * v1 - Math.sin(theta) * v2);
+            u2 = (int) Math.rint(Math.sin(theta) * v1 + Math.cos(theta) * v2);
         }
         else if(selectedVertex==2) {
-            double a1 = -w2/Math.sqrt(w1*w1+w2*w2);
-            double a2 = w1/Math.sqrt(w1*w1+w2*w2);
-            v1 = (int) (a1 * perp - w1 * 0.5);
-            v2 = (int) (a2 * perp - w2 * 0.5);
-            /*			
-			int dotW = w1 * w1 + w2 * w2;
-			int dotVW = v1 * w1 + v2 * w2;
-			double lambda = 0.5 + ((double) dotVW)/dotW;
-			v1 = v1 - (int) (lambda * w1);
-			v2 = v2 - (int) (lambda * w2);
-             */
-            fd.cellVerts[1].x = fd.cellVerts[0].x - v1;
-            fd.cellVerts[1].y = fd.cellVerts[0].y - v2;
-            u1 =	fd.cellVerts[2].x - fd.cellVerts[1].x;
-            u2 =	fd.cellVerts[2].y - fd.cellVerts[1].y;
+        	ud = new DVec(u1,u2);
+        	var ref = P.reflect(ud);
+        	v1 = (int) Math.rint(ref.x);
+        	v2 = (int) Math.rint(ref.y);
         }
         if(DEBUG) {
-            System.out.println("u "+u1+","+u2+" v "+v1+","+v2+" c "+cosUV+" "+lenW+" "+perp);
+            System.out.println("u "+u1+","+u2+" v "+v1+","+v2);
         }
         det = u1 * v2 - v1 * u2;
-        if(det < 0 )
-        {
-            //			det = - det; u1 = -u1; u2 = -u2;
-        }
-        /*
-         * 
- 		double mul = Math.sqrt(v1*v1+v2*v2)/Math.sqrt(u1*u1+u2*u2);
-//		System.out.println(u1+" "+u2+" "+v1+" "+v2+" det "+det+" mul "+mul);
-		double reu1 = u1 * mul;
-		double reu2 = u2 * mul;
-		u1 = (int) (reu1);
-		u2 = (int) (reu2);
-         */
         frameO.x = fd.cellVerts[1].x;
         frameO.y = fd.cellVerts[1].y;
         frameU.x = v1;
@@ -113,7 +114,6 @@ public abstract class DiamondRule extends TessRule
     }
 
     public void constrainVertices(Vec[] verts, int selectedVertex) {
-        //        System.out.println("constrainVerts "+Arrays.toString(verts));
         Vec u;
         switch(selectedVertex) {
         case 0:
@@ -176,11 +176,9 @@ public abstract class DiamondRule extends TessRule
         }
     }
 
-    //@Override
+    @Override
     public void fixVerticies(FundamentalDomain fd)
     {
-        //        System.out.println("fixVerticies "+Arrays.toString(fd.cellVerts));
-
         fd.cellVerts[0].x = frameO.x+frameU.x;
         fd.cellVerts[0].y = frameO.y+frameU.y;
         fd.cellVerts[1].x = frameO.x;
@@ -192,7 +190,6 @@ public abstract class DiamondRule extends TessRule
         fd.numSelPoints = 3;
         fd.numOuterPoints = 4;
         fd.setLatticeType(FundamentalDomain.PARALLOGRAM);
-        //	        System.out.println("fixVerticiesDone "+Arrays.toString(fd.cellVerts));
     }
 
     public static TessRule rhombCM = new DiamondRule("CM",

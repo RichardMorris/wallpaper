@@ -146,12 +146,6 @@ public abstract class RectRule extends TessRule
     //@Override
     public void fixVerticies(FundamentalDomain fd)
     {
-        //		System.out.println("fixV start "+numFund);
-        //		for(int i=0;i<6;++i)
-        //			System.out.println("i "+i+"["+verticies[i].x+","+verticies[i].y);
-        //		for(int i=0;i<6;++i)
-        //			System.out.println("i "+i+"["+frame[i]);
-
         fd.cellVerts[0].x = frameO.x+frameV.x;
         fd.cellVerts[0].y = frameO.y+frameV.y;
         fd.cellVerts[1].x = frameO.x;
@@ -163,9 +157,6 @@ public abstract class RectRule extends TessRule
         fd.numSelPoints = 3;
         fd.numOuterPoints = 4;
         fd.setLatticeType(FundamentalDomain.PARALLOGRAM);
-        //		System.out.println("fixV end");
-        //		for(int i=0;i<6;++i)
-        //			System.out.println("i "+i+"["+verticies[i].x+","+verticies[i].y);
     }
 
     //@Override
