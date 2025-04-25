@@ -9,10 +9,7 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -38,6 +35,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
         JSpinner sySS;
 	boolean locked=true;
 	Wallpaper wall;
+	private JSpinner pcSS;
 	public RescaleDialog(JFrame frame,Wallpaper wall) {
 		super(frame,"Resize",true);
 		this.setPreferredSize(new Dimension(300,200));
@@ -60,6 +58,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 		++gbc.gridx;
 		sxSS = new JSpinner(new SpinnerNumberModel(10, 1, null, 1));
 		this.add(sxSS,gbc);
+		sxSS.addChangeListener(this);
 
 		gbc.gridx = 0; gbc.gridy++;
 		this.add(new JLabel("Height"), gbc);
@@ -67,12 +66,25 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 		++gbc.gridx;
 		sySS = new JSpinner(new SpinnerNumberModel(10, 1, null, 1));
 		this.add(sySS,gbc);
-		
+		sySS.addChangeListener(this);
+
+		gbc.gridx = 0; gbc.gridy++;
+		this.add(new JLabel("Percent"), gbc);
+	
+		++gbc.gridx;
+		pcSS = new JSpinner(new SpinnerNumberModel(100, 1, null, 1));
+		this.add(pcSS,gbc);
+		pcSS.addChangeListener(this);
+
 		gbc.gridwidth = 2;
 		gbc.gridx = 0; gbc.gridy++;
 		JCheckBox cb = new JCheckBox("Lock aspect ratio",true);
 		this.add(cb,gbc);
 		gbc.gridwidth = 1;
+		cb.addItemListener(e -> {
+			locked = (e.getStateChange()==ItemEvent.SELECTED);
+			pcSS.setEnabled(!locked);
+		});
 	
 		gbc.gridx = 0; gbc.gridy++;
 		JButton okBut = new JButton("OK");
@@ -82,30 +94,16 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 		JButton cancelBut = new JButton("Cancel");
 		this.add(cancelBut,gbc);
 		
-		cb.addItemListener(new ItemListener(){
-			public void itemStateChanged(ItemEvent arg0) {
-				locked = (arg0.getStateChange()==ItemEvent.SELECTED);
-				//sySS.setEditable(!locked);
-			}});
 		
-		okBut.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				close(true);
-			}});
-		cancelBut.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				close(false);
-			}});
+		okBut.addActionListener(e -> close(true));
+		cancelBut.addActionListener(e -> close(false));
 		
 		this.addWindowListener(new WindowAdapter(){
-			//@Override
             @Override
             public void windowClosing(WindowEvent arg0) {
 				close(false);
 			}});
 		
-		sxSS.addChangeListener(this);
-		sySS.addChangeListener(this);
 	}
 
 	public void open(int w,int h) {
@@ -152,15 +150,31 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 //			g.drawLine(0,oldy,oldx,oldy);
 //		}
 		if(locked) {
-			oldx = (Integer) sxSS.getValue();
-			double scale = ((double) oldx)/((double) newWidth);
-			oldy = (int) (newHeight*scale);
-			sySS.setValue(oldy);
+			if(ce.getSource() == sxSS) {
+				int w = (Integer) sxSS.getValue();
+				double scale = ((double) w)/((double) newWidth);
+				int h = (int) (newHeight*scale);
+				setValue(sySS,h);
+				setValue(pcSS,(int) (scale*100.0));
+			}
+			else if(ce.getSource() == sySS) {
+				int h = (Integer) sySS.getValue();
+				double scale = ((double) h)/((double) newHeight);
+				int w = (int) (newWidth*scale);
+				setValue(sxSS,w);
+				setValue(pcSS,(int) (scale*100.0));
+			}
+			else if(ce.getSource() == pcSS) {
+				int pc = (Integer) pcSS.getValue();
+				double scale = ((double) pc)/100.0;
+				int w = (int) (newWidth*scale);
+				int h = (int) (newHeight*scale);
+				setValue(sxSS,w);
+				setValue(sySS,h);
+			}
 		}
-		else {
-			oldx = (Integer) sxSS.getValue();
-			oldy = (Integer) sySS.getValue();
-		}
+		oldx = (Integer) sxSS.getValue();
+		oldy = (Integer) sySS.getValue();
 		oldx = (oldx * ((ZoomedDrawableRegion) wall.dr).zoomNumer) / ((ZoomedDrawableRegion) wall.dr).zoomDenom;
 		oldy = (oldy * ((ZoomedDrawableRegion) wall.dr).zoomNumer) / ((ZoomedDrawableRegion) wall.dr).zoomDenom;
 		g.drawLine(oldx,0,oldx,oldy);
@@ -169,7 +183,13 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 		drawn=true;
 	}
 
-    public void setOk(boolean ok) {
+    private void setValue(JSpinner spinner, int h) {
+    	spinner.removeChangeListener(this);
+    	spinner.setValue(h);
+    	spinner.addChangeListener(this);		
+	}
+
+	public void setOk(boolean ok) {
         this.ok = ok;
     }
 
