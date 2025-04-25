@@ -254,10 +254,11 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         	boolean recursive=false;
         	
             public void itemStateChanged(ItemEvent e) {
-            	if(recursive) return;
-            	recursive=true;
                 JCheckBoxMenuItem cbmi = (JCheckBoxMenuItem) e.getItemSelectable();
                 String label = cbmi.getActionCommand();
+                System.out.println("View item state changed "+label+ " recursive "+recursive);
+            	if(recursive) return;
+            	recursive=true;
                 if(label.equals("l"))
                     fd.drawCells = cbmi.isSelected();
                 if(label.equals("m"))
@@ -283,7 +284,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                     fd.drawRotationPoints = !cbmi.isSelected();
                 }
 
-                imageChanged();
+//                imageChanged();
+        	    controller.redraw();
             	recursive=false;
             	setViewCheckboxes();
             }
@@ -441,7 +443,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             expandMI1.setActionCommand("expand");
             imageMenu.add(expandMI1);
 
-            JMenuItem rescaleMI = new JMenuItem("Resize");
+            JMenuItem rescaleMI = new JMenuItem("Rescale");
             rescaleMI.addActionListener(this);
             rescaleMI.setActionCommand("resize");
             imageMenu.add(rescaleMI);

@@ -220,7 +220,7 @@ public class FileController {
 	             else {
 	            	 wall.controller.applyTessellation();
 	            	 wall.controller.calcGeom();
-	            	 wall.controller.applyFull(wall.dr);
+	            	 wall.controller.applyFull();
 	             }
 	
 	            String type = getType(f.getName());
@@ -421,7 +421,7 @@ public class FileController {
 	
 	                	wall.fd.zoom(((ZoomedDrawableRegion) wall.dr).zoomDenom);
 	                	wall.controller.calcGeom();
-	                	wall.controller.applyFull(wall.dr);
+	                	wall.controller.applyFull();
 	                    //				Jimi.putImage(dr.getActiveImage(), dir + filename);
 	                    String type = getType(f.getName());
 	//                    File f = new File(dir,filename);

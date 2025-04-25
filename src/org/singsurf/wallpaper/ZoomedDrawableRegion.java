@@ -21,6 +21,7 @@ import org.singsurf.wallpaper.tessrules.TessRule;
 public class ZoomedDrawableRegion extends DrawableRegion {
     public int zoomDenom;
     public int zoomNumer;
+    /** Pixels of the base unzoomed image */
     int[] basePixels;
     boolean split =false;
     public ZoomedDrawableRegion(Wallpaper wall) {
@@ -128,9 +129,6 @@ public class ZoomedDrawableRegion extends DrawableRegion {
     }
 
     public void calcZoomedImages() {
-		calcZoomedImages(true);
-    }
-    public void calcZoomedImages(boolean makeDest) {
         if(zoomNumer == 1 && zoomDenom == 1) {
             makeSrc(baseRect.width,baseRect.height);
             System.arraycopy(basePixels,0,inpixels,0,baseRect.width*baseRect.height);
@@ -159,37 +157,13 @@ public class ZoomedDrawableRegion extends DrawableRegion {
 			ImageProducer prod = new FilteredImageSource(mis,scale);
 			makeSrc(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
 			grabSrcPixels(prod);
-            if(makeDest) {
-            	makeDest(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
-            }
 		}
-        if(makeDest) {
-        	makeDest(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
-            copySrcDest();
-        }
+        makeDest(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
+        copySrcDest();
         makeOutImage();
 
     }
 
-    /**
-     * Sets the zoom factor for the image, calculates the zoomed image
-     * and if makeDest is true, the destination image.
-     * @param numerator
-     * @param denom
-     * @param makeDest
-     */
-    public void zoom(int numerator,int denom,boolean makeDest) {
-		// nothing to do
-		try {
-			zoomDenom = denom;
-			zoomNumer = numerator;
-			calcZoomedImages(makeDest);
-		}
-		catch(OutOfMemoryError e) {
-			reportMemoryError(e,baseRect.width*baseRect.height*(1+2*(zoomNumer/zoomDenom)));
-		}
-
-	}
 
     public void zoom(int numerator,int denom) {
         // nothing to do
@@ -203,29 +177,7 @@ public class ZoomedDrawableRegion extends DrawableRegion {
         }
 
     }
-    public void zoomOut(int zoomFactor) {
-        try {
-            zoomDenom = zoomFactor;
-            zoomNumer = 1;
-            calcZoomedImages();
-        }
-        catch(OutOfMemoryError e) {
-            reportMemoryError(e,baseRect.width*baseRect.height*(1+2*(zoomNumer/zoomDenom)));
-        }
-    }
 
-    public void zoomIn(int zoomFactor) {
-        try {
-            zoomNumer = zoomFactor;
-            zoomDenom = 1;
-            calcZoomedImages();
-        }
-        catch(OutOfMemoryError e) {
-            reportMemoryError(e,baseRect.width*baseRect.height*(1+2*(zoomNumer/zoomDenom)));
-        }
-    }
-
-    //@Override
     @Override
     public void flip(String code) {
         int oh = baseRect.height;
