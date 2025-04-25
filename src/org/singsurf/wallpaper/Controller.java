@@ -69,13 +69,10 @@ public class Controller {
 
     /** Apply the tessellation to the full image 
      * @param dr */
-    public void applyFull(DrawableRegion dr) {
+    public void applyFull() {
         Rectangle  oldRect = dr.dispRect;
         dr.dispRect = dr.destRect;
-        DrawableRegion oldDr = this.dr;
-        this.dr = dr;
         applyTessellation();
-        this.dr = oldDr;
         dr.dispRect = oldRect;
     }
     /**
@@ -159,7 +156,7 @@ public class Controller {
 
 	protected void copy() {
 		if(!showingOriginal) {
-			applyFull(dr);
+			applyFull();
 		}
 	    copyImageToClipboard(dr.getActiveImage());
 	}
@@ -199,7 +196,7 @@ public class Controller {
 	    Graphics2D g = newImage.createGraphics();
 	    g.setClip(0, 0, image.getWidth(null), image.getHeight(null));
 	    g.drawImage(image, 0, 0, null);
-	
+	    System.out.println("copyImageToClipboard "+image.getWidth(null)+" "+image.getHeight(null));
 	    ImageSelection imageSelection = new ImageSelection(newImage);
 	    Toolkit toolkit = Toolkit.getDefaultToolkit();
 	    toolkit.getSystemClipboard().setContents(imageSelection, null);
