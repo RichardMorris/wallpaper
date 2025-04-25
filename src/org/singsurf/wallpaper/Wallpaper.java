@@ -593,7 +593,22 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         else if(code == KeyEvent.VK_RIGHT) fd.shift(1,0);
         else if(code == KeyEvent.VK_UP) fd.shift(0,-1);
         else if(code == KeyEvent.VK_DOWN) fd.shift(0,1);
-        else {
+        else if(code == KeyEvent.VK_W) { fd.shiftVertex(1, 0, -1); curvertex = 1;}
+        else if(code == KeyEvent.VK_A) { fd.shiftVertex(1, -1, 0); curvertex = 1; }
+        else if(code == KeyEvent.VK_S) { fd.shiftVertex(1, 0, 1);  curvertex = 1; }
+        else if(code == KeyEvent.VK_D) { fd.shiftVertex(1, 1, 0);  curvertex = 1; }
+        
+        else if(code == KeyEvent.VK_T) { fd.shiftVertex(0, 0, -1);  curvertex = 0; }
+		else if(code == KeyEvent.VK_F) { fd.shiftVertex(0, -1, 0);  curvertex = 0; }
+		else if(code == KeyEvent.VK_G) { fd.shiftVertex(0, 0, 1);  curvertex = 0; }
+		else if(code == KeyEvent.VK_H) { fd.shiftVertex(0, 1, 0);  curvertex = 0; }
+
+        else if(code == KeyEvent.VK_I) { fd.shiftVertex(2, 0, -1);  curvertex = 2; }
+		else if(code == KeyEvent.VK_J) { fd.shiftVertex(2, -1, 0);  curvertex = 2; }
+		else if(code == KeyEvent.VK_K) { fd.shiftVertex(2, 0, 1);  curvertex = 2; }
+		else if(code == KeyEvent.VK_L) { fd.shiftVertex(2, 1, 0);  curvertex = 2; }
+
+		else {
         	return;
         }
 
@@ -628,7 +643,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
 
 	protected void startAnim(String label) {
-		System.out.println("StartAnim: "+label);
 	    var path = AnimationPath.getPathByName(label, 1,dr.srcRect);
 	    animController.setAnimationPath(path);
 	    animController.startAnim();
@@ -636,10 +650,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
 
 	public void itemStateChanged(ItemEvent ev) {
-		
-	    var path = AnimationPath.getPathByName((String) ev.getItem(), 1,dr.srcRect);
-	    animController.setAnimationPath(path);
-	    animController.startAnim();
+		startAnim((String) ev.getItem());
 	}
 
 	protected JComponent buildCanvasComponent(JComponent c) {
@@ -659,6 +670,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	    AnimationPath path = AnimationPath.getPathByName(
 	    		animateChoice.getSelectedItem().toString() , 1,dr.destRect);
 	    animController.setAnimationPath(path);
+	    dr.calcDispRegion();
 	    controller.redraw();
 	    setTitle();
 	}

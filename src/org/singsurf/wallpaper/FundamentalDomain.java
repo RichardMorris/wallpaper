@@ -83,6 +83,10 @@ public //	int[] fundY = {0,0,0,0,0,0};
 	public void setVertex(int index,int x,int y) {
 		cellVerts[index].setLocation(x, y);
 	}
+	public void shiftVertex(int index,int dx,int dy) {
+		cellVerts[index].x += dx;
+		cellVerts[index].y += dy;
+	}
 	
 	public void saveOldVerticies() {
 	    for(int i=0;i<6;++i)
