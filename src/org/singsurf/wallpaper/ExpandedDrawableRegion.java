@@ -20,7 +20,7 @@ public class ExpandedDrawableRegion extends DrawableRegion {
 	}
 
 	//@Override
-	void calcDispRegion() {
+	public void calcDispRegion() {
 //		int minX = this.viewpointL;
 //		int minY = this.viewpointT;
 		int maxX = this.viewpointR;

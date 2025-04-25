@@ -80,4 +80,11 @@ public class FixedSizeDrawableRegion extends DrawableRegion {
 	    return img_ok;
 
 	}
+
+	public void reset() {
+		if(!img_ok) return;
+		//System.out.println("reload");
+		System.arraycopy(inpixels,0,pixels,0,inpixels.length);
+		source.newPixels();
+	}
 }

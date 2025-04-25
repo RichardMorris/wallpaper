@@ -179,6 +179,17 @@ public abstract class BasicRule extends TessRule
         }
     };
 
+    public static final TessRule id = new BasicRule("Identity",
+    "Identity.\n" +
+    "Will tile the output") {
+        //@Override
+        public final void fun(int x,int y,int[] out)
+        {
+            out[0] = x;
+            out[1] = y;
+        }
+    };
+
     public static final TessRule rot = new BasicRule("Rotation",
     "A rotation of the image.\nRotates around the green point") {
         protected void paintSymetries(Vec U, Vec V, Vec O) {

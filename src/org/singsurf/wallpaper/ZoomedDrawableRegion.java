@@ -15,6 +15,7 @@ import java.awt.image.MemoryImageSource;
 import java.awt.image.PixelGrabber;
 import java.awt.image.ReplicateScaleFilter;
 
+import org.singsurf.wallpaper.tessrules.BasicRule;
 import org.singsurf.wallpaper.tessrules.TessRule;
 
 public class ZoomedDrawableRegion extends DrawableRegion {
@@ -28,57 +29,77 @@ public class ZoomedDrawableRegion extends DrawableRegion {
         this.zoomDenom = 1;
     }
 
-    @Override
-    public boolean loadImage(Image imgin) {
-        img_ok=false;
-        int w=0,h=0;
-        try {
-            PixelGrabber pg = new PixelGrabber(imgin, 0, 0, -1, -1,true);
-            //PixelGrabber pg = new PixelGrabber(img, 0, 0, w, h,inpixels,0,w);
-            if(DEBUG) System.out.println("ZDR: loadImage");
-            try
-            {
-                pg.grabPixels();
-            } 
-            catch (InterruptedException e) 
-            {
-                System.out.println("interrupted waiting for pixels!");
-                return false;
-            }
-            if(DEBUG) System.out.println("OK");    
-            if ((pg.getStatus() & ImageObserver.ABORT) != 0) {
-                System.out.println("Error loading image");
-                return false;
-            }
-            if(DEBUG) System.out.println("grabbed");
-            basePixels = (int []) pg.getPixels();
-            try
-            {
-                w=pg.getWidth();
-                h=pg.getHeight();	
-                if(DEBUG) System.out.println("w "+w+" "+h+" "+basePixels.length);
-            }
-            catch(Exception e)
-            {
-                System.out.println("Error copying the image array");
-                System.out.println(e.getMessage());
-                return false;
-            }
-            //width=pg.getWidth();
-            //height=pg.getHeight();	
-            if(DEBUG) System.out.println("creating source");
-            baseRect = new Rectangle(0,0,w,h);
+    /**
+     * Loads the image into the basePixels array,
+     * and sets the baseRect to the size of the image.
+     * Calculates the zoomed image and the display region.
+     */
+        @Override
+        public boolean loadImage(Image imgin) {
+        	loadImageCore(imgin);
+            
+            
             calcZoomedImages();
             calcDispRegion();
             makeOutImage();
-            if(DEBUG) System.out.println("loadImage successful: Width "+w+" height "+h);
             img_ok = true;
-        }
-        catch(OutOfMemoryError e) {
-            reportMemoryError(e,w*h*(1+2*(zoomNumer/zoomDenom)));
-        }
-        return img_ok;
+            return img_ok;
     }
+        
+    	/**
+    	 * Loads the image into the basePixels array,
+    	 * and sets the baseRect to the size of the image.
+    	 * @param imgin
+    	 * @return
+    	 */
+    	public boolean loadImageCore(Image imgin) {
+    	img_ok=false;
+    	int w=0,h=0;
+    	try {
+    	    PixelGrabber pg = new PixelGrabber(imgin, 0, 0, -1, -1,true);
+    	    //PixelGrabber pg = new PixelGrabber(img, 0, 0, w, h,inpixels,0,w);
+    	    if(DEBUG) System.out.println("ZDR: loadImage");
+    	    try
+    	    {
+    	        pg.grabPixels();
+    	    } 
+    	    catch (InterruptedException e) 
+    	    {
+    	        System.out.println("interrupted waiting for pixels!");
+    	        return false;
+    	    }
+    	    if(DEBUG) System.out.println("OK");    
+    	    if ((pg.getStatus() & ImageObserver.ABORT) != 0) {
+    	        System.out.println("Error loading image");
+    	        return false;
+    	    }
+    	    if(DEBUG) System.out.println("grabbed");
+    	    basePixels = (int []) pg.getPixels();
+    	    try
+    	    {
+    	        w=pg.getWidth();
+    	        h=pg.getHeight();	
+    	        if(DEBUG) System.out.println("w "+w+" "+h+" "+basePixels.length);
+    	    }
+    	    catch(Exception e)
+    	    {
+    	        System.out.println("Error copying the image array");
+    	        System.out.println(e.getMessage());
+    	        return false;
+    	    }
+    	    //width=pg.getWidth();
+    	    //height=pg.getHeight();	
+    	    if(DEBUG) System.out.println("creating source");
+    	    baseRect = new Rectangle(0,0,w,h);
+    	}
+    	catch(OutOfMemoryError e) {
+    	    reportMemoryError(e,w*h*(1+2*(zoomNumer/zoomDenom)));
+    	}
+    	img_ok = true;
+    	return img_ok;
+    	
+    	}
+
 
     boolean grabSrcPixels(ImageProducer imgin) {
         img_ok=false;
@@ -107,10 +128,12 @@ public class ZoomedDrawableRegion extends DrawableRegion {
     }
 
     public void calcZoomedImages() {
+		calcZoomedImages(true);
+    }
+    public void calcZoomedImages(boolean makeDest) {
         if(zoomNumer == 1 && zoomDenom == 1) {
             makeSrc(baseRect.width,baseRect.height);
             System.arraycopy(basePixels,0,inpixels,0,baseRect.width*baseRect.height);
-            makeDest(baseRect.width,baseRect.height);
         }
         else if(zoomNumer ==1) {
             MemoryImageSource mis = new MemoryImageSource(baseRect.width,baseRect.height,basePixels, 0, baseRect.width);
@@ -118,7 +141,6 @@ public class ZoomedDrawableRegion extends DrawableRegion {
             ImageProducer prod = new FilteredImageSource(mis,scale);
             makeSrc(baseRect.width/zoomDenom,baseRect.height/zoomDenom);
             grabSrcPixels(prod);
-            makeDest(baseRect.width/zoomDenom,baseRect.height/zoomDenom);
         }
         else if(zoomDenom ==1) {
             MemoryImageSource mis = new MemoryImageSource(
@@ -128,7 +150,6 @@ public class ZoomedDrawableRegion extends DrawableRegion {
             ImageProducer prod = new FilteredImageSource(mis,scale);
             makeSrc(baseRect.width*zoomNumer,baseRect.height*zoomNumer);
             grabSrcPixels(prod);
-            makeDest(baseRect.width*zoomNumer,baseRect.height*zoomNumer);
         }
         else {
 			MemoryImageSource mis = new MemoryImageSource(
@@ -138,17 +159,40 @@ public class ZoomedDrawableRegion extends DrawableRegion {
 			ImageProducer prod = new FilteredImageSource(mis,scale);
 			makeSrc(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
 			grabSrcPixels(prod);
-			makeDest(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
+            if(makeDest) {
+            	makeDest(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
+            }
 		}
-        copySrcDest();
-        calcDispRegion();
+        if(makeDest) {
+        	makeDest(baseRect.width*zoomNumer/zoomDenom,baseRect.height*zoomNumer/zoomDenom);
+            copySrcDest();
+        }
         makeOutImage();
 
     }
 
+    /**
+     * Sets the zoom factor for the image, calculates the zoomed image
+     * and if makeDest is true, the destination image.
+     * @param numerator
+     * @param denom
+     * @param makeDest
+     */
+    public void zoom(int numerator,int denom,boolean makeDest) {
+		// nothing to do
+		try {
+			zoomDenom = denom;
+			zoomNumer = numerator;
+			calcZoomedImages(makeDest);
+		}
+		catch(OutOfMemoryError e) {
+			reportMemoryError(e,baseRect.width*baseRect.height*(1+2*(zoomNumer/zoomDenom)));
+		}
+
+	}
+
     public void zoom(int numerator,int denom) {
         // nothing to do
-        if(numerator == zoomNumer && denom == zoomDenom) return;
         try {
             zoomDenom = denom;
             zoomNumer = numerator;
@@ -321,6 +365,7 @@ public class ZoomedDrawableRegion extends DrawableRegion {
     }
 
     @Override
+	public
 	void calcDispRegion() {
 		int minX = viewpointL;
 		int minY = viewpointT;
@@ -340,6 +385,17 @@ public class ZoomedDrawableRegion extends DrawableRegion {
 
 	public void setSplit(boolean b) {
 		split = b;
+	}
+
+	public void reset() {
+		if(!img_ok) return;
+		//System.out.println("reload");
+		if(baseRect == srcRect) {
+			System.arraycopy(inpixels,0,pixels,0,inpixels.length);
+			source.newPixels();
+		} else {
+			wall.controller.applyTessellation(BasicRule.id);
+		}
 	}
 
 

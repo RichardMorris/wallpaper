@@ -167,7 +167,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         controller.setTesselation(tesselationPanel.getCurrentTesselation());
         controller.calcGeom();
         controller.showOriginal();
-		animController = new AnimationController(this,controller);
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();  
         var size = toolkit.getBestCursorSize(32, 32);
@@ -666,10 +665,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
 	void setTitle() {
 		
-	}
-
-	public boolean isFullScreen() {
-		return false;
 	}
 
 

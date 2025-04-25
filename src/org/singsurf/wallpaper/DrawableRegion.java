@@ -20,7 +20,7 @@ import java.awt.image.PixelGrabber;
 import org.singsurf.wallpaper.tessrules.TessRule;
 
 public class DrawableRegion {
-	static final boolean DEBUG = false;
+	static final boolean DEBUG = true;
 	
 	/** Un-zoomed rectangle */ 
 	public Rectangle baseRect;
@@ -48,7 +48,7 @@ public class DrawableRegion {
 	public int[] inpixels;
 	/** pixels of work image */
 	public int[] pixels;
-	MemoryImageSource source;
+	protected MemoryImageSource source;
 
 	/** Output image */
 	Image outImage;
@@ -64,7 +64,7 @@ public class DrawableRegion {
 	}
 
 
-	void calcDispRegion() {
+	public void calcDispRegion() {
 		int minX = viewpointL;
 		int minY = viewpointT;
 		int maxX = (destRect.width > viewpointR ? viewpointR : destRect.width);
@@ -83,15 +83,24 @@ public class DrawableRegion {
 	
 	public void reset() {
 		if(!img_ok) return;
-		//System.out.println("reload");
+		//System.out.println("reloadDelayed");
 		System.arraycopy(inpixels,0,pixels,0,inpixels.length);
-		source.newPixels();
 	}
 
 	public void resetDelayed() {
 		if(!img_ok) return;
 		//System.out.println("reloadDelayed");
-		System.arraycopy(inpixels,0,pixels,0,inpixels.length);
+		try {
+			System.arraycopy(inpixels,0,pixels,0,inpixels.length);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println("ArrayIndexOutOfBoundsException "+e.getMessage());
+			System.out.println("inpixels "+inpixels.length+" pixels "+pixels.length);
+			System.out.println("srcRect "+srcRect.width+" "+srcRect.height);
+			System.out.println("destRect "+destRect.width+" "+destRect.height);
+			System.out.println("offset "+offset.x+" "+offset.y);
+			System.out.println("viewpoint "+viewpointL+" "+viewpointT+" "+viewpointR+" "+viewpointB);
+			System.out.println("dispRect "+dispRect.x+" "+dispRect.y+" "+dispRect.width+" "+dispRect.height);
+		}
 	}
 
 	
@@ -173,7 +182,7 @@ public class DrawableRegion {
 		inpixels = new int[w*h];
 	}
 
-	protected void makeDest(int w,int h) {
+	public void makeDest(int w,int h) {
 		destRect = new Rectangle(0,0,w,h);
 		pixels = new int[w*h];
 	}
@@ -186,7 +195,7 @@ public class DrawableRegion {
 		System.arraycopy(pixels,0,inpixels,0,pixels.length);
 	}
 
-	protected void makeOutImage() {
+	public void makeOutImage() {
 	    if(DEBUG) System.out.println("makeOutImage");
 		source = new MemoryImageSource(destRect.width, destRect.height, pixels, 0, destRect.width);
 		source.setAnimated(true);
@@ -195,7 +204,7 @@ public class DrawableRegion {
 
 	public void resize(int w, int h, int xoff, int yoff) {
 		try {
-			System.gc();
+//			System.gc();
 			makeDest(w,h);
 			if(TessRule.tileBackground) {
 				for(int i=0;i<w;++i)
@@ -303,7 +312,7 @@ public class DrawableRegion {
 	}
 	
 	public void paint(Graphics g,Wallpaper wall) {
-	    if(DEBUG) System.out.println("DR:paint");
+//	    if(DEBUG) System.out.println("DR:paint");
 		try {
 			g.drawImage(getActiveImage(),offset.x,offset.y,wall);
 		}
@@ -323,6 +332,60 @@ public class DrawableRegion {
 		System.err.println("This image will require "+(reqSize*4)+" bytes");
 		//System.err.println("TotalMemory "+Runtime.getRuntime().totalMemory());
 		System.err.println("Rerun application with the -Xmx512m VM flag to assign more memory");
+	}
+
+
+	/**
+	 * Loads the image into the basePixels array,
+	 * and sets the baseRect to the size of the image.
+	 * @param imgin
+	 * @return
+	 */
+	public boolean loadImageCore(Image imgin) {
+	img_ok=false;
+	int w=0,h=0;
+	try {
+	    PixelGrabber pg = new PixelGrabber(imgin, 0, 0, -1, -1,true);
+	    //PixelGrabber pg = new PixelGrabber(img, 0, 0, w, h,inpixels,0,w);
+	    if(DEBUG) System.out.println("ZDR: loadImage");
+	    try
+	    {
+	        pg.grabPixels();
+	    } 
+	    catch (InterruptedException e) 
+	    {
+	        System.out.println("interrupted waiting for pixels!");
+	        return false;
+	    }
+	    if(DEBUG) System.out.println("OK");    
+	    if ((pg.getStatus() & ImageObserver.ABORT) != 0) {
+	        System.out.println("Error loading image");
+	        return false;
+	    }
+	    if(DEBUG) System.out.println("grabbed");
+	    inpixels = (int []) pg.getPixels();
+	    try
+	    {
+	        w=pg.getWidth();
+	        h=pg.getHeight();	
+	        if(DEBUG) System.out.println("w "+w+" "+h+" "+inpixels.length);
+	    }
+	    catch(Exception e)
+	    {
+	        System.out.println("Error copying the image array");
+	        System.out.println(e.getMessage());
+	        return false;
+	    }
+	    //width=pg.getWidth();
+	    //height=pg.getHeight();	
+	    if(DEBUG) System.out.println("creating source");
+	    baseRect = new Rectangle(0,0,w,h);
+	}
+	catch(OutOfMemoryError e) {
+	    reportMemoryError(e,w*h);
+	}
+	return img_ok;
+	
 	}
 
 }

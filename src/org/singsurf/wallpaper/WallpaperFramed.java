@@ -44,6 +44,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 
+import org.singsurf.wallpaper.animation.AnimationController;
 import org.singsurf.wallpaper.animation.AnimationPath;
 import org.singsurf.wallpaper.dialogs.ErrorDialog;
 import org.singsurf.wallpaper.dialogs.ExpandDialog;
@@ -67,6 +68,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 	public WallpaperFramed(String imgfilename, int w, int h) {
 		super(frameGetImage(imgfilename), w, h);
 		fileController = new FileController(this);
+		animController = new AnimationController(this,controller);
+
 
 	}
 
@@ -614,12 +617,13 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
     	    stopBut.setEnabled(true);
     	
     	    JMenu animateMenu = new JMenu("Animation");
-//    	    String animations[] = {"up","down","left","right","NE","NW","SE","SW","rotate","bounce","smooth"};
     	    String animations[] = AnimationPath.getPathNames();	
     	    for(int i=0;i<animations.length;++i) {
-    	        JMenuItem mi = new JMenuItem(animations[i]);
-    	        mi.setActionCommand("anim/"+animations[i]);
-    	        mi.addActionListener(this);
+	        	String label = animations[i];
+    	        JMenuItem mi = new JMenuItem(label);
+    	        mi.addActionListener((e) -> {
+					setAnimationChoice(label);
+		        });
     	        animateMenu.add(mi);
     	    }
     	    animateMenu.addSeparator();
@@ -797,11 +801,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 			menu.setVisible(false);
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			frame.setUndecorated(true);
-			Rectangle bounds = frame.getGraphicsConfiguration().getBounds();
-			System.out.println("Full-Screen"+bounds);
-			oldBounds = dr.baseRect.getBounds();
-			dr.makeDest(bounds.width, bounds.height);
-			dr.makeOutImage();
+			makeFullScreen(frame);
 //			dr.resize(bounds.width, bounds.height, bounds.x, bounds.y);
 			clearViewCheckboxes();
 			isFullScreen = true;
@@ -810,12 +810,19 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 			myCanvas.requestFocus();
 		}
 
+		private void makeFullScreen(JFrame frame) {
+			Rectangle bounds = frame.getGraphicsConfiguration().getBounds();
+			oldBounds = dr.destRect.getBounds();
+			dr.makeDest(bounds.width, bounds.height);
+			dr.makeOutImage();
+		}
+
 		public void showNormalScreen(JFrame frame) {
 			System.out.println("Exiting Full-Screen");
 			frame.dispose();
 			frame.setUndecorated(false);
 			frame.setExtendedState(JFrame.NORMAL);
-			dr.resize(oldBounds.width, oldBounds.height, oldBounds.x, oldBounds.y);
+			makeNormalScreen();
 
 			showControls();
 			var menu = frame.getJMenuBar();
@@ -825,6 +832,12 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 			setDefaultViewCheckboxes();
 			isFullScreen = false;
 			myCanvas.requestFocus();
+		}
+
+		private void makeNormalScreen() {
+//			dr.resize(oldBounds.width, oldBounds.height, oldBounds.x, oldBounds.y);
+			dr.makeDest(oldBounds.width, oldBounds.height);
+			dr.makeOutImage();
 		}
 
 		private void clearViewCheckboxes() {
@@ -885,6 +898,10 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 					mi.setSelected(!fd.drawGlideLines && !fd.drawReflectionLines && !fd.drawRotationPoints);
 				}
 			}
+		}
+
+		public void setAnimationChoice(String label) {
+			animateChoice.setSelectedItem(label);
 		}
 
 }

@@ -20,10 +20,10 @@ public class BounceAnimation extends AnimationPath {
 
 	public void nextItteration(FundamentalDomain fd) {
 		Rectangle fdBB = fd.getFDBoundingBox();
-		if(fdBB.x<=rect.x) dx=-dx;
-		if(fdBB.y<=rect.y) dy=-dy;
-		if(fdBB.x+fdBB.width >= rect.x+rect.width-1) dx = -dx;
-		if(fdBB.y+fdBB.height >= rect.y+rect.height-1) dy = -dy;
+		if(fdBB.x<=rect.x) dx=Math.abs(dx);
+		if(fdBB.y<=rect.y) dy=Math.abs(dy);
+		if(fdBB.x+fdBB.width >= rect.x+rect.width-1) dx = -Math.abs(dx);
+		if(fdBB.y+fdBB.height >= rect.y+rect.height-1) dy = -Math.abs(dy);
 		for(int i=0;i<6;++i)
 		{
 			fd.cellVerts[i].x += dx;

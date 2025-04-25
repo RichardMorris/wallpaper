@@ -12,15 +12,16 @@ import javax.imageio.ImageIO;
 import javax.swing.Timer;
 
 import org.singsurf.wallpaper.Controller;
-import org.singsurf.wallpaper.Wallpaper;
+import org.singsurf.wallpaper.WallpaperFramed;
 import org.singsurf.wallpaper.WallpaperML;
+import org.singsurf.wallpaper.ZoomedDrawableRegion;
 import org.singsurf.wallpaper.tessrules.TessRule;
 
 
 public class AnimationController implements ActionListener {
 	private static final boolean DEBUG = false;
 	Controller controller;
-	Wallpaper wall;
+	WallpaperFramed wall;
 	Timer timer;
 	public Timer timer2;
 
@@ -33,7 +34,7 @@ public class AnimationController implements ActionListener {
 	private int yamlListPoss;
 
 	
-	public AnimationController(Wallpaper w,Controller controller) {
+	public AnimationController(WallpaperFramed w,Controller controller) {
 		this.controller = controller;
 		this.wall = w;
 		path = AnimationPath.getDefaultPath(w);
@@ -142,25 +143,9 @@ public class AnimationController implements ActionListener {
 
 
 	void processYaml(WallpaperML yaml) {
-	//			if(yaml.restart)	 {
-	//				if(yamlList!=null) {
-	//					yamlListPoss = 0;
-	//					nextYaml();
-	//				}
-	//				return;
-	//			}
-		if(yaml.group!=null) {
-		    TessRule tr1 = TessRule.getTessRuleByName(yaml.group);
-		    wall.tickCheckbox(yaml.group);
-		    for(int i=0;i<3;++i)
-		        wall.fd.setVertex(i, yaml.vertX[i],yaml.vertY[i]);
-	
-		    wall.curvertex = -1;
-		    wall.controller.setTesselation(tr1);
-		    wall.controller.applyTessellation();
-		    wall.imageChanged();
-		}
+
 		if(yaml.filename!=null) {
+			System.out.println("Anim LoadImage "+yaml.filename);
 	        BufferedImage img;
 			try {
 				img = ImageIO.read(new File(yaml.filename));
@@ -168,31 +153,52 @@ public class AnimationController implements ActionListener {
 				System.out.println("Error loading image "+yaml.filename+".");
 				return;
 			}
-	
-	//				var img = frameGetImage(yaml.filename);
-			if (img != null && wall.dr.loadImage(img)) {
-				Rectangle bounds = wall.mainFrame.getGraphicsConfiguration().getBounds();
-				System.out.println("Full-Screen"+bounds);
-				wall.dr.resize(bounds.width, bounds.height, bounds.x, bounds.y);
-				wall.imageChanged();
+			if(img==null) {
+				System.out.println("Error loading image "+yaml.filename+".");
+				return;
+			}
+			boolean flag = wall.dr.loadImageCore(img);
+			if (flag) {
+				((ZoomedDrawableRegion) wall.dr).zoom(yaml.zNumer,yaml.zDenom); // ,!wall.isFullScreen());
 				if(wall.isFullScreen()) {
-	//					oldBounds = dr.baseRect.getBounds();
-				
+					Rectangle bounds = wall.mainFrame.getGraphicsConfiguration().getBounds();
+					System.out.println("Full-Screen"+bounds);
+					wall.dr.makeDest(bounds.width, bounds.height);
+
 				}
+				wall.dr.makeOutImage();
+				if(!wall.isFullScreen()) wall.dr.calcDispRegion();
 			}
 			else {
 				System.out.println("Error loading image "+yaml.filename+".");
 				return;
 			}
-			
-
 		}
+		
+		if(yaml.group!=null) {
+		    TessRule tr1 = TessRule.getTessRuleByName(yaml.group);
+		    wall.tickCheckbox(yaml.group);
+		    for(int i=0;i<3;++i)
+		        wall.fd.setVertex(i, yaml.vertX[i],yaml.vertY[i]);
+	
+		    wall.curvertex = -1;
+System.out.println("setTessellation "+tr1);		  
+		    wall.controller.setTesselation(tr1);
+//System.out.println("Image changed");
+//			wall.imageChanged();
+//System.out.println("applyTessellation");
+//		    wall.controller.applyTessellation();
+		}
+
 		if(yaml.anim!=null) {
 			var path = AnimationPath.getPathByName(yaml.anim, yaml.animSpeed, wall.dr.dispRect);
-			setAnimationPath(path);
-			startAnim();
+//			setAnimationPath(path);
+System.out.println("setAnimationPath "+path);
+			wall.setAnimationChoice(path.label);
+//			startAnim();
 		}
 		if(yaml.repeat!=-1) {
+System.out.println("setRepeat "+yaml.repeat);
 			setRepeat(yaml.repeat);
 		}
 	}

@@ -55,13 +55,17 @@ public class Controller {
         tr.calcFund(fd);
         if(showCoords)
             setText(fd.toString(dr));
-        tr.replicate(dr,fd);
+        applyTessellation(tr);
         if(showingOriginal) {
             wallpaper.origTileButton.setText("Original Image");
         }
         showingOriginal = false;
         repaint();
     }
+
+	public void applyTessellation(TessRule tr2) {
+		tr2.replicate(dr,fd);
+	}
 
     /** Apply the tessellation to the full image 
      * @param dr */

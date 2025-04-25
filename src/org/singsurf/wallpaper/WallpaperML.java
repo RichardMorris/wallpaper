@@ -19,8 +19,8 @@ public class WallpaperML {
 	public String group;
 	public int vertX[]=new int[3],vertY[] = new int[3];
 
-	public int zNumer=-1;
-	public int zDenom=-1;
+	public int zNumer=1;
+	public int zDenom=1;
 
 	public String filename;
 
