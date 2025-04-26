@@ -21,8 +21,9 @@ public abstract class PointRule extends TessRule
 
     static {
         for(int i=1;i<=NUM_RULES;++i) {
-            if(i>=2)
+            if(i>=2) {
                 cycleRules[i] = new CyclicRule(i);
+            }
             dyhRules[i] = new DihedralRule(i);
         }
     }
@@ -37,7 +38,7 @@ public abstract class PointRule extends TessRule
 
     int det=1;
 
-    //@Override
+    @Override
     public void calcFrame(FundamentalDomain fd,int selVert, boolean constrained)
     {
         int u1,u2,v1,v2; //,w1,w2;
@@ -77,7 +78,7 @@ public abstract class PointRule extends TessRule
         fd.setLatticeType(FundamentalDomain.POINT);
     }
 
-    //@Override
+    @Override
     public final void fun(int[] in, int[] out, int det) {
         // TODO Auto-generated method stub
 
@@ -87,11 +88,13 @@ public abstract class PointRule extends TessRule
     public void replicate(DrawableRegion dr,FundamentalDomain fd) {
         int x0=frameO.x;
         int y0=frameO.y;
-        //double len = Math.sqrt(spokesX[0] * spokesX[0] + spokesY[0] * spokesY[0]);
-        boolean error_flag = false;
 
-        for(int i=dr.dispRect.x;i<dr.dispRect.width+dr.dispRect.x;++i)
-            for(int j=dr.dispRect.y;j<dr.dispRect.height+dr.dispRect.y;++j)
+        boolean error_flag = false;
+        for(int i=dr.destRect.x;i<dr.destRect.width+dr.destRect.x;++i)
+            for(int j=dr.destRect.y;j<dr.destRect.height+dr.destRect.y;++j)
+//
+//        for(int i=dr.dispRect.x;i<dr.dispRect.width+dr.dispRect.x;++i)
+//            for(int j=dr.dispRect.y;j<dr.dispRect.height+dr.dispRect.y;++j)
             {
                 int x = i+dr.offset.x - x0;
                 int y = j+dr.offset.y - y0; // offset of figure
@@ -100,7 +103,6 @@ public abstract class PointRule extends TessRule
                 double cosSel = -Double.MAX_VALUE;
                 double sinSel=0.0;
                 int which = 0;
-                boolean mirror=false;
                 for(int k=0;k<n;++k) {
                     double cos =  x * spokesX[k] + y * spokesY[k];
                     double sin = -x * spokesY[k] + y * spokesX[k];
@@ -119,22 +121,15 @@ public abstract class PointRule extends TessRule
                     if(cos2>cosSel) {
                         cosSel = cos2;
                         sinSel = -sin2;
-                        mirror=true;
                     }
                 }
-                which = 1;
                 int srcX,srcY;
 
-                if(which==0 && !mirror) {
-                    srcX = x0 + x;
-                    srcY = y0 + y;
-                }
-                else {
                     double x1 = cosSel * spokesX[0] - sinSel * spokesY[0]; 
                     double y1 = cosSel * spokesY[0] + sinSel * spokesX[0]; 
-                    srcX = x0 + (int) (x1+0.5);	
-                    srcY = y0 + (int) (y1+0.5);
-                }
+                    srcX = x0 + (int) Math.rint(x1);	
+                    srcY = y0 + (int) Math.rint(y1);
+
                 try
                 {
                     if(srcX<0 || srcX>=dr.srcRect.width || srcY<0 || srcY>=dr.srcRect.height) {
@@ -148,8 +143,9 @@ public abstract class PointRule extends TessRule
                             int px = dr.inpixels[inInd];
                             dr.pixels[outInd] = px;
                         }
-                        else
+                        else {
                             dr.pixels[i+j*dr.dispRect.width] = backgroundRGB;
+                        }
                     }
                     else {
                         int outInd = i+j*dr.destRect.width;
@@ -157,7 +153,6 @@ public abstract class PointRule extends TessRule
                         int px = dr.inpixels[inInd];
                         dr.pixels[outInd] = px;
                     }
-                    //					pixels[i+j*width] = ((res[0]*256)/det)+((res[1]*256)/det)*256;
                 }
                 catch(Exception e)
                 {
@@ -172,7 +167,6 @@ public abstract class PointRule extends TessRule
                     dr.pixels[i+j*dr.destRect.width] = 0;
                 }
             }
-
         dr.fillSource();
     }
 
@@ -185,7 +179,7 @@ public abstract class PointRule extends TessRule
         }
 
         /** Calculates the fundamental domain */
-        //@Override
+        @Override
         public void calcFund(FundamentalDomain fd)
         {
             if(n==2) {
@@ -208,13 +202,13 @@ public abstract class PointRule extends TessRule
             }
         }
 
-        //@Override
+        @Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
             for(int i=0;i<spokesX.length;++i)
                 this.drawSimpleEdge(frameO, new Vec((int) (spokesX[i]*1000),(int) (spokesY[i]*1000)).add(frameO));
        }
 
-        //@Override
+        @Override
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             this.drawRotationPoint(frameO, n);
         }
@@ -233,7 +227,7 @@ public abstract class PointRule extends TessRule
         }
 
         /** Calculates the fundamental domain */
-        //@Override
+        @Override
         public void calcFund(FundamentalDomain fd)
         {
             if(n==1) {
@@ -269,7 +263,7 @@ public abstract class PointRule extends TessRule
             }
         }
         
-        //@Override
+        @Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
             for(int i=0;i<spokesX.length;++i)
                 this.drawSimpleEdge(frameO, new Vec((int) (spokesX[i]*1000),(int) (spokesY[i]*1000)).add(frameO));
@@ -295,7 +289,7 @@ public abstract class PointRule extends TessRule
                                 (int) ((spokesY[i]+spokesY[(i+1)%spokesX.length])*1000)).add(frameO));
         }
 
-        //@Override
+        @Override
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             this.drawRotationPoint(frameO, n);
             for(int i=0;i<spokesX.length;++i)

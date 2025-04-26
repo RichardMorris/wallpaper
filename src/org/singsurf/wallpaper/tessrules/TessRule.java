@@ -211,63 +211,7 @@ public abstract class TessRule
         if(COPY_TILES)
         	      copyTiles(dr, fd, baseRect);
 
-
-        /*		else {
-			for(i=dr.minX;i<dr.maxX;++i)
-				for(j=dr.minY;j<dr.maxY;++j)
-				{
-					x = i+dr.offsetX - x0;
-					y = j+dr.offsetY - y0; // offset of figure
-					in[0] = v2 * x - v1 * y;
-					in[1] = -u2 * x + u1 * y;
-					fun(in,res,det);
-
-					srcX = x0 + (res[0] * u1 + res[1] * v1 ) / det;	
-					srcY = y0 + (res[0] * u2 + res[1] * v2 ) / det;	
-
-					try
-					{
-						if(srcX<0 || srcX>=dr.width || srcY<0 || srcY>=dr.height) {
-							dr.pixels[i+j*dr.getOutWidth()] = backgroundRGB;
-						}
-						else {
-							int outInd = i+j*dr.getOutWidth();
-							int inInd = srcX+srcY*dr.width;
-							int px = dr.inpixels[inInd];
-							dr.pixels[outInd] = px;
-						}
-//						pixels[i+j*width] = ((res[0]*256)/det)+((res[1]*256)/det)*256;
-					}
-					catch(Exception e)
-					{
-						if(!error_flag)
-							System.out.println("Error ("+i+","+j+") det "+det
-									+ " x "+x
-									+ " y "+y
-									+ " in ("+ in[0] + ","+in[1]+")"
-									+ " res ("+ res[0] + ","+res[1]+")"
-									+ " sX "+srcX
-									+ " sY "+srcY
-							);
-						error_flag = true;
-						dr.pixels[i+j*dr.getOutWidth()] = 0;
-					}
-				}
-		}
-         */
-       // if(TIME) System.out.println("Micro "+((System.nanoTime()-n1)/1000));
-        /*
-		System.out.println(
-			 "vX0 " + verticies[0].x
-			+" vY0 " + verticies[0].y
-			+" u1 " + u1
-			+" u2 " + u2
-			+" v1 " + v1
-			+" v2 " + v2
-			);
-         */
-//        long t2 = System.currentTimeMillis();
-//        System.out.println(t2-t1);
+        if(TIME) System.out.println("Micro "+((System.nanoTime()-t1)/1000));
 
         dr.fillSource();
     }

@@ -20,6 +20,7 @@ import java.awt.image.PixelGrabber;
 import org.singsurf.wallpaper.tessrules.TessRule;
 
 public class DrawableRegion {
+
 	static final boolean DEBUG = false;
 	
 	/** Un-zoomed rectangle */ 
@@ -322,6 +323,15 @@ public class DrawableRegion {
 		System.err.println("Rerun application with the -Xmx512m VM flag to assign more memory");
 	}
 
+	@Override
+	public String toString() {
+		return "DrawableRegion:\n" +
+				"baseRect=" + baseRect + "\n"
+				+ "srcRect=" + srcRect + "\n"
+				+ "destRect=" + destRect + "\n"
+				+ "dispRect=" + dispRect + ", inpixels=" + inpixels.length + ", pixels="
+				+ pixels.length + ", img_ok=" + img_ok + "]";
+	}
 
 
 }

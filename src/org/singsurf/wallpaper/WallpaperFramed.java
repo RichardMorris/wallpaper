@@ -96,6 +96,12 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			animController.stopStartAnim();
 		}
+		if (e.getKeyCode() == KeyEvent.VK_N) {
+			animController.nextYaml();
+		}
+		if (e.getKeyCode() == KeyEvent.VK_P) {
+			animController.prevYaml();
+		}
 
 
         super.keyPressed(e);
@@ -256,7 +262,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             public void itemStateChanged(ItemEvent e) {
                 JCheckBoxMenuItem cbmi = (JCheckBoxMenuItem) e.getItemSelectable();
                 String label = cbmi.getActionCommand();
-                System.out.println("View item state changed "+label+ " recursive "+recursive);
             	if(recursive) return;
             	recursive=true;
                 if(label.equals("l"))
@@ -796,7 +801,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 		Rectangle oldBounds = null;
 		
 		public void showFullScreen(JFrame frame) {
-			System.out.println("Entering Full-Screen");
 			frame.dispose();
 			hideControls();
 			var menu = frame.getJMenuBar();
@@ -804,7 +808,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			frame.setUndecorated(true);
 			makeFullScreen(frame);
-//			dr.resize(bounds.width, bounds.height, bounds.x, bounds.y);
 			clearViewCheckboxes();
 			isFullScreen = true;
 			imageChanged();
@@ -820,7 +823,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 		}
 
 		public void showNormalScreen(JFrame frame) {
-			System.out.println("Exiting Full-Screen");
 			frame.dispose();
 			frame.setUndecorated(false);
 			frame.setExtendedState(JFrame.NORMAL);

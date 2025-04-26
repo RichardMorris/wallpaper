@@ -629,7 +629,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     protected JComboBox<String> buildAnimationChoice() {
 	    animateChoice = new JComboBox<String>();
 	    String animations[] = AnimationPath.getPathNames();	
-//	    	{"bounce","smooth","up","down","left","right","NE","NW","SE","SW", "rotate"};
 	    for(int i=0;i<animations.length;++i) {
 	        animateChoice.addItem(animations[i]);
 	    }
@@ -669,7 +668,9 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	    myCanvas.setPreferredSize(dr.destRect.getSize());
 	    AnimationPath path = AnimationPath.getPathByName(
 	    		animateChoice.getSelectedItem().toString() , 1,dr.destRect);
+	    path.firstItteration(fd);
 	    animController.setAnimationPath(path);
+//	    path.firstItteration(fd);
 	    dr.calcDispRegion();
 	    controller.redraw();
 	    setTitle();

@@ -131,15 +131,6 @@ public class AnimationController implements ActionListener {
 	}
 
 
-	public void nextYaml() {
-		if(yamlList==null) return;
-		if(yamlListPoss>=yamlList.size()) {
-			yamlListPoss = 0;
-		}
-		WallpaperML yaml = yamlList.get(yamlListPoss);
-		++yamlListPoss;
-		processYaml(yaml);
-	}
 
 
 	void processYaml(WallpaperML yaml) {
@@ -157,12 +148,11 @@ public class AnimationController implements ActionListener {
 				System.out.println("Error loading image "+yaml.filename+".");
 				return;
 			}
-			boolean flag = wall.dr.loadImageCore(img);
+			boolean flag = ((ZoomedDrawableRegion) wall.dr).loadImageCore(img);
 			if (flag) {
-				((ZoomedDrawableRegion) wall.dr).zoom(yaml.zNumer,yaml.zDenom); // ,!wall.isFullScreen());
+				((ZoomedDrawableRegion) wall.dr).zoom(yaml.zNumer,yaml.zDenom);
 				if(wall.isFullScreen()) {
 					Rectangle bounds = wall.mainFrame.getGraphicsConfiguration().getBounds();
-					System.out.println("Full-Screen"+bounds);
 					wall.dr.makeDest(bounds.width, bounds.height);
 
 				}
@@ -182,25 +172,37 @@ public class AnimationController implements ActionListener {
 		        wall.fd.setVertex(i, yaml.vertX[i],yaml.vertY[i]);
 	
 		    wall.curvertex = -1;
-System.out.println("setTessellation "+tr1);		  
 		    wall.controller.setTesselation(tr1);
-//System.out.println("Image changed");
-//			wall.imageChanged();
-//System.out.println("applyTessellation");
-//		    wall.controller.applyTessellation();
 		}
 
 		if(yaml.anim!=null) {
 			var path = AnimationPath.getPathByName(yaml.anim, yaml.animSpeed, wall.dr.dispRect);
-//			setAnimationPath(path);
-System.out.println("setAnimationPath "+path);
 			wall.setAnimationChoice(path.label);
-//			startAnim();
 		}
 		if(yaml.repeat!=-1) {
-System.out.println("setRepeat "+yaml.repeat);
 			setRepeat(yaml.repeat);
 		}
+		startAnim();
+	}
+
+	public void nextYaml() {
+		if(yamlList==null) return;
+		++yamlListPoss;
+		if(yamlListPoss>=yamlList.size()) {
+			yamlListPoss = 0;
+		}
+		WallpaperML yaml = yamlList.get(yamlListPoss);
+		processYaml(yaml);
+	}
+
+	public void prevYaml() {
+		if(yamlList==null) return;
+		--yamlListPoss;
+		if(yamlListPoss<0) {
+			yamlListPoss = yamlList.size()- 1;
+		}
+		WallpaperML yaml = yamlList.get(yamlListPoss);
+		processYaml(yaml);
 	}
 
 
