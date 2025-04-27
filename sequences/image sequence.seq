@@ -1,0 +1,128 @@
+frame:
+group: PGG
+vertices:
+  - [389,282]
+  - [170,282]
+  - [170,81]
+filename: images/shells1.jpg
+zoom: [1,1]
+anim: NE
+repeat: 10
+frame:
+group: P6
+vertices:
+  - [298,194]
+  - [170,194]
+  - [106,83]
+filename: images/fish.jpg
+zoom: [1,1]
+anim: left-right
+repeat: 10
+frame:
+group: P4g
+vertices:
+  - [496,175]
+  - [218,175]
+  - [218,-103]
+filename: images/kingfisher.jpg
+zoom: [2,3]
+anim: up-down
+repeat: 10
+frame:
+group: CM
+vertices:
+  - [236,257]
+  - [89,154]
+  - [236,52]
+filename: images/chub.jpg
+zoom: [1,1]
+anim: left-right
+repeat: 10
+frame:
+group: P6m
+vertices:
+  - [440,950]
+  - [297,1034]
+  - [153,952]
+filename: images/stripes.png
+zoom: [1,1]
+anim: up
+repeat: 30
+frame:
+group: P2
+vertices:
+  - [446,240]
+  - [319,240]
+  - [319,113]
+filename: images/office.jpg
+anim: NW
+repeat: 30
+frame:
+group: P3m1
+vertices:
+  - [260,755]
+  - [148,755]
+  - [92,658]
+filename: images/carvings.jpg
+zoom: [1,2]
+anim: bounce
+repeat: 30
+frame:
+group: P6m
+vertices:
+  - [557,219]
+  - [417,219]
+  - [347,98]
+filename: images/oca2.jpg
+zoom: [3,2]
+anim: bounce
+repeat: 30
+frame:
+group: PMM
+vertices:
+  - [461,197]
+  - [320,197]
+  - [320,56]
+filename: images/hemero2.jpg
+zoom: [1,1]
+anim: grow-centre
+repeat: 30
+frame:
+group: C7
+vertices:
+  - [322,274]
+  - [343,257]
+  - [326,236]
+filename: images/tile.jpg
+zoom: [1,1]
+anim: rotate
+repeat: 30
+frame:
+group: PMG
+vertices:
+  - [339,117]
+  - [183,273]
+  - [27,117]
+filename: images/colour grid.png
+zoom: [2,3]
+anim: right
+repeat: 30
+frame:
+group: P31M
+vertices:
+  - [447,198]
+  - [309,198]
+  - [240,78]
+filename: images/text description.png
+anim: left-right
+repeat: 30
+frame:
+group: CMM
+vertices:
+  - [293,186]
+  - [130,186]
+  - [130,23]
+filename: images/author.png
+zoom: [1,1]
+anim: up-down
+repeat: 10

@@ -1,0 +1,62 @@
+group: F1
+vertices:
+  - [623,239]
+  - [361,239]
+  - [361,26439]
+zoom: [1,1]
+anim: left-right
+repeat: 20
+frame:
+group: F2
+vertices:
+  - [623,239]
+  - [361,239]
+  - [361,26439]
+zoom: [1,1]
+anim: left-right
+repeat: 20
+frame:
+group: F3
+vertices:
+  - [623,239]
+  - [361,239]
+  - [361,26439]
+zoom: [1,1]
+anim: left-right
+repeat: 20
+frame:
+group: F4
+vertices:
+  - [623,239]
+  - [361,239]
+  - [361,26439]
+zoom: [1,1]
+anim: left-right
+repeat: 20
+frame:
+group: F5
+vertices:
+  - [623,239]
+  - [361,239]
+  - [361,26439]
+zoom: [1,1]
+anim: left-right
+repeat: 20
+frame:
+group: F6
+vertices:
+  - [623,239]
+  - [361,239]
+  - [361,26439]
+zoom: [1,1]
+anim: left-right
+repeat: 20
+frame:
+group: F7
+vertices:
+  - [623,239]
+  - [361,239]
+  - [361,26439]
+zoom: [1,1]
+anim: left-right
+repeat: 20

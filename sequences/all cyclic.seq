@@ -1,0 +1,171 @@
+frame:
+group: D1
+vertices:
+  - [471,257]
+  - [343,257]
+  - [471,257]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: C2
+vertices:
+  - [471,257]
+  - [343,257]
+  - [215,257]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: D2
+vertices:
+  - [471,257]
+  - [343,257]
+  - [215,257]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: C3
+vertices:
+  - [471,257]
+  - [343,257]
+  - [280,367]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: D3
+vertices:
+  - [471,257]
+  - [343,257]
+  - [280,367]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: C4
+vertices:
+  - [471,257]
+  - [343,257]
+  - [343,385]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: D4
+vertices:
+  - [471,257]
+  - [343,257]
+  - [343,385]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: C5
+vertices:
+  - [471,257]
+  - [343,257]
+  - [382,378]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: D5
+vertices:
+  - [471,257]
+  - [343,257]
+  - [382,378]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: C6
+vertices:
+  - [471,257]
+  - [343,257]
+  - [407,367]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: D6
+vertices:
+  - [471,257]
+  - [343,257]
+  - [407,367]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: C7
+vertices:
+  - [471,257]
+  - [343,257]
+  - [422,357]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: D7
+vertices:
+  - [471,257]
+  - [343,257]
+  - [422,357]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: C8
+vertices:
+  - [471,257]
+  - [343,257]
+  - [433,347]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: D8
+vertices:
+  - [471,257]
+  - [343,257]
+  - [433,347]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: C9
+vertices:
+  - [471,257]
+  - [343,257]
+  - [441,339]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: D9
+vertices:
+  - [471,257]
+  - [343,257]
+  - [441,339]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: C10
+vertices:
+  - [471,257]
+  - [343,257]
+  - [446,332]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20
+frame:
+group: D10
+vertices:
+  - [471,257]
+  - [343,257]
+  - [446,332]
+zoom: [1,1]
+anim: rotate-centre
+repeat: 20

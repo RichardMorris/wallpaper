@@ -1,0 +1,162 @@
+frame:
+group: P1
+vertices:
+  - [546,134]
+  - [418,134]
+  - [354,23]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: P2
+vertices:
+  - [546,134]
+  - [418,134]
+  - [354,23]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: CM
+vertices:
+  - [546,134]
+  - [418,134]
+  - [482,23]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: CMM
+vertices:
+  - [546,134]
+  - [418,134]
+  - [418,5]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: PM
+vertices:
+  - [546,262]
+  - [418,262]
+  - [418,5]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: PG
+vertices:
+  - [546,262]
+  - [418,262]
+  - [418,5]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: PMM
+vertices:
+  - [674,262]
+  - [418,262]
+  - [418,5]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: PMG
+vertices:
+  - [674,262]
+  - [418,262]
+  - [418,5]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: PGG
+vertices:
+  - [674,262]
+  - [418,262]
+  - [418,5]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: P4
+vertices:
+  - [674,262]
+  - [418,262]
+  - [418,5]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: P4m
+vertices:
+  - [674,262]
+  - [418,262]
+  - [418,5]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: P4g
+vertices:
+  - [674,262]
+  - [418,262]
+  - [418,5]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: P3
+vertices:
+  - [546,134]
+  - [418,134]
+  - [354,23]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: P3m1
+vertices:
+  - [546,134]
+  - [418,134]
+  - [354,23]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: P31M
+vertices:
+  - [546,134]
+  - [418,134]
+  - [354,23]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: P6
+vertices:
+  - [546,134]
+  - [418,134]
+  - [354,23]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: P6m
+vertices:
+  - [546,134]
+  - [418,134]
+  - [354,23]
+zoom: [1,1]
+anim: bounce
+repeat: 20
+frame:
+group: P6m
+vertices:
+  - [471,257]
+  - [343,257]
+  - [279,146]
+zoom: [1,1]
+anim: bounce
+repeat: 20
