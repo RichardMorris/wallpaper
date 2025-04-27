@@ -35,6 +35,7 @@ public abstract class AnimationPath {
 				"SE",
 				"SW",
 				"rotate",
+				"rotate-centre",
 				"left-right",
 				"up-down"
 			};
@@ -67,7 +68,10 @@ public abstract class AnimationPath {
 			path = new ShiftAnimation(speed,speed);
 		}
 		else if(label.equals("rotate")) {
-			path = new RotateAnimation(rect);
+			path = new RotateAnimation(rect,false);
+		}
+		else if(label.equals("rotate-centre")) {
+			path = new RotateAnimation(rect,true);
 		}
 		else if(label.equals("bounce")) {
 			path = new BounceAnimation(rect,speed,speed);

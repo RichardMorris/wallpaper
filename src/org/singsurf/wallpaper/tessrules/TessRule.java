@@ -262,8 +262,11 @@ public abstract class TessRule
     public static TessRule getTessRuleByName(String name) {
         if(name==null) name="";
         if(name.equalsIgnoreCase("P1")) return PgramRule.rhombusTT;
-        //if(name.equalsIgnoreCase("P2")) return PgramRule.rhombusR1;
-        if(name.equalsIgnoreCase("P2")) return IrregularHexRule.p2hex;
+        if(name.equalsIgnoreCase("P1A")) return IrregularHexRule.p1hex;
+        if(name.equalsIgnoreCase("P1H")) return IrregularHexRule.p1hex;
+        if(name.equalsIgnoreCase("P2")) return PgramRule.rhombusR1;
+        if(name.equalsIgnoreCase("P1A")) return IrregularHexRule.p1hex;
+        if(name.equalsIgnoreCase("P2H")) return IrregularHexRule.p2hex;
         if(name.equalsIgnoreCase("CM")) return DiamondRule.rhombCM;
         if(name.equalsIgnoreCase("CMM")) return DiamondRule.rhombCMM;
         if(name.equalsIgnoreCase("PM")) return RectRule.rectPM;

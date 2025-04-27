@@ -126,7 +126,7 @@ public class AnimationController implements ActionListener {
 
 	public void setYamlList(List<WallpaperML> yamlList) {
 		this.yamlList = yamlList;
-		this.yamlListPoss = 0;
+		this.yamlListPoss = -1;
 		nextYaml();
 	}
 
@@ -136,33 +136,7 @@ public class AnimationController implements ActionListener {
 	void processYaml(WallpaperML yaml) {
 
 		if(yaml.filename!=null) {
-			System.out.println("Anim LoadImage "+yaml.filename);
-	        BufferedImage img;
-			try {
-				img = ImageIO.read(new File(yaml.filename));
-			} catch (IOException e) {
-				System.out.println("Error loading image "+yaml.filename+".");
-				return;
-			}
-			if(img==null) {
-				System.out.println("Error loading image "+yaml.filename+".");
-				return;
-			}
-			boolean flag = ((ZoomedDrawableRegion) wall.dr).loadImageCore(img);
-			if (flag) {
-				((ZoomedDrawableRegion) wall.dr).zoom(yaml.zNumer,yaml.zDenom);
-				if(wall.isFullScreen()) {
-					Rectangle bounds = wall.mainFrame.getGraphicsConfiguration().getBounds();
-					wall.dr.makeDest(bounds.width, bounds.height);
-
-				}
-				wall.dr.makeOutImage();
-				if(!wall.isFullScreen()) wall.dr.calcDispRegion();
-			}
-			else {
-				System.out.println("Error loading image "+yaml.filename+".");
-				return;
-			}
+			loadAnimImage(yaml);
 		}
 		
 		if(yaml.group!=null) {
@@ -183,6 +157,38 @@ public class AnimationController implements ActionListener {
 			setRepeat(yaml.repeat);
 		}
 		startAnim();
+	}
+
+
+	public void loadAnimImage(WallpaperML yaml) {
+		System.out.println("Anim LoadImage "+yaml.filename);
+		BufferedImage img;
+		try {
+			img = ImageIO.read(new File(yaml.filename));
+		} catch (IOException e) {
+			System.out.println("Error loading image "+yaml.filename+".");
+			return;
+		}
+		if(img==null) {
+			System.out.println("Error loading image "+yaml.filename+".");
+			return;
+		}
+		boolean flag = ((ZoomedDrawableRegion) wall.dr).loadImageCore(img);
+		if (flag) {
+			((ZoomedDrawableRegion) wall.dr).zoom(yaml.zNumer,yaml.zDenom);
+			if(wall.isFullScreen()) {
+				Rectangle bounds = wall.mainFrame.getGraphicsConfiguration().getBounds();
+				wall.dr.makeDest(bounds.width, bounds.height);
+
+			}
+			wall.dr.makeOutImage();
+			if(!wall.isFullScreen()) wall.dr.calcDispRegion();
+			wall.setTitle(yaml.filename);
+		}
+		else {
+			System.out.println("Error loading image "+yaml.filename+".");
+			return;
+		}
 	}
 
 	public void nextYaml() {

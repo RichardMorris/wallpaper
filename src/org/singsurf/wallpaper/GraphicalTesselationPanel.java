@@ -63,8 +63,9 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         System.out.println(System.getProperty("user.dir"));
         // controller = new Controller(this,)
         GraphicalTesselationBox TTcb = new GraphicalTesselationBox(PgramRule.rhombusTT,"p1");
-        GraphicalTesselationBox R1acb = new GraphicalTesselationBox(PgramRule.rhombusR1,"p2a");
-        GraphicalTesselationBox R1cb = new GraphicalTesselationBox(IrregularHexRule.p2hex,"p2");
+        GraphicalTesselationBox TTAcb = new GraphicalTesselationBox(IrregularHexRule.p1hex,"p1h");
+        GraphicalTesselationBox R1acb = new GraphicalTesselationBox(PgramRule.rhombusR1,"p2");
+        GraphicalTesselationBox R1cb = new GraphicalTesselationBox(IrregularHexRule.p2hex,"p2h");
         GraphicalTesselationBox CMcb = new GraphicalTesselationBox(DiamondRule.rhombCM,"cm");
         GraphicalTesselationBox CMMcb = new GraphicalTesselationBox(DiamondRule.rhombCMM,"cmm");
         GraphicalTesselationBox PMcb = new GraphicalTesselationBox(RectRule.rectPM,"pm");
@@ -84,10 +85,14 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0; gbc.gridy = 0; 
         
+        gbc.gridwidth = 2;
+        p1.add(new JLabel("Symmetry groups:"),gbc);
+        ++gbc.gridy;
+        p1.add(new JLabel(""),gbc);
         gbc.gridwidth = 1;
         ++gbc.gridy;
         gbc.gridx = 0;					p1.add(TTcb,gbc);
-        //++gbc.gridx;                    p1.add(R1cb,gbc);
+        ++gbc.gridx;                    p1.add(TTAcb,gbc);
         ++gbc.gridx;                    p1.add(R1acb,gbc);
 
         ++gbc.gridy;
