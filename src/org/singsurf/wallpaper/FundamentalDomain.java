@@ -20,10 +20,10 @@ import org.singsurf.wallpaper.tessrules.TessRule;
 public class FundamentalDomain {
     final static boolean DEBUG=false;
     final static boolean BW_SYMS=false;
+    public static final int PARALLOGRAM = 0;
     public static final int HEXAGON = 1;
     public static final int FRIEZE = 2;
     public static final int POINT = 3;
-    public static final int PARALLOGRAM = 0;
     public static final int BASIC=4;
 
 //	int[] vertexX = {397,281,281,397,0,0};
@@ -54,12 +54,12 @@ public //	int[] fundY = {0,0,0,0,0,0};
 	public int det=0;
 	
 	boolean drawGlideLines = false;
-        boolean drawReflectionLines = false;
-        boolean drawRotationPoints = false;
-        boolean drawCells = false;
-        boolean drawDomain = true;
-        boolean drawSelectionPoints = true;
-        boolean drawTiles = false;
+	boolean drawReflectionLines = false;
+	boolean drawRotationPoints = false;
+	boolean drawCells = false;
+	boolean drawDomain = true;
+	boolean drawSelectionPoints = true;
+	boolean drawTiles = false;
 	/**
 	 * Gets the index of vertex closest to x,y or -1 in none close.
 	 * @param x
@@ -461,6 +461,9 @@ public //	int[] fundY = {0,0,0,0,0,0};
 		this.O = this.getOrigin();
 		this.det = U.x * V.y - U.y * V.x;
 		//System.out.println("Frame "+U+" "+V+" det "+det);
+	}
+	public int getLatticeType() {
+		return latticeType;
 	}
 
 	public void removeLatticePoints(LinkedList<Vec> points, Rectangle rect) {

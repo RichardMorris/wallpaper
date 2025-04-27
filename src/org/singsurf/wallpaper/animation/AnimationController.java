@@ -85,21 +85,23 @@ public class AnimationController implements ActionListener {
 	    	startAnim();
 	}
 
-
+	long lastTime = 0;
 	@Override
 	public void actionPerformed(ActionEvent e) {
-        long t1 = System.currentTimeMillis();
+        long t1 = System.nanoTime();
         //long diff = (t1-lastTime)/50;
         //for(long i=count;i<=diff;++i)
         path.nextItteration(controller.getFD());
         controller.applyTessellation();
-        long t2 = System.currentTimeMillis();
+        long t2 = System.nanoTime();
         long elapsed = t2-t1;
         sum += elapsed;
         if(count%10==0) {
-            if(DEBUG) System.out.println("Elapse " + sum);
+        	long currentTime = System.currentTimeMillis();
+            if(DEBUG) System.out.println("Time to calculate 10 frames "+(sum/1000000)+"ms wall clock change "+(currentTime-lastTime)/10);
             if(DEBUG) System.out.flush();
             sum=0;
+            lastTime = currentTime;
         }
         ++count;
 	}

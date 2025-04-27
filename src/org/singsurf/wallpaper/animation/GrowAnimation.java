@@ -67,10 +67,21 @@ public class GrowAnimation extends AnimationPath {
 		fd.cellVerts[0].set(A);
 		fd.cellVerts[1].set(O);
 		fd.cellVerts[2].set(B);
-		Rectangle fdBB = fd.getFDBoundingBox();
+		
+		
+		if(fd.getLatticeType() == FundamentalDomain.PARALLOGRAM
+				|| fd.getLatticeType() == FundamentalDomain.HEXAGON) {
 
-		if(!rect.contains(fdBB) ) {
-			dir = -1;
+			Rectangle fdBB = fd.getFDBoundingBox();
+
+			if(!rect.contains(fdBB) ) {
+				dir = -1;
+			}
+		}
+		else  {
+			if(!rect.contains(O)|| !rect.contains(A)) {
+				dir = -1;
+			}
 		}
 		if(len < 40)
 			dir = 1;
