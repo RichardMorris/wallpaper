@@ -353,25 +353,16 @@ public abstract class HexiRule extends TessRule
         //@Override
         public void calcFund(FundamentalDomain fd)
         {
-            int u1,u2,v1,v2; //,w1,w2;
-
-            u1 =	frameV.x;
-            u2 =	frameV.y;
-            v1 = 	frameU.x;
-            v2 = 	frameU.y;
-            fd.fund[0].x = fd.cellVerts[1].x+u1/2; fd.fund[0].y = fd.cellVerts[1].y+u2/2;
-            fd.fund[1].x = fd.cellVerts[1].x; fd.fund[1].y = fd.cellVerts[1].y;
-            fd.fund[2].x = fd.cellVerts[1].x + v1/2; fd.fund[2].y = fd.cellVerts[1].y + v2/2;
-            fd.fund[3].x = fd.cellVerts[1].x + u1+v1; fd.fund[3].y = fd.cellVerts[1].y + u2+v2;
-            fd.numFund =4;
+            fd.fund[0].set(fd.cellVerts[1]); 
+            fd.fund[1].set(Vec.linComb(1,fd.cellVerts[1],1, frameU,1, frameV)); 
+            fd.fund[2].set(Vec.linComb(1,fd.cellVerts[1],-1, frameU)); 
+            fd.numFund =3;
         }
 
         //@Override
         public void fun(int[] in,int[] out,int det)
         {
-            /*			int a = (int) Math.floor((float) in[0]/det);
-			int b = (int) Math.floor((float) in[1]/det);
-             */			int a = (in[0]<0 ? (in[0]+1)/det -1 : in[0]/det); 
+        	 int a = (in[0]<0 ? (in[0]+1)/det -1 : in[0]/det); 
              int b = (in[1]<0 ? (in[1]+1)/det -1 : in[1]/det); 
              int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
              int beta = in[1] % det; if(beta < 0) beta = beta + det;
@@ -387,7 +378,6 @@ public abstract class HexiRule extends TessRule
                  {
                      beta = alpha - beta +det;
                  }
-
              }
              else
              {
@@ -395,6 +385,11 @@ public abstract class HexiRule extends TessRule
                  {
                      alpha = beta - alpha + det;
                  }
+                 // Now rotate 120 degrees to form thin triangle
+                 int gamma = -beta;
+                 int delta  = alpha - beta;
+                 alpha = gamma;
+                 beta = delta;
              }
 
              out[0] = alpha;
@@ -449,10 +444,11 @@ public abstract class HexiRule extends TessRule
         //@Override
         public void paintDomainEdges(Vec U, Vec V,
                 Vec O, int det) {
-            Vec A = Vec.linComb(3, O, -1, U,-1,V,3);
-            Vec B = Vec.linComb(3, O, 2, U,-1,V,3);
+            Vec A = Vec.linComb(3, O, 2, U,2,V,3);
+            Vec B = Vec.linComb(3, O, -4, U, 2,V, 3);
+            Vec C = Vec.linComb(3, O, 2, U,-4,V,3);            
+            
             Vec B2 = Vec.linComb(6, O, 2, U,-1,V,6);
-            Vec C = Vec.linComb(3, O, -1, U,2,V,3);
             Vec C2 = Vec.linComb(6, O, -1, U,2,V,6);
             Vec D = Vec.linComb(6, O, 5, U,-1,V,6);
             Vec E = Vec.linComb(6, O, -1, U,5,V,6);
