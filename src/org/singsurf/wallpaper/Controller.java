@@ -49,8 +49,8 @@ public class Controller {
      */
     public void applyTessellation() {
         if(constrainVertices)
-            tr.constrainVertices(fd.cellVerts, this.wallpaper.curvertex);
-        tr.calcFrame(fd,this.wallpaper.curvertex, this.constrainVertices);
+            tr.constrainVertices(fd.cellVerts, wallpaper.curvertex);
+        tr.calcFrame(fd,wallpaper.curvertex, constrainVertices);
         tr.fixVerticies(fd);
         tr.calcFund(fd);
         if(showCoords)
@@ -80,10 +80,10 @@ public class Controller {
      */
     public void calcGeom()
     {
-        if(this.constrainVertices)
-            tr.constrainVertices(fd.cellVerts, this.wallpaper.curvertex);
+        if(constrainVertices)
+            tr.constrainVertices(fd.cellVerts, wallpaper.curvertex);
         // first need to ensure we've got a rectangle
-        tr.calcFrame(fd,this.wallpaper.curvertex, this.constrainVertices);
+        tr.calcFrame(fd,wallpaper.curvertex, constrainVertices);
         tr.fixVerticies(fd);
         tr.calcFund(fd);
         if(showCoords)
@@ -95,7 +95,7 @@ public class Controller {
      */
     public void showOriginal() {
         dr.reset();
-        if(!this.showingOriginal) {
+        if(!showingOriginal) {
             wallpaper.origTileButton.setText("Tile image");
         }
         showingOriginal = true;
@@ -104,15 +104,15 @@ public class Controller {
 
     /** Redraw the current image, applying tessellation if necessary. */
     public void redraw() {
-        if(!showingOriginal)
-            applyTessellation();
-        else
+        if(showingOriginal)
             showOriginal();
+        else
+            applyTessellation();
 
     }
 
     public void repaint() {
-        this.wallpaper.myCanvas.repaint();
+        wallpaper.myCanvas.repaint();
     }
 
     public void setTesselation(TessRule tr) {
@@ -122,7 +122,7 @@ public class Controller {
     }
 
     public void setText(String message) {
-        this.wallpaper.setText(message);
+        wallpaper.setText(message);
 
     }
 
@@ -181,7 +181,7 @@ public class Controller {
 	    g.setClip(0, 0, image.getWidth(null), image.getHeight(null));
 	    wallpaper.paintCanvas(g);
 	    //	          g.drawImage(image, 0, 0, null);
-	    //	          fd.paintSymetries(g, this.controller.tr);
+	    //	          fd.paintSymetries(g, controller.tr);
 	
 	    ImageSelection imageSelection = new ImageSelection(newImage);
 	    Toolkit toolkit = Toolkit.getDefaultToolkit();

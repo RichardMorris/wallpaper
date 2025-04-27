@@ -644,7 +644,13 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 		    	animController.nextYaml();
 		    });
     	    animateMenu.add(mi2);
-    	    
+
+    	    JMenuItem mi3 = new JMenuItem("Prev frame");
+    	    mi3.addActionListener((e) -> {
+		    	animController.prevYaml();
+		    });
+    	    animateMenu.add(mi3);
+
     	    return animateMenu;
     	}
 

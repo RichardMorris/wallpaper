@@ -41,7 +41,7 @@ public abstract class RectRule extends TessRule
         if(selVert==2 || lenV < 0.0 || firstCall) 
             lenV = Math.sqrt((v1 * v1 + v2 * v2));
 
-        if(selVert!=2 || lenU < 0.0 || firstCall)
+        if(selVert==0 || lenU < 0.0 || firstCall)
             lenU = Math.sqrt((u1 * u1 + u2 * u2));
 
         if(selVert==2 && !firstCall) {

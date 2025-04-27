@@ -37,7 +37,9 @@ public abstract class AnimationPath {
 				"rotate",
 				"rotate-centre",
 				"left-right",
-				"up-down"
+				"up-down",
+				"grow",
+				"grow-centre"
 			};
 	}
 	public static AnimationPath getPathByName(String label,int speed,Rectangle rect) {
@@ -84,6 +86,12 @@ public abstract class AnimationPath {
 		}
 		else if(label.equals("smooth")) {
 			path = new LissajousAnimation(rect,speed);
+		}
+		else if(label.equals("grow")) {
+			path = new GrowAnimation(rect,false);
+		}
+		else if(label.equals("grow-centre")) {
+			path = new GrowAnimation(rect,true);
 		}
 		path.label = label;
 		return path;

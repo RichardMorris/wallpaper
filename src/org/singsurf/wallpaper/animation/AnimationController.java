@@ -156,7 +156,11 @@ public class AnimationController implements ActionListener {
 		if(yaml.repeat!=-1) {
 			setRepeat(yaml.repeat);
 		}
-		startAnim();
+		if(yaml.anim!=null)
+			startAnim();
+		else
+	        controller.applyTessellation();
+
 	}
 
 

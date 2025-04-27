@@ -26,8 +26,13 @@ public class Vec extends Point {
 	public Vec div(int div) {
 		return new Vec((x+div/2)/div,(y+div/2)/div);
 	}
-	public Vec mul(int div) {
-		return new Vec(x*div,y*div);
+	/**
+	 * Closest integer vector to mul * this.
+	 * @param mul
+	 * @return
+	 */
+	public Vec mul(double mul) {
+		return new Vec((int) Math.rint(x*mul),(int) Math.rint(y*mul));
 	}
 	public int lenSq() {
 		return x*x+y*y;
