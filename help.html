@@ -11,21 +11,23 @@
 	href="maths.html">maths</a></p>
 
 <h1>Wallpaper patterns - Help</h1>
-<p>The wallpaper pattern Java application creates repeating
+<p>The Wallpaper Pattern Java application creates repeating
 patterns based on an image and the 17 mathematical plane symmetry
 groups.</p>
 
-<p>For further assistance you can email me <a
+<p>For further assistance you can email <a
 	href="mailto:rich@singsurf.org">rich@singsurf.org</a>.</p>
 
 <h2>Installation</h2>
 <p>The package requires a Java JDK version 21 or newer to load. 
+	You can download one from either
 <ul>
 <li><a href="https://www.oracle.com/java/technologies/downloads/">Oracle</a>
 <li><a href="https://adoptium.net/">Eclipse Adoptium</a>
 </ul>
 
-<p>To installation of the package unpack the zip file into a
+<p>To install the program first install the jdk and
+just unpack the zip file into a suitable
 directory. No other action should be needed.</p>
 
 <h2>Starting the program</h2>
@@ -42,16 +44,24 @@ directory. No other action should be needed.</p>
 		<li><code>wallpaper.bat filename.jpg 800 600</code> - runs with
 		the selected filename and specified window size</li>
 	</ul></li>
-	<li>Using: <code>java -Xmx512m -jar wallpaper.jar image.jpg 800 600</code>
-	use this method if more memory need to be allocated.</li>
+	<li>Running <code>java -Xmx512m -jar wallpaper.jar image.jpg 800 600</code>
+	runs the program with more memory allocated, useful for working with very large images</li>
 </ol>
 
 <h2>Using the program</h2>
-<h3>Selection tessellations</h3>
-<p>A tessellation can be selected by choosing one of the check-boxes
+
+<p>The program dispaly a window showing either an image or a tesselation created from
+	part of the image. 
+
+<p>
+<img src="naut/UI.png" alt="User Interface" width="452" height="249">
+	
+<h3>Selecting tessellations</h3>
+<p>A tessellation can be selected by choosing one of the buttons
 on the left hand side of the screen. These list the 17 wallpaper groups
-based around lattice structures. Additional tessellations for the 7
-Frieze group and cyclic and dihedral groups can be pull down menus below.
+based around lattice structures. See <a href="maths.html">mathematical description</a>
+for details of these.
+Additional tessellations for the 7 frieze group and cyclic and dihedral groups can be pull down menus below.
 The <b>basics</b> pull down menu allows the basic transformations to be applied:
 <i>translations</i>, <i>rotations</i>, <i>reflections</i>, <i>glide-reflections</i>,
 <i>uniform scaling</i>, and general <i>linear transformations</i> to be applied.  </p>
@@ -59,29 +69,54 @@ The <b>basics</b> pull down menu allows the basic transformations to be applied:
 <p>The shape of the domain can be altered by dragging the red, green
 and blue points. For some groups only the red and green points are
 visible. It sometimes happens that the some of the points will be lost
-outside the screen. If that happens the <b>Reset Domain</b> button can
-be used to load a default set of points which can appear on screen.</p>
+outside the screen. If that happens the <b>Reset</b> button can
+be used to load a default configuration.</p>
 
 <p>Two sets lines are shown. The blue lines are the <i>fundamental
 domain</i>. The resulting image is constructed by taking the points inside
 this region and rotating, reflecting and translating them to fill the
 screen. The yellow lines give the shape of the lattice cells, which are
 either parallelograms or hexagons. These shapes tessellate the screen
-and each lattice cell contains exactly the same image as the others.</p>
+and each lattice cell contains exactly the same image, up to translation,
+as every others cell.</p>
+<p>
+<img src="naut/cell and domain.png" width="464" height="384"
+    alt="Displaying the tessellation">
+	
+<p>In the above image the fundamental domain is the blue rectangle
+four copies of it are used the fill the yellow rectangle. The Yellow rectangle
+is copies to tile the screen. 
 
-<p>The <b>image</b> menu allows some image manipulation to be
-carried out. The image can be zoomed by 1/2 to 1/32, this will preserve
-the underlying image. The other options will modify the underlying image
-these allow rotation by 90 degrees, scaling and resizing of the image.
-Apart from zooming they cannot be undone.</p>
+<p>Further details like the symmetry lines can be shown by using the view menu. 
+Cells and tiles can be outlined in black,
+the selection points and fundamental domain can be shown and hidden.
+Reflection lines in green, glide reflection lines in dashed red
+and rotation points in yellow can be shown. 
+180° degree rotation points are shown as a yellow circle 
+60° as yellow triangles and 90° as yellow squares and 120° as yellow
+hexagons.
+
+<p>
+<img src="naut/symetries.png" width="453" height="308"
+    alt="Displaying the tessellation with rotation points">
 
 
+	
+<h2>File menu</h2>
+<p>Image files can be loaded and saved using the <b>File</b> menu.
+When saving the image file the the visible image is saved. This
+can be the original image or the tessellated image. Any overlaying
+points or lines are also saved. So ensure the correct parts are displayed
+using the <b>View</b> menu. 	
+	
 <h3>Saving very large images</h3>
 <p>If a very large image is required, say 8000 by 6000, this can
 cause problems with memory as they can take 50MB memory or more. Some
 improvement can be made by increasing the size of heap space allocated
 when the program is used using</p>
-<code>java -Xmx512m -jar wallpaper.jar image.jpg 800 600</code>
+<pre>
+	java -Xmx512m -jar wallpaper.jar image.jpg 800 600
+</pre>
 <p>to allocate 512 megabytes heap space. Swap space on your computer
 may also be a limiting factor. 
 
@@ -90,6 +125,81 @@ the <b>Save expanded</b> menu item on the <b>File</b> menu can be used,
 this allows the desired output size to be set. This option only supports
 ppm and bmp format images.</p>
 
+<h3>Saving patterns and sequences</h3>
+<p>Patterns, comprising a wallpaper group specifation and a
+	set of verties of the fundamental domain, can be saved using the <b>Save
+		pattern</b> option on the <b>File</b> menu.
+<p>Pattern files are formated like:
+<pre>
+	group: P3m1
+	vertices:
+	  - [471,257]
+	  - [343,257]
+	  - [279,146]
+</pre>
+<p>They can be loaded and saved using the <b>Load pattern</b> and
+	<b>Save pattern</b> option on the <b>File</b> menu.
+	Files have the ".pat" extension. 
+	
+<p>It is possible to save a script with a sequence of animations, as a set of frames
+	where each frame specifies a different pattern, animation type and optionally a different image file.
+	They are save in a file with the ".seq" extension.
+	Each frame in the sequence is run in order and the sequence repeated
+	    until the <b>stop</b> button is pressed. 
+
+<p>Sequence files are formatted like:
+<pre>
+	frame:
+	group: P4m
+	vertices:
+	  - [451,257]
+	  - [323,257]
+	  - [323,129]
+	filename: C:\Users\rich\wallpaper\images\bark.jpg
+	zoom: [1,1]
+	anim: left
+	repeat: 10
+	frame:
+	group: P4
+	vertices:
+	  - [333,970]
+	  - [445,970]
+	  - [445,858]
+	filename: images\lilly sml.jpg
+	zoom: [3,2]
+	anim: SE
+	repeat: 4	
+</pre>
+	
+<p>The fields are:
+	<ul>
+		<li><b>frame:</b> specifies the start of a new frame.</li>
+		<li><b>group:</b> specifies the wallpaper group to be used.</li>
+		<li><b>vertices:</b> specifies the vertices of the fundamental domain.</li>
+		<li><b>filename:</b> specifies the image to be used. (optional)</li>
+		<li><b>zoom:</b> specifies the zoom factor to be used <code>[2, 3] (optional)</code>
+				for a zoom factor of 2/3.</li>
+		<li><b>anim:</b> specifies the type of animation to be used. <code>up</code>, <code>down</code> etc.</li>
+		<li><b>repeat:</b> specifies how long the animation will run for, in seconds.</li>
+	</ul>
+		
+	<p>Sequence files can be loaded and saved using the <b>Load
+        sequence</b> and constructed using the <b>Append sequence</b> options on the <b>File</b> menu.
+	Sequences are constructed in multple steps, by appending multiples frames to the same file. At each step
+	a dialog will be shown to allow the user to set the running time for the animation and
+	The current pattern, filename and animation will be saved.
+	
+	
+<p>Some sample sequence files are included in the <b>sequences</b> directory.
+These are
+</p>
+<ul>
+    <li><b>sequences/all patterns.seq</b> - all the regular wallpaper groups.</li>
+    <li><b>sequences/all friezes.seq</b> - all the freize groups</li>
+    <li><b>sequences/all cyclic.seq</b> - all the cyclic and dyhedrai groups.</li>
+    <li><b>sequences/image sequence.seq</b> - a sequence different images with different groups.</li>
+</ul>
+	
 <h3>Creating rectangular tiles</h3>
 <p>Rectangular tiles which can be used to tile a desktop background
 can be produced. However, not all patterns have the correct geometry to
@@ -105,6 +215,52 @@ created.</p>
 <p>If possible the tileable region can be saved using the <b>Save
 Tile</b> option on the <b>File</b> menu.</p>
 
+<h3>Image menu</h3>
+
+<p>The <b>image</b> menu allows some image manipulation to be
+carried out. 
+
+<uL>
+	<li><b>Zoom</b> - zoom in or out of the image. The zoom factor is a fraction
+		of the original image size. Preserves the underlying image.</li
+	<li><b>Crop</b> crop the image, modifying the underling image</li>
+	<li><b>Expand</b> - expand the size of the image, either tiling the image or
+        adding a background colour. The background colour can be set using the
+        <b>Set background</b> option on the <b>options</b> menu.
+		This modifies the underlying image</li>
+	<li><b>Rescale</b> - rescale the undelying image. This modifies the underlying image</li>	
+		
+	<li><b>Flip/Rotate</b> - flip the image horizontally or vertically or rotate
+        the image by multiples of 90 degrees. This modifies the underlying image.</li>
+	<li><b>Split</b> - split the display into two halves, the left half shows
+		the underlying image and the right half show the result of the tesselation.
+		Preserves the underlying image.</li>
+</ul>
+<p>Finer cotrol can be obtained by using the <b>Basic Transform</b> 
+to rotate by a precise amount, and then copying and pasting the image.
+
+<h2>Windows menu</h2>
+<p>The <b>Windows</b> menu has a single option <b>Full screen</b> which
+displays the image in full screen mode. All controls are hidden and the image is
+expandes to fill the screen. Use the F11 toggle full screen mode
+and and ESC keys to return to the normal
+screen.</p>
+
+<h2>Shortcut keys</h2>
+<p>The shape of the domain can be altered using the keyboard.
+	The following keys are used:
+	<ul>
+		<li><b>Arrow keys</b> - translate the domain around the screen.</li>
+        <li><b>W, A, S, D</b> - move the green selection point.</li>
+        <li><b>T, F, G, H</b> - move the red selection point.</li>
+        <li><b>I, J, K, L</b> - move the blue selection point.</li>
+		<li><b>Space</b> - toggle the animation on and off.</li>
+		<li><b>N</b> - next frame in a sequence.</li>
+		<li><b>P</b> - previous fraame in a sequence.</li>
+		<li><b>F11</b> - toggle full screen mode.</li>
+		<li><b>ESC</b> - exit full screen mode.</li>
+	</ul>
+
 <!-- 
 <h3>Painting on the image</h3>
 <p>It is possible to paint on the image, to help touchup the final image.
@@ -115,7 +271,15 @@ To start the paint mode select
 
 <h2>Version history</h2>
 <dl>
-	<dt>Version 1.6 - 18 April 2025</dt>
+	<dt>Version 1.7 - 25 April 2025</dt>
+	<dd>
+	<ul>
+		<li>Allow full screen mode</li>
+		<li>Sequences of animations can saved and loaded to/from files</li>
+		<li>W, A, S, D; T, F, G, H; I, J, K, L keys can be used to move the selection points</li>
+	</ul>
+	</dd>
+	<dt>Version 1.6 - 17 April 2025</dt>
 	<dd>
 	<ul>
 		<li>Now uses Java version 21</li>
