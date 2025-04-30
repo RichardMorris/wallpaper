@@ -265,7 +265,7 @@ public abstract class TessRule
         if(name.equalsIgnoreCase("P1A")) return IrregularHexRule.p1hex;
         if(name.equalsIgnoreCase("P1H")) return IrregularHexRule.p1hex;
         if(name.equalsIgnoreCase("P2")) return PgramRule.rhombusR1;
-        if(name.equalsIgnoreCase("P1A")) return IrregularHexRule.p1hex;
+        if(name.equalsIgnoreCase("P2A")) return IrregularHexRule.p2hex;
         if(name.equalsIgnoreCase("P2H")) return IrregularHexRule.p2hex;
         if(name.equalsIgnoreCase("CM")) return DiamondRule.rhombCM;
         if(name.equalsIgnoreCase("CMM")) return DiamondRule.rhombCMM;
@@ -280,6 +280,7 @@ public abstract class TessRule
         if(name.equalsIgnoreCase("P3")) return HexiRule.triP3;
         if(name.equalsIgnoreCase("P3M1")) return HexiRule.triP3m1;
         if(name.equalsIgnoreCase("P31M")) return HexiRule.triP31m;
+        if(name.equalsIgnoreCase("P31Mk")) return HexiRule.triP31mk;
         if(name.equalsIgnoreCase("P6")) return HexiRule.triP6;
         if(name.equalsIgnoreCase("P6M")) return HexiRule.triP6m;
         if(name.equalsIgnoreCase("F1")) return FrezeRule.F1;

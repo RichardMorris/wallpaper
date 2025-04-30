@@ -77,10 +77,12 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         GraphicalTesselationBox P4Gcb = new GraphicalTesselationBox(SquRule.squP4g,"p4g");
         GraphicalTesselationBox P4Mcb = new GraphicalTesselationBox(SquRule.squP4m,"p4m");
         GraphicalTesselationBox P3cb = new GraphicalTesselationBox(HexiRule.triP3,"p3");
-        GraphicalTesselationBox P31Mcb = new GraphicalTesselationBox(HexiRule.triP31m,"p31m");
         GraphicalTesselationBox P3M1cb = new GraphicalTesselationBox(HexiRule.triP3m1,"p3m1");
+        GraphicalTesselationBox P31Mcb = new GraphicalTesselationBox(HexiRule.triP31m,"p31m");
+        GraphicalTesselationBox P31Mkcb = new GraphicalTesselationBox(HexiRule.triP31mk,"p31mk");
         GraphicalTesselationBox P6cb = new GraphicalTesselationBox(HexiRule.triP6,"p6");
         GraphicalTesselationBox P6Mcb = new GraphicalTesselationBox(HexiRule.triP6m,"p6m");
+
 
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0; gbc.gridy = 0; 
@@ -92,7 +94,6 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         gbc.gridwidth = 1;
         ++gbc.gridy;
         gbc.gridx = 0;					p1.add(TTcb,gbc);
-        ++gbc.gridx;                    p1.add(TTAcb,gbc);
         ++gbc.gridx;                    p1.add(R1acb,gbc);
 
         ++gbc.gridy;
@@ -168,6 +169,21 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
 
         gbc.gridx = 0; ++gbc.gridy;     gbc.gridwidth = 3;
         p1.add(basicChoice,gbc);
+
+        
+        gbc.gridwidth = 2;
+        ++gbc.gridy;    
+        p1.add(new JLabel(""),gbc);
+        ++gbc.gridy;    
+        gbc.gridx = 0;	
+        p1.add(new JLabel("Alternate domains:"),gbc);
+        gbc.gridwidth = 1;
+        
+        
+        ++gbc.gridy;    
+        gbc.gridx = 0;					p1.add(TTAcb,gbc);
+        ++gbc.gridx; 					p1.add(R1cb,gbc);
+        ++gbc.gridx; 					p1.add(P31Mkcb,gbc);
 
         ++gbc.gridy; gbc.gridx=0;
         gbc.fill = GridBagConstraints.BOTH;

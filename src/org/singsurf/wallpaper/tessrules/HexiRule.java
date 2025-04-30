@@ -468,6 +468,132 @@ public abstract class HexiRule extends TessRule
 
     };
 
+    public static TessRule triP31mk = new HexiRule("P31Mk",
+    "P31Mk P331M with a kite-shaped FD.")
+    {
+        //@Override
+        public void calcFund(FundamentalDomain fd)
+        {
+            int u1,u2,v1,v2; //,w1,w2;
+
+            u1 =	frameV.x;
+            u2 =	frameV.y;
+            v1 = 	frameU.x;
+            v2 = 	frameU.y;
+            fd.fund[0].x = fd.cellVerts[1].x+u1/2; fd.fund[0].y = fd.cellVerts[1].y+u2/2;
+            fd.fund[1].x = fd.cellVerts[1].x; fd.fund[1].y = fd.cellVerts[1].y;
+            fd.fund[2].x = fd.cellVerts[1].x + v1/2; fd.fund[2].y = fd.cellVerts[1].y + v2/2;
+            fd.fund[3].x = fd.cellVerts[1].x + u1+v1; fd.fund[3].y = fd.cellVerts[1].y + u2+v2;
+            fd.numFund =4;
+        }
+
+        //@Override
+        public void fun(int[] in,int[] out,int det)
+        {
+            /*			int a = (int) Math.floor((float) in[0]/det);
+			int b = (int) Math.floor((float) in[1]/det);
+             */			int a = (in[0]<0 ? (in[0]+1)/det -1 : in[0]/det); 
+             int b = (in[1]<0 ? (in[1]+1)/det -1 : in[1]/det); 
+             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
+             int beta = in[1] % det; if(beta < 0) beta = beta + det;
+             int res[] = new int[2];
+             calcRot3(a,b,alpha,beta,det,res);
+             alpha = res[0]; beta = res[1];
+             // reflect bot right in line 2 alpha - beta - 1
+             // reflect top left in  2 beta - alpha - 1
+
+             if( beta > alpha )
+             {
+                 if( 2 * beta - alpha - det > 0 )
+                 {
+                     beta = alpha - beta +det;
+                 }
+
+             }
+             else
+             {
+                 if( 2 * alpha - beta - det > 0 )
+                 {
+                     alpha = beta - alpha + det;
+                 }
+             }
+
+             out[0] = alpha;
+             out[1] = beta;
+        }
+
+        //@Override
+        protected void paintSymetries(Vec U, Vec V, Vec O) {
+            Vec f23 = new Vec(frameU.x,frameU.y);
+            Vec f45 = new Vec(frameV.x,frameV.y);
+            Vec f56 = f45.add(f23);
+
+
+            drawReflectionLine(
+                    Vec.linComb(-1,f45,2,O,2),
+                    Vec.linComb(1,f45,4,f23,2,O,2));
+            drawReflectionLine(
+                    Vec.linComb(1,f56,2,O,2),
+                    Vec.linComb(2,f23,-2,f45,1,f56,2).add(O));
+            drawReflectionLine(
+                    Vec.linComb(1,f23,-2,f45,2,O,2),
+                    Vec.linComb(1,f23,2,f56,2,O,2));
+
+            drawRotationPoint(O,3);
+            drawRotationPoint(f23.add(O),3);
+            drawRotationPoint(Vec.linComb(2,f23,1,O),3);
+
+            Vec a = Vec.linComb(6, O, 2, U, -1, V, 6);
+            Vec b = Vec.linComb(6, O, 5, U, -1, V, 6);
+            Vec c = Vec.linComb(6, O, 5, U, 2, V, 6);
+            Vec d = Vec.linComb(6, O, 2, U, 5, V, 6);
+            Vec e = Vec.linComb(6, O, -1, U, 5, V, 6);
+            Vec f = Vec.linComb(6, O, -1, U, 2, V, 6);
+            
+            drawGlideLine(a,b);
+            drawGlideLine(b,c);
+            drawGlideLine(c,d);
+            drawGlideLine(d,e);
+            drawGlideLine(e,f);
+            drawGlideLine(f,a);
+            
+//            drawGlideLine(a,c);
+//            drawGlideLine(b,d);
+//            drawGlideLine(c,e);
+//            drawGlideLine(d,f);
+//            drawGlideLine(e,a);
+//            drawGlideLine(f,b);
+
+            
+        }
+
+        //@Override
+        public void paintDomainEdges(Vec U, Vec V,
+                Vec O, int det) {
+            Vec A = Vec.linComb(3, O, -1, U,-1,V,3);
+            Vec B = Vec.linComb(3, O, 2, U,-1,V,3);
+            Vec B2 = Vec.linComb(6, O, 2, U,-1,V,6);
+            Vec C = Vec.linComb(3, O, -1, U,2,V,3);
+            Vec C2 = Vec.linComb(6, O, -1, U,2,V,6);
+            Vec D = Vec.linComb(6, O, 5, U,-1,V,6);
+            Vec E = Vec.linComb(6, O, -1, U,5,V,6);
+
+            this.drawSimpleEdge(O,A);
+            this.drawSimpleEdge(O,B);
+            this.drawSimpleEdge(O,C);
+            this.drawSimpleEdge(B2, B2.add(V));
+            this.drawSimpleEdge(C2, C2.add(U));
+            this.drawSimpleEdge(D, E);
+
+
+        }
+
+        //@Override
+        public double approxArea() { return Math.sqrt(3)/4; }
+
+    };
+
+
 
     public static TessRule triP6 = new HexiRule("P6","A 60\u00ba rotation."){
         //@Override

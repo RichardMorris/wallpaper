@@ -67,7 +67,7 @@ public class WallpaperML {
 			Path absPath = Path.of(wallpaper.imageFilename).toAbsolutePath();
 			Path relativePath =
 				absPath.startsWith(cdw) 
-				? cdw.relativize(Path.of(wallpaper.imageFilename))
+				? cdw.relativize(absPath)
 				: absPath;
 			
 			String str = relativePath.toString();
