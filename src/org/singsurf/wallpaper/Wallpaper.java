@@ -85,7 +85,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     public JComponent myCanvas;
     // This interface is used for objects defining now to do tessellation 
     public JFrame mainFrame=null;
-    protected String imageFilename=null;
+    public String imageFilename=null;
 //    protected URL imageURL=null;
 
     public int clickCount = 0;
@@ -111,7 +111,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     public Wallpaper(Image img,int w,int h) {
         if(DEBUG) System.out.println("img w "+w+" h "+h);
 
-        this.setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
         JPanel pan = new JPanel();
         pan.setLayout(new BorderLayout());
         infoPanel = new JTextArea(
@@ -130,7 +130,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         //ta.setMargin(new Insets(2, 4, 2, 2));
         //ta.set
         myCanvas = buildCanvas();
-        JComponent mainWin = buildCanvasComponent(myCanvas);
+        JComponent mainWin = buildCanvasContainer(myCanvas);
 
         controller = new Controller(this,dr,fd);
         tesselationPanel = new GraphicalTesselationPanel(controller);
@@ -141,15 +141,9 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         pan.add("North",buttonBar);
         pan.add("Center",mainWin);
         pan.add("South",infoPanel);
-
-//        add("West",tesselationPanel);
-//        add("Center",mainWin);
-//        add("North",p2);
-//        add("South",ta);
-
         
-        this.validate();
-        this.doLayout();
+        validate();
+        doLayout();
         //System.out.println(myCanvas.getBounds());
 
         dr = buildDrawableRegion();
@@ -190,9 +184,9 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	}
 
 
-	public void setImage(DrawableRegion dr) {
+	public void setImage(DrawableRegion dr2) {
 		if(DEBUG) System.out.println("setImage "+dr);
-		this.dr = dr;
+		dr = dr2;
 		fd.resetDomain(dr.dispRect);
 		controller.calcGeom();
 		controller.redraw();
@@ -202,8 +196,8 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         if(DEBUG) System.out.println("paintCanvas" + dr.dispRect);
         
         //System.out.printf("cp %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
-        //System.out.printf("%d %d%n", this.offset.x,this.offset.y);
-        g.translate(this.offset.x,this.offset.y);
+        //System.out.printf("%d %d%n", offset.x,offset.y);
+        g.translate(offset.x,offset.y);
         Rectangle bounds = g.getClipBounds();
         if(bounds != null && (bounds.x + bounds.width > dr.dispRect.x+dr.dispRect.width)) {
             g.clearRect(dr.dispRect.x+dr.dispRect.width, bounds.y,
@@ -225,15 +219,15 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         if(clickCount==1)
             paintIntro2(g);
 
-        if(this.controller.constrainVertices)
+        if(controller.constrainVertices)
             fd.paintRegularTile(g);
 
-        g.translate(-this.offset.x,-this.offset.y);
+        g.translate(-offset.x,-offset.y);
         paintDone = true;
     }
 
     private void paintIntro(Graphics g) {
-        Vec base = this.controller.tr.frameO;
+        Vec base = controller.tr.frameO;
         String s1 = "Click and drag the red, green or blue dots";
         String s2 = "to change the pattern.";
         Font f = new Font("SansSerif",Font.BOLD,16);
@@ -365,7 +359,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
             if(!paintDone && curtime- lasttime <1000 ) return;
             lasttime = curtime;
             paintDone = false;
-            if(controller.showingOriginal /* || !this.interactiveMode */ ) {
+            if(controller.showingOriginal /* || !interactiveMode */ ) {
                 controller.applyTessellation();
             }
             else {
@@ -431,7 +425,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         canvas.addMouseListener(this);
         canvas.addMouseMotionListener(this);
         canvas.addKeyListener(this);
-        
         return canvas;
     }
 
@@ -531,7 +524,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	}
 
 	public void tickCheckbox(String name) {
-        this.tesselationPanel.tickCheckbox(name);
+        tesselationPanel.tickCheckbox(name);
     }
 
 
@@ -652,7 +645,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 		startAnim((String) ev.getItem());
 	}
 
-	protected JComponent buildCanvasComponent(JComponent c) {
+	protected JComponent buildCanvasContainer(JComponent c) {
 		return c;
 	}
 
@@ -670,7 +663,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	    		animateChoice.getSelectedItem().toString() , 1,dr.destRect);
 	    path.firstItteration(fd);
 	    animController.setAnimationPath(path);
-//	    path.firstItteration(fd);
 	    dr.calcDispRegion();
 	    controller.redraw();
 	    setTitle();

@@ -46,22 +46,26 @@ import javax.swing.border.EmptyBorder;
 
 import org.singsurf.wallpaper.animation.AnimationController;
 import org.singsurf.wallpaper.animation.AnimationPath;
+import org.singsurf.wallpaper.dialogs.CropDialog;
 import org.singsurf.wallpaper.dialogs.ErrorDialog;
 import org.singsurf.wallpaper.dialogs.ExpandDialog;
 import org.singsurf.wallpaper.dialogs.JColourPicker;
 import org.singsurf.wallpaper.dialogs.RescaleDialog;
-import org.singsurf.wallpaper.dialogs.ResizeDialog;
 import org.singsurf.wallpaper.tessrules.TessRule;
 
 
 public class WallpaperFramed extends Wallpaper implements ActionListener, ComponentListener, AdjustmentListener {
-
-	public FileController fileController;
+	private static final long serialVersionUID = 1L;
 	private static final boolean DEBUG = false;
 
 	public static final String programName = "Wallpaper";
 	public static final String programVersion = "1.7";
 	public static final String programInfo = programName + " version " + programVersion;
+
+
+	public FileController fileController;
+	/** Scrollable pane */
+    public JScrollPane jsp;
 
 
     
@@ -73,9 +77,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
 	}
 
-	private static final long serialVersionUID = 1L;
-    /** Scrollable pane */
-    protected JScrollPane jsp;
 
 
     @Override
@@ -112,11 +113,11 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         if(com.equals("exit"))
             System.exit(0);
         else if(com.equals("crop")) {
-            final ResizeDialog rd = new ResizeDialog(mainFrame,this);
+            final CropDialog rd = new CropDialog(mainFrame,this);
 
             rd.open(dr.baseRect.width,dr.baseRect.height);
             if (rd.ok)
-                resizeImage(rd.width, rd.height, -rd.xoff, -rd.yoff);
+                resizeImage(-rd.xoff, -rd.yoff, rd.width, rd.height);
             else
                 controller.redraw();
         }
@@ -125,7 +126,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
             ed.open(dr.baseRect.width,dr.baseRect.height);
             if (ed.ok)
-                resizeImage(ed.imageWidth, ed.imageHeight, ed.xoff, ed.yoff);
+                resizeImage(ed.xoff, ed.yoff, ed.imageWidth, ed.imageHeight);
             else
                 controller.redraw();
         }
@@ -238,23 +239,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                 ((ZoomedDrawableRegion) dr).zoom(newZoomN,newZoomD);	
             }
             imageChanged();
-//TODO             parent = (JMenu) cbmi.getParent();
-//           for(int i=0;i<parent.getItemCount();++i) {
-//                JCheckBoxMenuItem mi = (JCheckBoxMenuItem) parent.getItem(i);
-//                if(mi != cbmi) {
-//                    mi.setState(false);
-//                }
-//            }
-
         }};
-
-        protected ActionListener flipActionListener = new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                controller.flip(e.getActionCommand());
-            }
-        };
-
         
         protected ItemListener viewActionListener = new ItemListener() {
         	boolean recursive=false;
@@ -456,41 +441,25 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
             JMenu flipMI = new JMenu("Flip/Rotate");
             JMenuItem flipX = new JMenuItem(Wallpaper.FLIP_X);
-            flipX.addActionListener(flipActionListener);
-            flipX.setActionCommand(Wallpaper.FLIP_X);
+            flipX.addActionListener(e ->  controller.flip(Wallpaper.FLIP_X));
             flipMI.add(flipX);
             JMenuItem flipY = new JMenuItem(Wallpaper.FLIP_Y);
-            flipY.addActionListener(flipActionListener);
-            flipY.setActionCommand(Wallpaper.FLIP_Y);
+            flipY.addActionListener(e ->  controller.flip(Wallpaper.FLIP_Y));
             flipMI.add(flipY);
-            //		MenuItem flipXY = new MenuItem("Flip XY");
-            //		flipXY.addActionListener(new ActionListener(){
-            //			public void actionPerformed(ActionEvent arg0) {
-            //				flip(0);
-            //			}});
-            //		flipMI.add(flipXY);
             JMenuItem rot90 = new JMenuItem(Wallpaper.FLIP_90);
-            rot90.addActionListener(flipActionListener);
-            rot90.setActionCommand(Wallpaper.FLIP_90);
+            rot90.addActionListener(e ->  controller.flip(Wallpaper.FLIP_90));
             flipMI.add(rot90);
             JMenuItem rot180 = new JMenuItem(Wallpaper.FLIP_180);
-            rot180.addActionListener(flipActionListener);
-            rot180.setActionCommand(Wallpaper.FLIP_180);
+            rot180.addActionListener(e ->  controller.flip(Wallpaper.FLIP_180));
             flipMI.add(rot180);
             JMenuItem rot270 = new JMenuItem(Wallpaper.FLIP_270);
-            rot270.addActionListener(flipActionListener);
-            rot270.setActionCommand(Wallpaper.FLIP_270);
+            rot270.addActionListener(e ->  controller.flip(Wallpaper.FLIP_270));
             flipMI.add(rot270);
             imageMenu.add(flipMI);
 
             JCheckBoxMenuItem splitMI = new JCheckBoxMenuItem("Split");
-            splitMI.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
-					int state = e.getStateChange();
-					controller.split(state==ItemEvent.SELECTED);
-				}});
-            splitMI.addActionListener(this);
-            splitMI.setActionCommand("split");
+            splitMI.addItemListener(e ->
+					controller.split(e.getStateChange()==ItemEvent.SELECTED));
             imageMenu.add(splitMI);
 
             return imageMenu;
@@ -609,7 +578,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         }
 
         @Override
-        protected JComponent buildCanvasComponent(JComponent c) {
+        protected JComponent buildCanvasContainer(JComponent c) {
             jsp = new JScrollPane(c,
                     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                     ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -736,7 +705,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             }
         }
 
-        protected void resizeImage(int w, int h, int xoff, int yoff) {
+        protected void resizeImage(int xoff, int yoff, int w, int h) {
             dr.resize(w, h, xoff, yoff);
             fd.shift(xoff,yoff);
             imageChanged();
@@ -756,9 +725,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         public void componentMoved(ComponentEvent arg0) {/*ignore*/}
 
         public void componentResized(ComponentEvent arg0) {
-            //if(DEBUG) 
-            System.out.println("Comp resize");
-            System.out.println(jsp.getViewportBorderBounds());
+            if(DEBUG) 
+            	System.out.println("Comp resize"+jsp.getViewportBorderBounds());
 
             dr.setViewport(jsp.getViewportBorderBounds());
             if(first) {
