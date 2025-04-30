@@ -159,6 +159,7 @@ public class ExpandDialog extends JDialog implements  ChangeListener {
 	public void stateChanged(ChangeEvent ce) {
 		Graphics g = wall.myCanvas.getGraphics();
 		wall.paintCanvas(g);
+		CropDialog.clear_background(g, wall.dr);
 		g.setColor(Color.black);
 		g.setPaintMode();
 		
