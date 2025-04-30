@@ -384,7 +384,7 @@ public class FileController {
 	                    pw.close();
 	                } catch (Exception e) {
 	                    ErrorDialog errorD = new ErrorDialog(wall.mainFrame);
-	                    errorD.open("Error loading pattern",e.getMessage());
+	                    errorD.open("Error saving pattern",e.getMessage());
 	                    errorD.dispose();
 	                    System.out.println(e.getMessage());
 	                }

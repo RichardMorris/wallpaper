@@ -190,6 +190,7 @@ public class AnimationController implements ActionListener {
 			wall.dr.makeOutImage();
 			if(!wall.isFullScreen()) wall.dr.calcDispRegion();
 			wall.setTitle(yaml.filename);
+			wall.imageFilename = yaml.filename;
 		}
 		else {
 			System.out.println("Error loading image "+yaml.filename+".");

@@ -37,7 +37,13 @@ public class DrawableRegion {
 	int backgroundRGB = Color.black.getRGB();
 	
 	/** displayable area */
-	int viewpointL,viewpointR,viewpointT,viewpointB;
+	public int viewpointL;
+
+	public int viewpointR;
+
+	public int viewpointT;
+
+	public int viewpointB;
 
 	/** pixels of underlying image */
 	public int[] inpixels;
@@ -193,7 +199,6 @@ public class DrawableRegion {
 
 	public void resize(int w, int h, int xoff, int yoff) {
 		try {
-//			System.gc();
 			makeDest(w,h);
 			if(TessRule.tileBackground) {
 				for(int i=0;i<w;++i)
@@ -217,7 +222,6 @@ public class DrawableRegion {
 			}
 			makeSrc(w,h);
 			copyDestSrc();
-
 			calcDispRegion();
 			makeOutImage();
 			img_ok = true;
@@ -248,7 +252,6 @@ public class DrawableRegion {
 		// original width and height
 		int ow = destRect.width,oh=destRect.height;
 		try {
-		//		System.out.println("flip " + code);
 		if(code.equals(Wallpaper.FLIP_X)) {
 			for(int j=0;j<oh;++j)
 				for(int i=0;i<ow;++i) {
@@ -301,7 +304,6 @@ public class DrawableRegion {
 	}
 	
 	public void paint(Graphics g,Wallpaper wall) {
-//	    if(DEBUG) System.out.println("DR:paint");
 		try {
 			g.drawImage(getActiveImage(),offset.x,offset.y,wall);
 		}
@@ -316,10 +318,8 @@ public class DrawableRegion {
 		if(wall!=null) wall.setText("Out of memory");
 		System.err.print("Out of memory: '"+e.getMessage());
 		System.err.println("' while resizing image");
-		//System.err.println("MaxMemory "+Runtime.getRuntime().maxMemory());
 		System.err.println("FreeMemory "+Runtime.getRuntime().freeMemory());
 		System.err.println("This image will require "+(reqSize*4)+" bytes");
-		//System.err.println("TotalMemory "+Runtime.getRuntime().totalMemory());
 		System.err.println("Rerun application with the -Xmx512m VM flag to assign more memory");
 	}
 
@@ -329,7 +329,9 @@ public class DrawableRegion {
 				"baseRect=" + baseRect + "\n"
 				+ "srcRect=" + srcRect + "\n"
 				+ "destRect=" + destRect + "\n"
-				+ "dispRect=" + dispRect + ", inpixels=" + inpixels.length + ", pixels="
+				+ "dispRect=" + dispRect + "\n"
+				+ "viewport= [" + viewpointL +", "+ viewpointT+"] .. ["+ viewpointR+ ", " + viewpointB +"]\n"
+ 				+ "inpixels=" + inpixels.length + ", pixels="
 				+ pixels.length + ", img_ok=" + img_ok + "]";
 	}
 
