@@ -88,7 +88,7 @@ zoom: [1,1]
 anim: grow-centre
 repeat: 30
 frame:
-group: C7
+group: D7
 vertices:
   - [322,274]
   - [343,257]
@@ -108,11 +108,11 @@ zoom: [2,3]
 anim: right
 repeat: 30
 frame:
-group: P31M
+group: P31Mk
 vertices:
-  - [447,198]
-  - [309,198]
-  - [240,78]
+  - [234,224]
+  - [59,224]
+  - [-28,72]
 filename: images/text description.png
 anim: left-right
 repeat: 30
@@ -125,4 +125,4 @@ vertices:
 filename: images/author.png
 zoom: [1,1]
 anim: up-down
-repeat: 10
+repeat: 30

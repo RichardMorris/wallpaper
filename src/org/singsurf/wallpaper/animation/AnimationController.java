@@ -55,7 +55,7 @@ public class AnimationController implements ActionListener {
 	
 	
 	    wall.myCanvas.requestFocus();
-	    wall.setText("Hit space bar to stop");
+	    wall.setText("Hit space bar to stop, F11 for full screen, N for next animation in a sequence, P for previous animation");
 	    TessRule.tileBackground=true;
 	
 	
