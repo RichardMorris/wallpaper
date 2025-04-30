@@ -8,7 +8,7 @@
 		<property name="imageDir" value="images" />
 		<property name="productName" value="Wallpaper Patterns" />
                 <property name="appname" value="wallpaper-app" />
- 		<property name="productVersion" value="1.6" />
+ 		<property name="productVersion" value="1.7" />
 		<property name="productPublisher" value="R Morris." />
 		<property name="productWebSite" value="http://www.singsurf.org/" />
 	</target>
@@ -70,6 +70,20 @@
                 <include name="*" />
                 <exclude name="Thumbs.db" />
             </fileset>
+		</copy>
+		<mkdir dir="${dist}/${appname}/patterns" />
+		<copy todir="${dist}/${appname}/patterns">
+			<fileset dir="patterns">
+				<include name="*" />
+				<exclude name="Thumbs.db" />
+			</fileset>
+		</copy>
+		<mkdir dir="${dist}/${appname}/sequences" />
+		<copy todir="${dist}/${appname}/sequences">
+			<fileset dir="sequences">
+				<include name="*" />
+				<exclude name="Thumbs.db" />
+			</fileset>
 		</copy>
 		<mkdir dir="${dist}/${appname}/naut" />
 		<copy todir="${dist}/${appname}/naut">
