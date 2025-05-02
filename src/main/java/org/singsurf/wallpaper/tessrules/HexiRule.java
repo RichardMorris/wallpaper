@@ -188,7 +188,7 @@ public abstract class HexiRule extends TessRule
 
 
 
-    public static TessRule triP3 = new HexiRule("P3","A 120\u00ba rotation"){
+    public static TessRule triP3b = new HexiRule("P3","A 120\u00ba rotation alternate domain"){
         ////@Override
         public void calcFund(FundamentalDomain fd)
         {
@@ -198,10 +198,14 @@ public abstract class HexiRule extends TessRule
             u2 =	frameV.y;
             v1 = 	frameU.x;
             v2 = 	frameU.y;
-            fd.fund[0].x = fd.cellVerts[0].x; fd.fund[0].y = fd.cellVerts[0].y;
-            fd.fund[1].x = fd.cellVerts[1].x; fd.fund[1].y = fd.cellVerts[1].y;
-            fd.fund[2].x = fd.cellVerts[1].x + v1; fd.fund[2].y = fd.cellVerts[1].y + v2;
-            fd.fund[3].x = fd.cellVerts[1].x + u1+v1; fd.fund[3].y = fd.cellVerts[1].y + u2+v2;
+            fd.fund[0].x = fd.cellVerts[0].x; 
+            fd.fund[0].y = fd.cellVerts[0].y;
+            fd.fund[1].x = fd.cellVerts[1].x; 
+            fd.fund[1].y = fd.cellVerts[1].y;
+            fd.fund[2].x = fd.cellVerts[1].x + v1; 
+            fd.fund[2].y = fd.cellVerts[1].y + v2;
+            fd.fund[3].x = fd.cellVerts[1].x + u1+v1; 
+            fd.fund[3].y = fd.cellVerts[1].y + u2+v2;
             fd.numFund=4;
         }
 
@@ -216,6 +220,83 @@ public abstract class HexiRule extends TessRule
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
             int beta = in[1] % det; if(beta < 0) beta = beta + det;
             calcRot3(a,b,alpha,beta,det,out);
+        }
+
+        //@Override
+        protected void paintSymetries(Vec U, Vec V, Vec O) {
+            Vec f23 = new Vec(frameU.x,frameU.y);
+            drawRotationPoint(O,3);
+            drawRotationPoint(f23.add(O),3);
+            drawRotationPoint(Vec.linComb(2,f23,1,O),3);
+        }
+
+        //@Override
+        public void paintDomainEdges(Vec U, Vec V,
+                Vec O, int det) {
+            Vec A = Vec.linComb(3, O, -1, U,-1,V,3);
+            Vec B = Vec.linComb(3, O, 2, U,-1,V,3);
+            Vec C = Vec.linComb(3, O, -1, U,2,V,3);
+            Vec M = Vec.linComb(3, O, 1, U,1,V,3);
+            this.drawSimpleEdge(O,A);
+            this.drawSimpleEdge(O,B);
+            this.drawSimpleEdge(O,C);
+            this.drawSimpleEdge(O.add(U),M);
+            this.drawSimpleEdge(O.add(V),M);
+            this.drawSimpleEdge(O,M);
+        }
+
+        //@Override
+        public double approxArea() { return Math.sqrt(3)/4; }
+
+    };
+
+    public static TessRule triP3 = new HexiRule("P3A","A 120\u00ba rotation"){
+        ////@Override
+        public void calcFund(FundamentalDomain fd)
+        {
+            int u1,u2,v1,v2; //,w1,w2;
+
+            u1 =	frameV.x;
+            u2 =	frameV.y;
+            v1 = 	frameU.x;
+            v2 = 	frameU.y;
+            fd.fund[0].x = fd.cellVerts[0].x; 
+            fd.fund[0].y = fd.cellVerts[0].y;
+            fd.fund[1].x = fd.cellVerts[1].x + v1+u1; 
+            fd.fund[1].y = fd.cellVerts[1].y + v2+u2;
+            fd.fund[2].x = fd.cellVerts[1].x; 
+            fd.fund[2].y = fd.cellVerts[1].y;
+            fd.fund[3].x = fd.cellVerts[1].x - v1; 
+            fd.fund[3].y = fd.cellVerts[1].y - v2;
+            fd.numFund=4;
+        }
+
+        ////@Override
+        public void fun(int[] in,int[] out,int det)
+        {
+            int a = (in[0]<0 ? (in[0]+1)/det -1 : in[0]/det); 
+            int b = (in[1]<0 ? (in[1]+1)/det -1 : in[1]/det); 
+            /*			int a = (int) Math.floor((float) in[0]/det);
+			int b = (int) Math.floor((float) in[1]/det);
+             */			
+            int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
+            int beta = in[1] % det; if(beta < 0) beta = beta + det;
+            int[] res = new int[2];
+            calcRot3(a,b,alpha,beta,det,res);
+            alpha = res[0]; beta = res[1];
+            
+            if( beta > alpha )
+            {
+            }
+            else
+            {
+                // Now rotate 120 degrees to form thin triangle
+                int gamma = -beta;
+                int delta  = alpha - beta;
+                alpha = gamma;
+                beta = delta;
+            }
+            out[0] = alpha; out[1] = beta;
         }
 
         //@Override

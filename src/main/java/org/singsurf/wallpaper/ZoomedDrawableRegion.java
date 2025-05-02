@@ -37,8 +37,10 @@ public class ZoomedDrawableRegion extends DrawableRegion {
      */
         @Override
         public boolean loadImage(Image imgin) {
-        	loadImageCore(imgin);
-            
+        	var success = loadImageCore(imgin);
+            if(!success) {
+				return false;
+			}
             
             calcZoomedImages();
             calcDispRegion();
