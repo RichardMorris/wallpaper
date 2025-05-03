@@ -1,0 +1,45 @@
+{
+    "bin": {"wallpaper": "jdeploy-bundle/jdeploy.js"},
+    "author": "Richard Morris",
+    "description": "Wallpaper pattern application",
+    "main": "index.js",
+    "preferGlobal": true,
+    "repository": "",
+    "version": "1.7.5.1",
+    "jdeploy": {
+        "jdk": false,
+        "publishTargets": [{
+            "name": "github: wallpaper",
+            "type": "GITHUB",
+            "url": "https://github.com/RichardMorris/wallpaper"
+        }],
+        "javaVersion": "21",
+        "files": [
+            {
+                "includes": "tile.jpg",
+                "dir": "."
+            },
+            {
+                "includes": "*,**/*",
+                "dir": "doc"
+            }
+        ],
+        "jar": "target/wallpaper-1.7-jar-with-dependencies.jar",
+        "javafx": false,
+        "title": "Wallpaper"
+    },
+    "dependencies": {
+        "command-exists-promise": "^2.0.2",
+        "node-fetch": "2.6.7",
+        "tar": "^4.4.8",
+        "yauzl": "^2.10.0",
+        "shelljs": "^0.8.4"
+    },
+    "license": "Apache-2.0",
+    "name": "wallpaper",
+    "files": [
+        "jdeploy-bundle"
+    ],
+    "scripts": {"test": "echo \"Error: no test specified\" && exit 1"},
+    "homepage": "https://singsurf.org/wallpaper/wallpaper.php"
+}
