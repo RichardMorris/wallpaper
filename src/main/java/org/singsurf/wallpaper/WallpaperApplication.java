@@ -44,10 +44,10 @@ public class WallpaperApplication {
         String args[] = null;
     	final String image;
         System.out.println(Wallpaper.programInfo());
+        System.out.println(Wallpaper.helpInfo());
         args = progargs;
         if (args.length == 0) {
-            System.out.println(Wallpaper.helpInfo());
-            image = "tile.jpg";
+            image = "";
         } else
             image = args[0];
         final int w,h;

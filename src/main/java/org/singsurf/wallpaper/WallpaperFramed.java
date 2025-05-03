@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -649,6 +651,16 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             URI imgurl=null;
             String filename=null;
             Image imgin;
+            if(imgloc=="") {
+	            URL imgURL = WallpaperFramed.class.getResource("tile.jpg");
+	            if (imgURL != null) {
+	            	try {
+						return ImageIO.read(imgURL);
+					} catch (IOException e) {
+						System.out.println("Error loading image from resource "+imgloc+"," +imgURL);
+					}
+	            }
+			}
 
             // first try if its a a full URL
             try
