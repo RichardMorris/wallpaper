@@ -270,7 +270,7 @@ public class ZoomedDrawableRegion extends DrawableRegion {
     public void rescale(int w, int h) {
         try {
             MemoryImageSource mis = new MemoryImageSource(
-                    baseRect.width,baseRect.height,inpixels, 0, baseRect.width);
+                    baseRect.width,baseRect.height,basePixels, 0, baseRect.width);
             ImageFilter scale = new AreaAveragingScaleFilter(w,h);
             ImageProducer prod = new FilteredImageSource(mis,scale);
             Image img = Toolkit.getDefaultToolkit().createImage(prod);
