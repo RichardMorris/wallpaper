@@ -381,7 +381,7 @@ public class FundamentalDomain {
 		Vec indices[] = new Vec[4];
 		for(int i=0;i<4;++i) {
 			indices[i] = getLaticeIndicies(corners[i]);
-			if(DEBUG) System.out.println(indices[i]);
+			if(DEBUG) System.out.println("indicies["+i+"] "+indices[i]);
 		}
 		int minIndX = indices[0].x;
 		int maxIndX = indices[0].x;
@@ -459,103 +459,104 @@ public class FundamentalDomain {
 	public Graphics graphics;
 
 	public void paintSymetries(Graphics g, TessRule tr) {
-		graphics=g;
+		graphics = g;
 		Rectangle rect = g.getClipBounds();
-		if(rect==null) return;
-		Vec[] points = getLatticePoints(
-				new Rectangle(
-					rect.x-getLatticeWidth(),
-					rect.y-getLatticeHeight(),
-					rect.width+getLatticeWidth()*2,
-					rect.height+getLatticeHeight()*2));
-		if(points == null || points.length == 0) return;
-		int minLen = points[0].sub(O).lenSq();
-		Vec minVec=O;
-		for(int i=0;i<points.length;++i) {
-		        Vec p = points[i];
-			int len = p.sub(O).lenSq();
-			if(len<minLen) {
+		if (rect == null)
+			return;
+		Vec[] points = getLatticePoints(new Rectangle(rect.x - getLatticeWidth(), rect.y - getLatticeHeight(),
+				rect.width + getLatticeWidth() * 2, rect.height + getLatticeHeight() * 2));
+		if (points == null || points.length == 0)
+			return;
+		Vec index2 = getLaticeIndicies(O);
+		Vec O2 = Vec.linComb(1, O, -index2.x, U, -index2.y, V);
+		int minLen = points[0].sub(O2).lenSq();
+		Vec minVec = O2;
+		for (int i = 0; i < points.length; ++i) {
+			Vec p = points[i];
+			int len = p.sub(O2).lenSq();
+			if (len < minLen) {
 				minLen = len;
 				minVec = p;
 			}
 		}
 
-                Vec diff=O.sub(minVec);
+		Vec diff = O2.sub(minVec);
+		if (drawCells) {
+			for (int i = 0; i < points.length; ++i) {
+				Vec p = points[i];
+				if (det > 0)
+					tr.paintDomainEdges(U, V, p.add(diff), this);
+				else
+					tr.paintDomainEdges(V, U, p.add(diff), this);
+			}
+		}
+		if (drawTiles) {
+			if (latticeType == FundamentalDomain.PARALLOGRAM)
+				for (int i = 0; i < points.length; ++i) {
+					Vec p = points[i];
+					Vec p2 = p.add(diff);
+					drawLatticeLine(p2, p2.add(U));
+					drawLatticeLine(p2, p2.add(V));
+					drawLatticeLine(p2, p2.add(U.negate()));
+					drawLatticeLine(p2, p2.add(V.negate()));
+				}
 
-               if(drawCells)
-                {
-                   for(int i=0;i<points.length;++i) {
-                       Vec p = points[i];
-                        if(det>0)
-                            tr.paintDomainEdges(U, V, p.add(diff), this);
-                        else
-                            tr.paintDomainEdges(V, U, p.add(diff), this);
-                    }
-                }
-                if(drawTiles)
-                {
-                    if(latticeType == FundamentalDomain.PARALLOGRAM)
-                        for(int i=0;i<points.length;++i) {
-                            Vec p = points[i];
-                            Vec p2 = p.add(diff);
-                            drawLatticeLine(p2,p2.add(U));
-                            drawLatticeLine(p2,p2.add(V));
-                            drawLatticeLine(p2,p2.add(U.negate()));
-                            drawLatticeLine(p2,p2.add(V.negate()));
-                        }
+			if (latticeType == FundamentalDomain.HEXAGON)
+				for (int i = 0; i < points.length; ++i) {
+					Vec p = points[i];
+					Vec p2 = p.add(diff);
+					drawLatticeLine(p2, p2.add(Vec.linComb(-1, U, -1, V, 3)));
+					drawLatticeLine(p2, p2.add(Vec.linComb(2, U, -1, V, 3)));
+					drawLatticeLine(p2, p2.add(Vec.linComb(-1, U, 2, V, 3)));
+				}
+		}
+		if (drawReflectionLines) {
+			boolean oldGlide = drawGlideLines;
+			boolean oldRot = drawRotationPoints;
+			drawGlideLines = false;
+			drawRotationPoints = false;
+			for (int i = 0; i < points.length; ++i) {
+				Vec p = points[i];
+				if (det > 0)
+					tr.paintSymetries(U, V, p.add(diff), this);
+				else
+					tr.paintSymetries(V, U, p.add(diff), this);
+			}
+			drawGlideLines = oldGlide;
+			drawRotationPoints = oldRot;
+		}
+		if (drawGlideLines) {
+			boolean oldRef = drawReflectionLines;
+			boolean oldRot = drawRotationPoints;
+			drawReflectionLines = false;
+			drawRotationPoints = false;
+			for (int i = 0; i < points.length; ++i) {
+				Vec p = points[i];
+				if (det > 0)
+					tr.paintSymetries(U, V, p.add(diff), this);
+				else
+					tr.paintSymetries(V, U, p.add(diff), this);
+			}
+			drawReflectionLines = oldRef;
+			drawRotationPoints = oldRot;
+		}
 
-                    if(latticeType == FundamentalDomain.HEXAGON)
-                        for(int i=0;i<points.length;++i) { Vec p = points[i];
-                            Vec p2 = p.add(diff);
-                            drawLatticeLine(p2,p2.add(Vec.linComb(-1, U, -1, V, 3)));
-                            drawLatticeLine(p2,p2.add(Vec.linComb(2, U, -1, V, 3)));
-                            drawLatticeLine(p2,p2.add(Vec.linComb(-1, U, 2, V, 3)));
-                        }
-                }
-                if(drawReflectionLines) {
-                    boolean oldGlide = drawGlideLines;
-                    boolean oldRot = drawRotationPoints;
-                    drawGlideLines = false;
-                    drawRotationPoints = false;
-                    for(int i=0;i<points.length;++i) { Vec p = points[i];
-                        if(det>0)
-                            tr.paintSymetries(U,V,p.add(diff),this);
-                        else
-                            tr.paintSymetries(V,U,p.add(diff),this);
-                    }
-                    drawGlideLines = oldGlide;
-                    drawRotationPoints = oldRot;
-                }
-                 if(drawGlideLines) {
-                    boolean oldRef = drawReflectionLines;
-                    boolean oldRot = drawRotationPoints;
-                    drawReflectionLines = false;
-                    drawRotationPoints = false;
-                    for(int i=0;i<points.length;++i) { Vec p = points[i];
-                        if(det>0)
-                            tr.paintSymetries(U,V,p.add(diff),this);
-                        else
-                            tr.paintSymetries(V,U,p.add(diff),this);
-                    }
-                    drawReflectionLines = oldRef;
-                    drawRotationPoints = oldRot;
-                }
+		if (drawRotationPoints) {
+			boolean oldRef = drawReflectionLines;
+			boolean oldGlide = drawGlideLines;
+			drawReflectionLines = false;
+			drawGlideLines = false;
+			for (int i = 0; i < points.length; ++i) {
+				Vec p = points[i];
+				if (det > 0)
+					tr.paintSymetries(U, V, p.add(diff), this);
+				else
+					tr.paintSymetries(V, U, p.add(diff), this);
+			}
+			drawReflectionLines = oldRef;
+			drawGlideLines = oldGlide;
+		}
 
-                if(drawRotationPoints) {
-                    boolean oldRef = drawReflectionLines;
-                    boolean oldGlide = drawGlideLines;
-                    drawReflectionLines = false;
-                    drawGlideLines = false;
-                    for(int i=0;i<points.length;++i) { Vec p = points[i];
-                        if(det>0)
-                            tr.paintSymetries(U,V,p.add(diff),this);
-                        else
-                            tr.paintSymetries(V,U,p.add(diff),this);
-                    }
-                    drawReflectionLines = oldRef;
-                    drawGlideLines = oldGlide;
-                }
-                
 	}
 	
 	public void paintRegularTile(Graphics g) {
