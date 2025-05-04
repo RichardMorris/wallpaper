@@ -757,9 +757,9 @@ public abstract class HexiRule extends TessRule
             drawRotationPoint(frameU.add(O),3);
             drawRotationPoint(Vec.linComb(2,frameU,1,O),3);
 
-            drawRotationPoint(Vec.linComb(-1,frameV,2,O,2),2);
-            drawRotationPoint(Vec.linComb(1,frameU,-2,frameV,2,O,2),2);
-            drawRotationPoint(Vec.linComb(1,frameU,1,frameV,2,O,2),2);
+            drawRotationPoint(Vec.linComb(2,O,2,frameU,1,frameV,2),2);
+            drawRotationPoint(Vec.linComb(2,O,1,frameU,2,frameV,2),2);
+            drawRotationPoint(Vec.linComb(2,O,1,frameU,-1,frameV,2),2);
             
             drawGlideLine(
             		Vec.linComb(2, O, -1, frameU,1,frameV,2),

@@ -118,7 +118,7 @@ public class AnimationController implements ActionListener {
 			else {
 				startAnim();
 			}
-			wall.nextFrame();
+			nextYaml();
 		});
 		timer2.setRepeats(false);
 		timer2.start();

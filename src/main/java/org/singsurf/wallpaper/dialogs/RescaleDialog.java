@@ -32,7 +32,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 	private boolean ok=false;
 	JLabel heading = new JLabel();
 	JSpinner sxSS;
-        JSpinner sySS;
+    JSpinner sySS;
 	boolean locked=true;
 	Wallpaper wall;
 	private JSpinner pcSS;

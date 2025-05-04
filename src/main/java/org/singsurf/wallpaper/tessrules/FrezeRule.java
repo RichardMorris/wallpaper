@@ -50,7 +50,7 @@ public abstract class FrezeRule extends TessRule
     }
 
     public Vec[] laticePoints() {
-        Rectangle rect = this.paintFd.graphics.getClipBounds();
+        Rectangle rect = paintFd.graphics.getClipBounds();
         Vec[] corners = new Vec[]{new Vec(rect.x,rect.y),
                 new Vec(rect.x+rect.width,rect.y),
                 new Vec(rect.x+rect.width,rect.y+rect.height),
@@ -101,11 +101,11 @@ public abstract class FrezeRule extends TessRule
 
         //@Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length;++i)
             {
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
             }
         }
 
@@ -144,33 +144,33 @@ public abstract class FrezeRule extends TessRule
         
         //@Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length;++i)
             {
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
             }
             for(int i=0;i<points.length-1;++i)
             {
                 Vec v = Vec.linComb(1, points[i], 1,points[i+1], 2);
-                this.drawSimpleEdge(v,v.add(frameV.mul(100)));
-                this.drawSimpleEdge(v,v.add(frameV.mul(-100)));
+                drawSimpleEdge(v,v.add(frameV.mul(100)));
+                drawSimpleEdge(v,v.add(frameV.mul(-100)));
             }
         }
 
         //@Override
         protected void paintSymetries(Vec U, Vec V, Vec O) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length;++i)
             {
-                this.drawReflectionLine(points[i],points[i].add(frameV.mul(100)));
-                this.drawReflectionLine(points[i],points[i].add(frameV.mul(-100)));
+                drawReflectionLine(points[i],points[i].add(frameV.mul(100)));
+                drawReflectionLine(points[i],points[i].add(frameV.mul(-100)));
             }
             for(int i=0;i<points.length-1;++i)
             {
                 Vec v = Vec.linComb(1, points[i], 1,points[i+1], 2);
-                this.drawReflectionLine(v,v.add(frameV.mul(100)));
-                this.drawReflectionLine(v,v.add(frameV.mul(-100)));
+                drawReflectionLine(v,v.add(frameV.mul(100)));
+                drawReflectionLine(v,v.add(frameV.mul(-100)));
             }
         }
 
@@ -206,24 +206,24 @@ public abstract class FrezeRule extends TessRule
         
         //@Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length;++i)
             {
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
             }
             for(int i=0;i<points.length-1;++i)
             {
-                this.drawSimpleEdge(points[i],points[i+1]);
+                drawSimpleEdge(points[i],points[i+1]);
             }
         }
 
         //@Override
         protected void paintSymetries(Vec U, Vec V, Vec O) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length-1;++i)
             {
-                this.drawReflectionLine(points[i],points[i+1]);
+                drawReflectionLine(points[i],points[i+1]);
             }
        }
 
@@ -261,38 +261,38 @@ public abstract class FrezeRule extends TessRule
         
         //@Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length;++i)
             {
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
             }
             for(int i=0;i<points.length-1;++i)
             {
                 Vec v = Vec.linComb(1, points[i], 1,points[i+1], 2);
-                this.drawSimpleEdge(v,v.add(frameV.mul(100)));
-                this.drawSimpleEdge(v,v.add(frameV.mul(-100)));
-                this.drawSimpleEdge(points[i],points[i+1]);
+                drawSimpleEdge(v,v.add(frameV.mul(100)));
+                drawSimpleEdge(v,v.add(frameV.mul(-100)));
+                drawSimpleEdge(points[i],points[i+1]);
             }
         }
 
         //@Override
         protected void paintSymetries(Vec U, Vec V, Vec O) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length;++i)
             {
-                this.drawReflectionLine(points[i],points[i].add(frameV.mul(100)));
-                this.drawReflectionLine(points[i],points[i].add(frameV.mul(-100)));
+                drawReflectionLine(points[i],points[i].add(frameV.mul(100)));
+                drawReflectionLine(points[i],points[i].add(frameV.mul(-100)));
 
-                this.drawRotationPoint(points[i],2);
+                drawRotationPoint(points[i],2);
             }
             for(int i=0;i<points.length-1;++i)
             {
                 Vec v = Vec.linComb(1, points[i], 1,points[i+1], 2);
-                this.drawRotationPoint(v,2);
-                this.drawReflectionLine(v,v.add(frameV.mul(100)));
-                this.drawReflectionLine(v,v.add(frameV.mul(-100)));
-                this.drawReflectionLine(points[i],points[i+1]);
+                drawRotationPoint(v,2);
+                drawReflectionLine(v,v.add(frameV.mul(100)));
+                drawReflectionLine(v,v.add(frameV.mul(-100)));
+                drawReflectionLine(points[i],points[i+1]);
            }
         }
 
@@ -331,31 +331,31 @@ public abstract class FrezeRule extends TessRule
  
         //@Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length;++i)
             {
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
             }
             for(int i=0;i<points.length-1;++i)
             {
                 Vec v = Vec.linComb(1, points[i], 1,points[i+1], 2);
-                this.drawSimpleEdge(v,v.add(frameV.mul(100)));
-                this.drawSimpleEdge(v,v.add(frameV.mul(-100)));
+                drawSimpleEdge(v,v.add(frameV.mul(100)));
+                drawSimpleEdge(v,v.add(frameV.mul(-100)));
             }
         }
 
         //@Override
         protected void paintSymetries(Vec U, Vec V, Vec O) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length;++i)
             {
-                this.drawRotationPoint(points[i],2);
+                drawRotationPoint(points[i],2);
             }
             for(int i=0;i<points.length-1;++i)
             {
                 Vec v = Vec.linComb(1, points[i], 1,points[i+1], 2);
-                this.drawRotationPoint(v,2);
+                drawRotationPoint(v,2);
             }
         }
 
@@ -394,26 +394,26 @@ public abstract class FrezeRule extends TessRule
         
         //@Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length;++i)
             {
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
             }
             for(int i=0;i<points.length-1;++i)
             {
                 Vec v = Vec.linComb(1, points[i], 1,points[i+1], 2);
-                this.drawSimpleEdge(v,v.add(frameV.mul(100)));
-                this.drawSimpleEdge(v,v.add(frameV.mul(-100)));
+                drawSimpleEdge(v,v.add(frameV.mul(100)));
+                drawSimpleEdge(v,v.add(frameV.mul(-100)));
             }
         }
 
         //@Override
         protected void paintSymetries(Vec U, Vec V, Vec O) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length-1;++i)
             {
-                this.drawGlideLine(points[i],points[i+1]);
+                drawGlideLine(points[i],points[i+1]);
             }
        }
 
@@ -465,33 +465,33 @@ public abstract class FrezeRule extends TessRule
         
         //@Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length;++i)
             {
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
-                this.drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(100)));
+                drawSimpleEdge(points[i],points[i].add(frameV.mul(-100)));
             }
             for(int i=0;i<points.length-1;++i)
             {
                 Vec v = Vec.linComb(1, points[i], 1,points[i+1], 2);
-                this.drawSimpleEdge(v,v.add(frameV.mul(100)));
-                this.drawSimpleEdge(v,v.add(frameV.mul(-100)));
+                drawSimpleEdge(v,v.add(frameV.mul(100)));
+                drawSimpleEdge(v,v.add(frameV.mul(-100)));
             }
         }
 
         //@Override
         protected void paintSymetries(Vec U, Vec V, Vec O) {
-            Vec[] points = this.laticePoints();
+            Vec[] points = laticePoints();
             for(int i=0;i<points.length;++i)
             {
-                this.drawReflectionLine(points[i],points[i].add(frameV.mul(100)));
-                this.drawReflectionLine(points[i],points[i].add(frameV.mul(-100)));
+                drawReflectionLine(points[i],points[i].add(frameV.mul(100)));
+                drawReflectionLine(points[i],points[i].add(frameV.mul(-100)));
             }
             for(int i=0;i<points.length-1;++i)
             {
                 Vec v = Vec.linComb(1, points[i], 1,points[i+1], 2);
-                this.drawRotationPoint(v,2);
-                this.drawGlideLine(points[i], points[i+1]);
+                drawRotationPoint(v,2);
+                drawGlideLine(points[i], points[i+1]);
             }
         }
 

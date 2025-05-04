@@ -11,15 +11,6 @@ import org.singsurf.wallpaper.Vec;
 
 public abstract class BasicRule extends TessRule
 {
-    public void fun(int[] in, int[] out, int det) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public BasicRule(String name, String message) {
-        super(name, message);
-    }
-
     int det=1;
     double cos;
     double sin;
@@ -27,7 +18,18 @@ public abstract class BasicRule extends TessRule
     double len;
     int unitLen;
 
-    //@Override
+    public BasicRule(String name, String message) {
+        super(name, message);
+    }
+
+    
+    public void fun(int[] in, int[] out, int det) {
+        // Null implementation, not used by BasicRule subclasses
+
+    }
+
+
+    @Override
     public void calcFrame(FundamentalDomain fd,int selVert, boolean constrained)
     {
         int u1,u2,v1,v2; //,w1,w2;
@@ -45,7 +47,7 @@ public abstract class BasicRule extends TessRule
         frameV.y = u2;
     }
 
-    //@Override
+    @Override
     public void fixVerticies(FundamentalDomain fd)
     {
         fd.cellVerts[0].x = frameO.x+frameU.x;
@@ -68,7 +70,7 @@ public abstract class BasicRule extends TessRule
         fd.numFund = 2;
     }
 
-    //@Override
+    @Override
     public void replicate(DrawableRegion dr,FundamentalDomain fd)
     {
         //                      System.out.println("replicate");
@@ -95,12 +97,6 @@ public abstract class BasicRule extends TessRule
         sin = frameU.y / len;
         boolean error_flag = false;
 
-        //long t1=System.currentTimeMillis();
-//        long n1 = System.nanoTime();
-        //        Arrays.fill(dr.pixels, Color.BLACK.getRGB());
-
-        //        int latticeWidth = fd.getLatticeWidth();
-        //        int latticeHeight = fd.getLatticeHeight();
         final int startX = dr.dispRect.x;
         final int startY = dr.dispRect.y;
         final int dispW = dr.dispRect.width;
@@ -112,9 +108,7 @@ public abstract class BasicRule extends TessRule
             for(j=startY;j<dispB;++j)
             {
                 x = i+dr.offset.x - x0;
-                y = j+dr.offset.y - y0; // offset of figure
-                //                in[0] = x;
-                //                in[1] = y;
+                y = j+dr.offset.y - y0;
                 fun(x,y,res);
 
                 srcX = x0 + res[0]; 
@@ -136,12 +130,10 @@ public abstract class BasicRule extends TessRule
                         else 
                             px = dr.inpixels[srcX+srcY*dr.srcRect.width];
                     }
-                    //if(i==0&&j==0) px = backgroundRGB;
                     int outX = i;
                     int outY = j;
                     int outInd = outX+outY*dr.destRect.width;
                     dr.pixels[outInd] = px;
-                    //                                          pixels[i+j*width] = ((res[0]*256)/det)+((res[1]*256)/det)*256;
                 }
                 catch(Exception e)
                 {
@@ -158,11 +150,6 @@ public abstract class BasicRule extends TessRule
                     dr.pixels[i+j*dr.destRect.width] = 0;
                 }
             }
-        //long t2 = System.currentTimeMillis();
-//        long n2 = System.nanoTime();
-
-        //System.out.println(n2-n1);
-
         dr.fillSource();
     }
     abstract void fun(int x,int y,int[] out);

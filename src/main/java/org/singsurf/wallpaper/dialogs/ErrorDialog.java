@@ -6,8 +6,6 @@ package org.singsurf.wallpaper.dialogs;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -30,10 +28,7 @@ public class ErrorDialog extends JDialog {
 		JButton okBut = new JButton("OK");
 		pan.add(okBut);
 		this.add(pan);
-		okBut.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				close(true);
-			}});
+		okBut.addActionListener(e -> close(true));
 		this.addWindowListener(new WindowAdapter(){
 			@Override
             public void windowClosing(WindowEvent arg0) {

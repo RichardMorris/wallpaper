@@ -629,19 +629,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
     		return isFullScreen;
     	}
 
-        //@Override
-       public Image getImage(String loc) {
-            return frameGetImage(loc);
-        }
-
-      
-
-		
-		@Override
-	public void nextFrame() {
-			animController.nextYaml();
-	}
-
 		/**
          * Gets an image in application/frame context 
          * @param imgloc either a URL or filename
