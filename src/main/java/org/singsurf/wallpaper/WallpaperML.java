@@ -42,13 +42,14 @@ public class WallpaperML {
 	public WallpaperML(Wallpaper w)
 	{
 		this.wallpaper = w;
+		this.filename = null;
 	}
 	
-	public WallpaperML(Wallpaper w, String path, int time) {
+	public WallpaperML(Wallpaper w, String filename, String path, int time) {
 		this.wallpaper = w;
 		this.anim = path;
 		this.repeat = time;
-
+		this.filename = filename;
 	}
 
 	public void write(PrintWriter pr) {
@@ -62,9 +63,9 @@ public class WallpaperML {
 		pr.println("  - [" + fd.cellVerts[0].x+","+fd.cellVerts[0].y+"]");
 		pr.println("  - [" + fd.cellVerts[1].x+","+fd.cellVerts[1].y+"]");
 		pr.println("  - [" + fd.cellVerts[2].x+","+fd.cellVerts[2].y+"]");
-		if(wallpaper.imageFilename!=null) {
+		if(filename!=null) {
 			Path cdw = Path.of(System.getProperty("user.dir"));
-			Path absPath = Path.of(wallpaper.imageFilename).toAbsolutePath();
+			Path absPath = Path.of(filename).toAbsolutePath();
 			Path relativePath =
 				absPath.startsWith(cdw) 
 				? cdw.relativize(absPath)

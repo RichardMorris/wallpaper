@@ -368,12 +368,6 @@ public class FileController {
 	            if(res != JFileChooser.APPROVE_OPTION) return;
 	            File f = fc.getSelectedFile();
 	
-	//            JFileChooser fid = new JFileChooser(mainFrame, "Save pattern",
-	//                    JFileChooser.SAVE);
-	//            fid.setVisible(true);
-	//            String dir = fid.getDirectory();
-	//            String filename = fid.getFile();
-	//            fid.dispose();
 	            if (f != null) {
 	                try {
 	                    //File f = new File(dir, filename);
@@ -403,28 +397,12 @@ public class FileController {
 	            if(res != JFileChooser.APPROVE_OPTION) return;
 	            File f = fc.getSelectedFile();
 	
-	//            JFileChooser fid = new JFileChooser(mainFrame, "Save image",
-	//                    JFileChooser.SAVE);
-	//            fid.setFilenameFilter(saveFF);
-	//            fid.setVisible(true);
-	//            String dir = fid.getDirectory();
-	//            String filename = fid.getFile();
-	//            fid.dispose();
 	            if (f != null)
-	                try {
-	//                    if(!saveFF.accept(null, filename)) {
-	//                        ErrorDialog errorD = new ErrorDialog(mainFrame);
-	//                        errorD.open("File type not supported "+filename+".","Only bmp, jpg, png psd tga formats supported.");
-	//                        errorD.dispose();
-	//                        return;
-	//                    }
-	
+	                try {	
 	                	wall.fd.zoom(((ZoomedDrawableRegion) wall.dr).zoomDenom);
 	                	wall.controller.calcGeom();
 	                	wall.controller.applyFull();
-	                    //				Jimi.putImage(dr.getActiveImage(), dir + filename);
 	                    String type = getType(f.getName());
-	//                    File f = new File(dir,filename);
 	                    try {
 	                        Image img = wall.dr.getActiveImage();
 	                        BufferedImage bImg = new BufferedImage(
@@ -476,7 +454,8 @@ public class FileController {
 	            //File f = new File(dir, filename);
 	            FileWriter fw = new FileWriter(f,true);
 	            PrintWriter pw = new PrintWriter(fw);
-	            WallpaperML yaml = new WallpaperML(wallpaperFramed,wallpaperFramed.animController.path.getLabel(),esd.time);
+	            WallpaperML yaml = new WallpaperML(wallpaperFramed,
+	            		wallpaperFramed.imageFilename, wallpaperFramed.animController.path.getLabel(),esd.time);
 				yaml.write(pw);
 	            pw.close();
 	        } catch (Exception e) {
