@@ -16,7 +16,7 @@
         }],
         "javaVersion": "21",
         "files": [
-            { "dir": ".", "includes": "images/*, patterns/*, sequences/*" }
+            { "dir": ".", "includes": "images/*, patterns/*, sequences/*" },
             { "dir": "doc", "includes": "*,**/*" }
         ],
         "jar": "target/wallpaper-1.7-jar-with-dependencies.jar",
