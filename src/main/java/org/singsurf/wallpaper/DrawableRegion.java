@@ -37,13 +37,7 @@ public class DrawableRegion {
 	int backgroundRGB = Color.black.getRGB();
 	
 	/** displayable area */
-	public int viewpointL;
-
-	public int viewpointR;
-
-	public int viewpointT;
-
-	public int viewpointB;
+	public Rectangle viewpointRect = new Rectangle(0,0,100,100);
 
 	/** pixels of underlying image */
 	public int[] inpixels;
@@ -66,13 +60,13 @@ public class DrawableRegion {
 
 
 	public void calcDispRegion() {
-		int minX = viewpointL;
-		int minY = viewpointT;
-		int maxX = (destRect.width > viewpointR ? viewpointR : destRect.width);
-		int maxY = (destRect.height > viewpointB ? viewpointB : destRect.height);
+		int minX = viewpointRect.x;
+		int minY = viewpointRect.y;
+		int maxX = (destRect.width > viewpointRect.getMaxX() ? (int) viewpointRect.getMaxX() : destRect.width);
+		int maxY = (destRect.height > viewpointRect.getMaxY() ? (int) viewpointRect.getMaxY() : destRect.height);
 		dispRect = new Rectangle(minX,minY,maxX-minX,maxY-minY);
 		if(DEBUG) System.out.println("CDR w "+destRect.width+" h "+destRect.height+" ");
-		if(DEBUG) System.out.println("vp "+viewpointL+" "+viewpointT+" "+viewpointR+" "+viewpointB);
+		if(DEBUG) System.out.println("vp "+viewpointRect);
 		if(DEBUG) System.out.println(""+minX+" "+minY+" "+maxX+" "+maxY);
 	}
 
@@ -96,7 +90,7 @@ public class DrawableRegion {
 			System.out.println("srcRect "+srcRect.width+" "+srcRect.height);
 			System.out.println("destRect "+destRect.width+" "+destRect.height);
 			System.out.println("offset "+offset.x+" "+offset.y);
-			System.out.println("viewpoint "+viewpointL+" "+viewpointT+" "+viewpointR+" "+viewpointB);
+			System.out.println("viewpoint "+viewpointRect);
 			System.out.println("dispRect "+dispRect.x+" "+dispRect.y+" "+dispRect.width+" "+dispRect.height);
 		}
 	}
@@ -164,11 +158,10 @@ public class DrawableRegion {
 		return null;
 	}
 	public void setViewport(Rectangle r) {
+		Rectangle r2 = new Rectangle(r);
 	    if(DEBUG)	    System.out.println("DR.setViewport "+r);
-		viewpointL = r.x-offset.x;
-		viewpointR = r.x+r.width-offset.x;
-		viewpointT = r.y-offset.y;
-		viewpointB = r.y + r.height-offset.y;
+	    r2.translate(-offset.x,-offset.y);
+	    viewpointRect = r2;
 		calcDispRegion();
 	}
 
@@ -330,7 +323,7 @@ public class DrawableRegion {
 				+ "srcRect=" + srcRect + "\n"
 				+ "destRect=" + destRect + "\n"
 				+ "dispRect=" + dispRect + "\n"
-				+ "viewport= [" + viewpointL +", "+ viewpointT+"] .. ["+ viewpointR+ ", " + viewpointB +"]\n"
+				+ "viewport= " + viewpointRect +"\n"
  				+ "inpixels=" + inpixels.length + ", pixels="
 				+ pixels.length + ", img_ok=" + img_ok + "]";
 	}

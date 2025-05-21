@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -66,18 +68,12 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 	public FileController fileController;
 	/** Scrollable pane */
     public JScrollPane jsp;
-
-
     
 	public WallpaperFramed(String imgfilename, int w, int h) {
 		super(frameGetImage(imgfilename), w, h);
 		fileController = new FileController(this);
 		animController = new AnimationController(this,controller);
-
-
 	}
-
-
 
     @Override
     protected DrawableRegion buildDrawableRegion() {
@@ -86,8 +82,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
     @Override
     public void keyPressed(KeyEvent e) {
-//        int code = e.getKeyCode();
-//        System.out.println("WF: Key Pressed: " + code);
 		if (e.getKeyCode() == KeyEvent.VK_F11) {
 			toggleFullScreen(mainFrame);
 		}
@@ -289,7 +283,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
          * @param wallpaperApplication 
          * @return the MenuBar
          */
-        public JMenuBar buildMenu() {
+        JMenuBar buildMenu() {
             colD = new JColourPicker(mainFrame,this);
             
             mainFrame.addKeyListener(this);
@@ -627,19 +621,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
     		return isFullScreen;
     	}
 
-        //@Override
-       public Image getImage(String loc) {
-            return frameGetImage(loc);
-        }
-
-      
-
-		
-		@Override
-	public void nextFrame() {
-			animController.nextYaml();
-	}
-
 		/**
          * Gets an image in application/frame context 
          * @param imgloc either a URL or filename
@@ -649,6 +630,16 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             URI imgurl=null;
             String filename=null;
             Image imgin;
+            if(imgloc=="") {
+	            URL imgURL = WallpaperFramed.class.getResource("tile.jpg");
+	            if (imgURL != null) {
+	            	try {
+						return ImageIO.read(imgURL);
+					} catch (IOException e) {
+						System.out.println("Error loading image from resource "+imgloc+"," +imgURL);
+					}
+	            }
+			}
 
             // first try if its a a full URL
             try
@@ -682,8 +673,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         public static class ImageSelection implements Transferable {
             private final Image image;
 
-            public ImageSelection(Image image) {
-                this.image = image;
+            public ImageSelection(Image img) {
+               image = img;
             }
 
             // Returns supported flavors
@@ -745,7 +736,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             Rectangle rect =  jsp.getViewport().getViewRect();
             if (DEBUG)
                 System.out.println("Adjustment value changed"+rect);
-            //TODO cope with centered images
            dr.setViewport(rect);
            controller.redraw();
         }
@@ -753,11 +743,11 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         public String titleFilename="";
 		boolean isFullScreen = false;
         public void setTitle(String newTitle) {
-            this.titleFilename = newTitle;
+            titleFilename = newTitle;
             setTitle();
         }
         public void setTitle() {
-            this.mainFrame.setTitle("Wallpaper patterns: "+titleFilename+" "+dr.baseRect.width+" X "+dr.baseRect.height);
+            mainFrame.setTitle("Wallpaper patterns: "+titleFilename+" "+dr.baseRect.width+" X "+dr.baseRect.height);
         }
 
 	    public void toggleFullScreen(JFrame frame) {

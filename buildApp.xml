@@ -4,11 +4,12 @@
 	<target name="properties">
 		<property name="build" value="build" />
 		<property name="dist" value="dist" />
-		<property name="src" value="src" />
+		<property name="src" value="src/main/java" />
+		<property name="resources" value="src/main/resources" />
 		<property name="imageDir" value="images" />
 		<property name="productName" value="Wallpaper Patterns" />
                 <property name="appname" value="wallpaper-app" />
- 		<property name="productVersion" value="1.7" />
+ 		<property name="productVersion" value="1.7.5" />
 		<property name="productPublisher" value="R Morris." />
 		<property name="productWebSite" value="http://www.singsurf.org/" />
 	</target>
@@ -19,12 +20,10 @@
 	       <mkdir dir="${build}" />
 		<javac srcdir="${src}" destdir="${build}" debug="on" 
 		      source="21" target="21" 
-		      excludes="org/singsurf/wallpaper/WallSaver.java,
-					org/singsurf/wallpaper/WallpaperApplet.java"
 		      />
 		
 		<copy todir="${build}">
-			<fileset dir="resources" />
+			<fileset dir="${resources}" />
 			</copy>
 	</target>
 
@@ -57,7 +56,11 @@
 				<include name="maths.html" />
 				<include name="style.css" />
 				<include name="wallpaper.jar" />
-                <include name="tile.jpg" />
+			</fileset>
+			<fileset dir="doc">
+				<include name="*" />
+				<include name="*/*" />
+                <exclude name="Thumbs.db" />
 			</fileset>
 		</copy>
 		<mkdir dir="${dist}/${appname}/images" />
@@ -81,13 +84,6 @@
 		<mkdir dir="${dist}/${appname}/sequences" />
 		<copy todir="${dist}/${appname}/sequences">
 			<fileset dir="sequences">
-				<include name="*" />
-				<exclude name="Thumbs.db" />
-			</fileset>
-		</copy>
-		<mkdir dir="${dist}/${appname}/naut" />
-		<copy todir="${dist}/${appname}/naut">
-			<fileset dir="naut">
 				<include name="*" />
 				<exclude name="Thumbs.db" />
 			</fileset>

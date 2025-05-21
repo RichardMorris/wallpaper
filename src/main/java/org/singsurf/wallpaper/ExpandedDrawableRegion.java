@@ -19,16 +19,14 @@ public class ExpandedDrawableRegion extends DrawableRegion {
 		super(null);
 	}
 
-	//@Override
+	@Override
 	public void calcDispRegion() {
-//		int minX = this.viewpointL;
-//		int minY = this.viewpointT;
-		int maxX = this.viewpointR;
-		int maxY = this.viewpointB;
-		this.makeDest(maxX,maxY);
-		this.dispRect = new Rectangle(0,0,maxX,maxY);
-		this.makeOutImage();
-		this.img_ok = true;
+		int maxX = (int) viewpointRect.getMaxX();
+		int maxY = (int) viewpointRect.getMaxY();
+		makeDest(maxX,maxY);
+		dispRect = new Rectangle(0,0,maxX,maxY);
+		makeOutImage();
+		img_ok = true;
 	}
 
 

@@ -46,12 +46,12 @@ public class CropDialog extends JDialog implements ChangeListener {
 	JSpinner xoffSS,yoffSS,rSS,bSS;
 	JCheckBox tileCB;
 	WallpaperFramed wall;
-	public CropDialog(JFrame frame,WallpaperFramed wall) {
+	public CropDialog(JFrame frame,WallpaperFramed w) {
 		super(frame,"Crop/Expand",true);
-		this.setPreferredSize(new Dimension(300,200));
-		this.wall = wall;
+		setPreferredSize(new Dimension(300,200));
+		wall = w;
 		GridBagLayout gbl = new GridBagLayout();
-		this.setLayout(gbl);
+		setLayout(gbl);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = 4;
 	    gbc.weightx=1;
@@ -60,41 +60,41 @@ public class CropDialog extends JDialog implements ChangeListener {
 	        
 		gbc.gridx = 0; gbc.gridy = 0; 
 		gbc.gridwidth = 4;
-		this.add(heading,gbc);
+		add(heading,gbc);
 		gbc.gridwidth = 1;
 
 		gbc.gridwidth=4;
 		gbc.gridx=0; gbc.gridy++;
-		this.add(new JLabel("Crop region"),gbc);
+		add(new JLabel("Crop region"),gbc);
 		gbc.gridwidth = 1;
 		
 		gbc.gridx = 0; gbc.gridy++;
-		this.add(new JLabel("Left"), gbc);
+		add(new JLabel("Left"), gbc);
 		++gbc.gridx;
 		xoffSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1)); //hSS.s10,1);
-		this.add(xoffSS,gbc);
+		add(xoffSS,gbc);
 
 		gbc.gridx++;
-		this.add(new JLabel("Top"), gbc);
+		add(new JLabel("Top"), gbc);
 		++gbc.gridx;
 		yoffSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1));
-		this.add(yoffSS,gbc);
+		add(yoffSS,gbc);
 
 		gbc.gridx = 0; gbc.gridy++;
-		this.add(new JLabel("Right"), gbc);
+		add(new JLabel("Right"), gbc);
 		++gbc.gridx;
 		rSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1));
-		this.add(rSS,gbc);
+		add(rSS,gbc);
 
 		++gbc.gridx;
-		this.add(new JLabel("Bottom"), gbc);
+		add(new JLabel("Bottom"), gbc);
 		++gbc.gridx;
 		bSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1));
-		this.add(bSS,gbc);
+		add(bSS,gbc);
 
 		gbc.gridx = 0; gbc.gridy++;
 		tileCB = new JCheckBox("Tile image");
-		this.add(tileCB,gbc);
+		add(tileCB,gbc);
 		
 		rSS.addChangeListener(this);
 		bSS.addChangeListener(this);
@@ -113,12 +113,12 @@ public class CropDialog extends JDialog implements ChangeListener {
 			}});
 		
 		gbc.gridx = 1; gbc.gridy++;
-		this.add(okBut,gbc);
+		add(okBut,gbc);
 		++gbc.gridx;
-		this.add(cancelBut,gbc);
+		add(cancelBut,gbc);
 		
-		this.pack();
-		this.addWindowListener(new WindowAdapter(){
+		pack();
+		addWindowListener(new WindowAdapter(){
 		    @Override
             public void windowClosing(WindowEvent arg0) {
 		        close(false);
@@ -127,25 +127,25 @@ public class CropDialog extends JDialog implements ChangeListener {
 
 	public void open(int w,int h) {
 		heading.setText("Current size "+w+" X "+h);
-		this.width = wall.dr.baseRect.width;
-		this.height = wall.dr.baseRect.height;
+		width = wall.dr.baseRect.width;
+		height = wall.dr.baseRect.height;
 		rSS.setValue(w);
 		bSS.setValue(h);
 		xoffSS.setValue(0);
 		yoffSS.setValue(0);
 		tileCB.setSelected(TessRule.tileBackground);
-		this.pack();
-		this.setVisible(true);
+		pack();
+		setVisible(true);
 	}
 	void close(boolean flag) {
 		if(flag) {
-			this.width = (Integer) rSS.getValue() - (Integer) xoffSS.getValue();
-			this.height = (Integer) bSS.getValue() - (Integer) yoffSS.getValue();
-			this.xoff = (Integer) xoffSS.getValue();
-			this.yoff = (Integer) yoffSS.getValue();
+			width = (Integer) rSS.getValue() - (Integer) xoffSS.getValue();
+			height = (Integer) bSS.getValue() - (Integer) yoffSS.getValue();
+			xoff = (Integer) xoffSS.getValue();
+			yoff = (Integer) yoffSS.getValue();
 			TessRule.tileBackground = tileCB.isSelected();
 		}
-		this.ok = flag;
+		ok = flag;
 		
 		setVisible(false);
 	}
@@ -177,11 +177,11 @@ public class CropDialog extends JDialog implements ChangeListener {
 	static void clear_background(Graphics g, DrawableRegion dr) {
 		g.setColor(Color.white);
 		g.fillRect(dr.dispRect.width, 0, 
-				dr.viewpointR - dr.dispRect.width,
-				dr.viewpointB);
+				(int) dr.viewpointRect.getMaxX()- dr.dispRect.width,
+				(int) dr.viewpointRect.getMaxY());
 		g.fillRect(0, dr.dispRect.height,
-				dr.viewpointR, 
-				dr.viewpointB - dr.dispRect.height);
+				(int) dr.viewpointRect.getMaxX(), 
+				(int) dr.viewpointRect.getMaxY() - dr.dispRect.height);
 	}
 
 

@@ -1,11 +1,12 @@
 {
     "bin": {"wallpaper": "jdeploy-bundle/jdeploy.js"},
-    "author": "Richard Morris",
+    "author": "Richard Morris <rich@singsurf.org",
     "description": "Wallpaper pattern application",
     "main": "index.js",
     "preferGlobal": true,
     "repository": "",
-    "version": "1.7.5.2",
+	"name": "wallpaper",
+    "version": "1.8",
     "jdeploy": {
         "jdk": false,
         "publishTargets": [{
@@ -15,18 +16,22 @@
         }],
         "javaVersion": "21",
         "files": [
-            {
-                "includes": "tile.jpg",
-                "dir": "."
-            },
-            {
-                "includes": "*,**/*",
-                "dir": "doc"
-            }
+            { "dir": ".", "includes": "images/*, patterns/*, sequences/*" }
+            { "dir": "doc", "includes": "*,**/*" }
         ],
         "jar": "target/wallpaper-1.7-jar-with-dependencies.jar",
         "javafx": false,
-        "title": "Wallpaper"
+        "title": "Wallpaper",
+		
+		"documentTypes" : [
+		   {
+		     "extension" : "png",
+		     "mimetype" : "image/png"
+		   }, {
+		     "extension" : "jpg",
+		     "mimetype" : "image/jpeg"
+		   }
+		 ]
     },
     "dependencies": {
         "command-exists-promise": "^2.0.2",
@@ -36,7 +41,6 @@
         "shelljs": "^0.8.4"
     },
     "license": "Apache-2.0",
-    "name": "wallpaper",
     "files": [
         "jdeploy-bundle"
     ],

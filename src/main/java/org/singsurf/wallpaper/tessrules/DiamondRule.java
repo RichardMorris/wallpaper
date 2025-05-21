@@ -15,11 +15,10 @@ public abstract class DiamondRule extends TessRule
     public DiamondRule(String name,String message) { super(name,message); }
     DVec ud, vd, P;
 	private double angd;
-//    double cosUV,sinUV,lenW,perp;
-    //@Override
+
+	@Override
     public void calcFrame(FundamentalDomain fd,int selectedVertex, boolean constrained)
     {
-        //            System.out.println("calcFrame "+Arrays.toString(fd.cellVerts));
         if(constrained) {
             frameO.set(fd.cellVerts[1]);
             frameU.set(fd.cellVerts[0].sub(fd.cellVerts[1]));
@@ -174,7 +173,7 @@ public abstract class DiamondRule extends TessRule
             "Only one side of the fundamental domain needs to be a straight line"
     )
     {
-        //@Override
+        @Override
         public void calcFund(FundamentalDomain fd)
         {
             fd.fund[0].x = fd.cellVerts[1].x; 
@@ -186,7 +185,7 @@ public abstract class DiamondRule extends TessRule
             fd.numFund = 3;
         }
 
-        //@Override
+        @Override
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -201,8 +200,7 @@ public abstract class DiamondRule extends TessRule
             out[1] = beta;
         }
 
-        ////@Override
-        //@Override
+        @Override
         public void paintSymetries(Vec U,Vec V,Vec O) {
             Vec P1 = U.add(O); 
             Vec P2 = V.add(O);
@@ -212,16 +210,15 @@ public abstract class DiamondRule extends TessRule
             drawGlideLine(P5,P6);
         }
 
-        //@Override
+        @Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
-            this.drawSimpleEdge(O, O.add(U));
-            this.drawSimpleEdge(O, O.add(V));
-            //this.drawSimpleEdge(O, O.sum(U).sum(V));
-            this.drawSimpleEdge(O.add(V), O.add(U));
+            drawSimpleEdge(O, O.add(U));
+            drawSimpleEdge(O, O.add(V));
+            //drawSimpleEdge(O, O.sum(U).sum(V));
+            drawSimpleEdge(O.add(V), O.add(U));
         }
 
-        ////@Override
-        //@Override
+        @Override
         public double approxArea() { return 0.5; }
     };
 
@@ -233,7 +230,7 @@ public abstract class DiamondRule extends TessRule
             "The other side does not needs to be a straight line."
     )
     {
-        //@Override
+        @Override
         public void calcFund(FundamentalDomain fd)
         {
             fd.fund[0].x = fd.cellVerts[1].x; 
@@ -253,7 +250,7 @@ public abstract class DiamondRule extends TessRule
             fd.numFund=3;
         }
 
-        //@Override
+        @Override
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -274,7 +271,7 @@ public abstract class DiamondRule extends TessRule
             out[1] = beta;
         }
 
-        //@Override
+        @Override
         public void paintSymetries(Vec U,Vec V,Vec O) {
             Vec P1 = U.add(O); 
             Vec P2 = V.add(O);
@@ -296,16 +293,15 @@ public abstract class DiamondRule extends TessRule
             drawGlideLine(P6,P7);
         }
 
-        //@Override
+        @Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
-            this.drawSimpleEdge(O, O.add(U));
-            this.drawSimpleEdge(O, O.add(V));
-            this.drawSimpleEdge(O, O.add(U).add(V));
-            this.drawSimpleEdge(O.add(V), O.add(U));
+            drawSimpleEdge(O, O.add(U));
+            drawSimpleEdge(O, O.add(V));
+            drawSimpleEdge(O, O.add(U).add(V));
+            drawSimpleEdge(O.add(V), O.add(U));
         }
 
-        ////@Override
-        //@Override
+        @Override
         public double approxArea() { return 0.25; }
 
     };

@@ -18,12 +18,11 @@ public class FixedSizeDrawableRegion extends DrawableRegion {
 
 	public FixedSizeDrawableRegion(Wallpaper wall,Dimension dimension) {
 		super(wall);
-		this.dispRect = new Rectangle(0,0,dimension.width,dimension.height);
-		this.makeDest(dimension.width, dimension.height);
-		this.makeSrc(dimension.width, dimension.height);
+		dispRect = new Rectangle(0,0,dimension.width,dimension.height);
+		makeDest(dimension.width, dimension.height);
+		makeSrc(dimension.width, dimension.height);
 	}
 
-	//@Override
 	@Override
 	public boolean loadImage(Image imgin) {
 
@@ -46,16 +45,16 @@ public class FixedSizeDrawableRegion extends DrawableRegion {
 	        System.out.println("interrupted waiting for pixels!");
 	        return false;
 	    }
-	    System.out.println("FSDR "+w+" "+h+" "+this.dispRect);
+	    System.out.println("FSDR "+w+" "+h+" "+dispRect);
 	    // If bigger than screen rescale to fit
-	    if( this.dispRect.width == 0 || this.dispRect.height == 0)
+	    if( dispRect.width == 0 || dispRect.height == 0)
 	    {
 	        
 	    }
 	    else
-	    if(w > this.dispRect.width || h > this.dispRect.height) {
-	        double xfactor = (double) this.dispRect.width / w;
-	        double yfactor = (double) this.dispRect.height / h;
+	    if(w > dispRect.width || h > dispRect.height) {
+	        double xfactor = (double) dispRect.width / w;
+	        double yfactor = (double) dispRect.height / h;
 	        double factor = (xfactor > yfactor ? yfactor : xfactor);
 	        int nw = (int) (factor * w);
 	        int nh = (int) (factor * h);
@@ -64,18 +63,18 @@ public class FixedSizeDrawableRegion extends DrawableRegion {
 	    }
 
 
-	    int offX = (this.srcRect.width - w ) / 2;
-	    int offY = (this.srcRect.height - h ) / 2;
+	    int offX = (srcRect.width - w ) / 2;
+	    int offY = (srcRect.height - h ) / 2;
 
-	    for(int i=0;i<this.inpixels.length;++i)
-	        this.inpixels[i] = this.backgroundRGB;
+	    for(int i=0;i<inpixels.length;++i)
+	        inpixels[i] = backgroundRGB;
 	    for(int j=0;j<h;++j) {
-	        System.arraycopy(pix,j*w,this.inpixels, offX + (offY+j)*this.srcRect.width,w);
+	        System.arraycopy(pix,j*w,inpixels, offX + (offY+j)*srcRect.width,w);
 	    }
-	    this.copySrcDest();
-	    this.makeOutImage();
+	    copySrcDest();
+	    makeOutImage();
 	    if(DEBUG) System.out.println("loadImage successful: Width "+w+" height "+h);
-	    this.img_ok = true;
+	    img_ok = true;
 
 	    return img_ok;
 

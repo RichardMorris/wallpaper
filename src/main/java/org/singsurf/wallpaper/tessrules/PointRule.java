@@ -27,11 +27,11 @@ public abstract class PointRule extends TessRule
             dyhRules[i] = new DihedralRule(i);
         }
     }
-    public PointRule(int n,String name, String message) {
+    public PointRule(int num,String name, String message) {
         super(name, message);
-        this.n = n;
-        this.cos = Math.cos(2*Math.PI/n);
-        this.sin = Math.sin(2*Math.PI/n);
+        n = num;
+        cos = Math.cos(2*Math.PI/n);
+        sin = Math.sin(2*Math.PI/n);
         spokesX = new double[n];
         spokesY = new double[n];
     }
@@ -62,7 +62,7 @@ public abstract class PointRule extends TessRule
         }
     }
 
-    //@Override
+    @Override
     public void fixVerticies(FundamentalDomain fd)
     {
         fd.cellVerts[0].x = frameO.x+frameU.x;
@@ -84,18 +84,17 @@ public abstract class PointRule extends TessRule
 
     }
 
-    //@Override
+    @Override
     public void replicate(DrawableRegion dr,FundamentalDomain fd) {
         int x0=frameO.x;
         int y0=frameO.y;
 
         boolean error_flag = false;
-        for(int i=dr.destRect.x;i<dr.destRect.width+dr.destRect.x;++i)
-            for(int j=dr.destRect.y;j<dr.destRect.height+dr.destRect.y;++j)
-//
-//        for(int i=dr.dispRect.x;i<dr.dispRect.width+dr.dispRect.x;++i)
-//            for(int j=dr.dispRect.y;j<dr.dispRect.height+dr.dispRect.y;++j)
+
+        for(int i=dr.dispRect.x;i<dr.dispRect.width+dr.dispRect.x;++i)
+            for(int j=dr.dispRect.y;j<dr.dispRect.height+dr.dispRect.y;++j)
             {
+                int outInd = i+j*dr.destRect.width;
                 int x = i+dr.offset.x - x0;
                 int y = j+dr.offset.y - y0; // offset of figure
 
@@ -114,7 +113,7 @@ public abstract class PointRule extends TessRule
                         }
                     }
                 }
-                if(this.dihedral) {
+                if(dihedral) {
                     int next = (which+1)%n;
                     double cos2 =  x * spokesX[next] + y * spokesY[next];
                     double sin2 = -x * spokesY[next] + y * spokesX[next];
@@ -138,17 +137,15 @@ public abstract class PointRule extends TessRule
                             if(srcX <0) srcX += dr.srcRect.width;
                             srcY %= dr.srcRect.height; 
                             if(srcY <0) srcY += dr.srcRect.height;
-                            int outInd = i+j*dr.destRect.width;
                             int inInd = srcX+srcY*dr.srcRect.width;
                             int px = dr.inpixels[inInd];
                             dr.pixels[outInd] = px;
                         }
                         else {
-                            dr.pixels[i+j*dr.dispRect.width] = backgroundRGB;
+                            dr.pixels[outInd] = backgroundRGB;
                         }
                     }
                     else {
-                        int outInd = i+j*dr.destRect.width;
                         int inInd = srcX+srcY*dr.srcRect.width;
                         int px = dr.inpixels[inInd];
                         dr.pixels[outInd] = px;
@@ -164,7 +161,7 @@ public abstract class PointRule extends TessRule
                                 + " sY "+srcY
                         );
                     error_flag = true;
-                    dr.pixels[i+j*dr.destRect.width] = 0;
+                    dr.pixels[outInd] = 0;
                 }
             }
         dr.fillSource();
@@ -175,7 +172,7 @@ public abstract class PointRule extends TessRule
             super(n,"C"+n,
                     "Cyclic groups describe rotation by 2 pi/n around a single point.\n" +
             "It is equivalent to the group of integers mod n under addition.");
-            this.dihedral = false;
+            dihedral = false;
         }
 
         /** Calculates the fundamental domain */
@@ -205,12 +202,12 @@ public abstract class PointRule extends TessRule
         @Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
             for(int i=0;i<spokesX.length;++i)
-                this.drawSimpleEdge(frameO, new Vec((int) (spokesX[i]*1000),(int) (spokesY[i]*1000)).add(frameO));
+                drawSimpleEdge(frameO, new Vec((int) (spokesX[i]*1000),(int) (spokesY[i]*1000)).add(frameO));
        }
 
         @Override
         protected void paintSymetries(Vec U, Vec V, Vec O) {
-            this.drawRotationPoint(frameO, n);
+            drawRotationPoint(frameO, n);
         }
         
         
@@ -221,9 +218,9 @@ public abstract class PointRule extends TessRule
             super(n,"D"+n,
                     "The dihedral group of order n has a rotations of 2pi/n and n axis of reflection.\n" +
             "It is the symmetry group of and n sided regular polygon.");
-            this.dihedral = true;
+            dihedral = true;
             if(n==1)
-                this.message = "The first dihedral group D2 is just a reflection in a line";
+                message = "The first dihedral group D2 is just a reflection in a line";
         }
 
         /** Calculates the fundamental domain */
@@ -266,52 +263,52 @@ public abstract class PointRule extends TessRule
         @Override
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
             for(int i=0;i<spokesX.length;++i)
-                this.drawSimpleEdge(frameO, new Vec((int) (spokesX[i]*1000),(int) (spokesY[i]*1000)).add(frameO));
+                drawSimpleEdge(frameO, new Vec((int) (spokesX[i]*1000),(int) (spokesY[i]*1000)).add(frameO));
 
 
             if(n==1) {
-                this.drawSimpleEdge(frameO, 
+                drawSimpleEdge(frameO, 
                         new Vec((int) -(spokesX[0]*1000),
                                 (int) -(spokesY[0]*1000)).add(frameO));
             }
             else if(n ==2) {
-                this.drawSimpleEdge(frameO, 
+                drawSimpleEdge(frameO, 
                         new Vec((int) -(spokesY[0]*1000),
                                 (int) (spokesX[0]*1000)).add(frameO));
-                this.drawSimpleEdge(frameO, 
+                drawSimpleEdge(frameO, 
                         new Vec((int) (spokesY[0]*1000),
                                 (int) -(spokesX[0]*1000)).add(frameO));
             }
             else
             for(int i=0;i<spokesX.length;++i)
-                this.drawSimpleEdge(frameO, 
+                drawSimpleEdge(frameO, 
                         new Vec((int) ((spokesX[i]+spokesX[(i+1)%spokesX.length])*1000),
                                 (int) ((spokesY[i]+spokesY[(i+1)%spokesX.length])*1000)).add(frameO));
         }
 
         @Override
         protected void paintSymetries(Vec U, Vec V, Vec O) {
-            this.drawRotationPoint(frameO, n);
+            drawRotationPoint(frameO, n);
             for(int i=0;i<spokesX.length;++i)
-                this.drawReflectionLine(frameO, new Vec((int) (spokesX[i]*1000),(int) (spokesY[i]*1000)).add(frameO));
+                drawReflectionLine(frameO, new Vec((int) (spokesX[i]*1000),(int) (spokesY[i]*1000)).add(frameO));
 
 
             if(n==1)
-                this.drawReflectionLine(frameO, 
+                drawReflectionLine(frameO, 
                         new Vec((int) -(spokesX[0]*1000),
                                 (int) -(spokesY[0]*1000)).add(frameO));
             else if(n==2) {
-                this.drawReflectionLine(frameO, 
+                drawReflectionLine(frameO, 
                         new Vec((int) -(spokesY[0]*1000),
                                 (int) (spokesX[0]*1000)).add(frameO));
-                this.drawReflectionLine(frameO, 
+                drawReflectionLine(frameO, 
                         new Vec((int) (spokesY[0]*1000),
                                 (int) -(spokesX[0]*1000)).add(frameO));
 
             }
             else
                 for(int i=0;i<spokesX.length;++i)
-                    this.drawReflectionLine(frameO, 
+                    drawReflectionLine(frameO, 
                         new Vec((int) ((spokesX[i]+spokesX[(i+1)%spokesX.length])*1000),
                                 (int) ((spokesY[i]+spokesY[(i+1)%spokesX.length])*1000)).add(frameO));
             

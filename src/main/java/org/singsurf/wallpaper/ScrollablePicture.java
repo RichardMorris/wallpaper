@@ -51,10 +51,7 @@ public class ScrollablePicture extends JPanel
 
     public ScrollablePicture(Wallpaper wallpaper) {
         wall=wallpaper;
-        //setOpaque(true);
         setBackground(Color.white);
-        //Let the user scroll by dragging to outside the window.
-        //setAutoscrolls(true); //enable synthetic drag events
     }
 
 
@@ -89,6 +86,7 @@ public class ScrollablePicture extends JPanel
         }
     }
 
+    @Override
     public int getScrollableBlockIncrement(Rectangle visibleRect,
                                            int orientation,
                                            int direction) {
@@ -99,21 +97,20 @@ public class ScrollablePicture extends JPanel
         }
     }
 
+    @Override
     public boolean getScrollableTracksViewportWidth() {
         return false;
     }
 
+    @Override
     public boolean getScrollableTracksViewportHeight() {
         return false;
     }
     
-  @Override
-  protected void paintComponent(Graphics g) {
-      wall.paintCanvas(g);
-  }
-
-
-    public void setMaxUnitIncrement(int pixels) {
-        maxUnitIncrement = pixels;
+    @Override
+    protected void paintComponent(Graphics g) {
+    	wall.paintCanvas(g);
     }
+
+
 }

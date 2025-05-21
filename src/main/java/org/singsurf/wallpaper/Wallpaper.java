@@ -91,7 +91,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     public int clickCount = 0;
 	public AnimationController animController;
 
-    private final String[][] info = { { "image", "URL", "URL for image" }, };
     private GraphicalTesselationPanel tesselationPanel;
     JButton origTileButton;
 	/** Current path of animations */
@@ -184,14 +183,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	}
 
 
-	public void setImage(DrawableRegion dr2) {
-		if(DEBUG) System.out.println("setImage "+dr);
-		dr = dr2;
-		fd.resetDomain(dr.dispRect);
-		controller.calcGeom();
-		controller.redraw();
-	}
-
 	public void paintCanvas(Graphics g) {
         if(DEBUG) System.out.println("paintCanvas" + dr.dispRect);
         
@@ -207,7 +198,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
             g.clearRect(bounds.x,dr.dispRect.y+dr.dispRect.height,
                     bounds.width,bounds.y + bounds.height - (dr.dispRect.y+dr.dispRect.height));
         }
-        //g.clipRect(dr.dispRect.x,dr.dispRect.y,dr.dispRect.width,dr.dispRect.height);
         dr.paint(g,this);
         g.setPaintMode();
 
@@ -260,13 +250,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         g.drawString(s1,20,20+accent);
         g.drawString(s2,20,20+accent+height);
     }
-
-    //@Override
-    //@Override
-    //public void paint(Graphics g) {
-      //  if(DEBUG) System.out.println("Applet paint"); 
-        //paintCanvas(g);  
-    //}
 
     private boolean mousePressed = false;
 	protected Cursor pipet;
@@ -566,16 +549,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         return "Syntax:\n" +
         "\tjava -jar wallpaper.jar imageName [width height]"; 
     }
-    //@Override
-    public String getAppletInfo() {
-        return programInfo();
-    }
-
-
-    //@Override
-    public String[][] getParameterInfo() {
-        return info;
-    }
 
 
     public void keyPressed(KeyEvent e) {
@@ -650,11 +623,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	}
 
 
-
-	public void nextFrame() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public void imageChanged() {
 	    myCanvas.setSize(dr.destRect.width, dr.destRect.height);

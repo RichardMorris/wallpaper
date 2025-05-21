@@ -13,7 +13,7 @@ public abstract class SquRule extends TessRule
 
     
     /** The frame uses the base line and a line at right angles. */
-    //@Override
+    
     public void calcFrame(FundamentalDomain fd,int selectedVertex, boolean constrained)
     {
         int u1,u2,v1,v2; //,w1,w2;
@@ -49,7 +49,7 @@ public abstract class SquRule extends TessRule
         }
     }
 
-    //@Override
+    
     public void fixVerticies(FundamentalDomain fd)
     {
         fd.cellVerts[2].x = frameO.x+frameU.x;
@@ -62,7 +62,7 @@ public abstract class SquRule extends TessRule
     }
 
 
-    //@Override
+    
     public void paintDomainEdges(Vec U, Vec V, Vec O,int det) {
         Vec A = O.add(U);
         Vec B = Vec.linComb(2, O, 1,U,2);
@@ -71,19 +71,19 @@ public abstract class SquRule extends TessRule
         Vec F = Vec.linComb(2, O, 1,V,2);
         Vec G = Vec.linComb(2, O, 2, U,1,V,2);
 
-        this.drawSimpleEdge(O,A);
-        this.drawSimpleEdge(B,C);
-        this.drawSimpleEdge(O,D);
-        this.drawSimpleEdge(F,G);
+        drawSimpleEdge(O,A);
+        drawSimpleEdge(B,C);
+        drawSimpleEdge(O,D);
+        drawSimpleEdge(F,G);
     }
 
-    //@Override
+    
     public void fixFlip(String code, FundamentalDomain fd) {
         if((code == Wallpaper.FLIP_X || code == Wallpaper.FLIP_Y)) {
-            this.calcFrame(fd,0, true);
+            calcFrame(fd,0, true);
             int x = fd.cellVerts[0].x;	fd.cellVerts[0].x = fd.cellVerts[1].x; fd.cellVerts[1].x = x;
             int y = fd.cellVerts[0].y;	fd.cellVerts[0].y = fd.cellVerts[1].y; fd.cellVerts[1].y = y;
-            this.calcFrame(fd,0, true);
+            calcFrame(fd,0, true);
         }
     }
 
@@ -126,7 +126,7 @@ public abstract class SquRule extends TessRule
             "and two lines of reflection."
     )
     {
-        //@Override
+        
         public void calcFund(FundamentalDomain fd)
         {
             int u1,u2,v1,v2; //,w1,w2;
@@ -142,7 +142,7 @@ public abstract class SquRule extends TessRule
             fd.numFund = 4;
         }
 
-        //@Override
+        
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -150,7 +150,7 @@ public abstract class SquRule extends TessRule
             calcRot4(alpha,beta,det,out);
         }
 
-        //@Override
+        
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             drawRotationPoint(O,4);
             drawRotationPoint(Vec.linComb(1,U,2,O,2),2);
@@ -158,7 +158,7 @@ public abstract class SquRule extends TessRule
             drawRotationPoint(Vec.linComb(1,U,1,V,2,O,2),4);
         }
 
-        //@Override
+        
         public double approxArea() { return 0.25; }
 
     };
@@ -172,7 +172,7 @@ public abstract class SquRule extends TessRule
             "The fundamental domain is a right angled isosceles triangle."
     )
     {
-        //@Override
+        
         public void calcFund(FundamentalDomain fd)
         {
             int u1,u2,v1,v2;
@@ -187,7 +187,7 @@ public abstract class SquRule extends TessRule
             fd.numFund=3;
         }
 
-        //@Override
+        
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -204,7 +204,7 @@ public abstract class SquRule extends TessRule
             out[1] = beta;
         }
 
-        //@Override
+        
         protected void paintSymetries(Vec U, Vec V, Vec O) {
 
             drawReflectionLine(Vec.linComb(1,U,2,O,2),Vec.linComb(1,V,2,O,2));
@@ -226,15 +226,15 @@ public abstract class SquRule extends TessRule
             drawRotationPoint(Vec.linComb(1,U,1,V,2,O,2),4);
         }
 
-        //@Override
+        
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
             super.paintDomainEdges(U, V, O, det);
-            this.drawSimpleEdge(Vec.linComb(2, O, 1, V, 2), Vec.linComb(2, O, 2, U, -1, V, 2));
-            this.drawSimpleEdge(Vec.linComb(2, O, -1, V, 2), Vec.linComb(2, O, 2, U, 1, V, 2));
+            drawSimpleEdge(Vec.linComb(2, O, 1, V, 2), Vec.linComb(2, O, 2, U, -1, V, 2));
+            drawSimpleEdge(Vec.linComb(2, O, -1, V, 2), Vec.linComb(2, O, 2, U, 1, V, 2));
         }
 
 
-        //@Override
+        
         public double approxArea() { return 0.125; }
 
     };
@@ -246,7 +246,7 @@ public abstract class SquRule extends TessRule
             "three reflections and a 180\u00ba rotation."
     )
     {
-        //@Override
+        
         public void calcFund(FundamentalDomain fd)
         {
             int u1,u2,v1,v2; //,w1,w2;
@@ -260,7 +260,7 @@ public abstract class SquRule extends TessRule
             fd.fund[2].x = fd.cellVerts[1].x + u1/2+v1/2; fd.fund[2].y = fd.cellVerts[1].y + u2/2+v2/2;
             fd.numFund=3;
         }
-        //@Override
+        
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -277,7 +277,7 @@ public abstract class SquRule extends TessRule
             out[1] = beta;
         }
 
-        //@Override
+        
         protected void paintSymetries(Vec U, Vec V, Vec O) {
 
             drawReflectionLine(O,U.add(O));
@@ -302,13 +302,13 @@ public abstract class SquRule extends TessRule
 
 
         }
-        //@Override
+        
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
             super.paintDomainEdges(U, V, O, det);
-            this.drawSimpleEdge(O,  O.add(U).add(V));
-            this.drawSimpleEdge(O.add(U),O.add(V));
+            drawSimpleEdge(O,  O.add(U).add(V));
+            drawSimpleEdge(O.add(U),O.add(V));
         }
-        //@Override
+        
         public double approxArea() { return 0.125; }
 
     };

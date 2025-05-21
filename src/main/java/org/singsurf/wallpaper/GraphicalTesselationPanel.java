@@ -249,12 +249,12 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
             box = P6Mcb;
             break;
         }
-        this.currentTr = box.tr;
+        currentTr = box.tr;
         cbg.setSelected(box.getModel(), true);
-        this.currentGTB = box;
+        currentGTB = box;
     }
 
-    //@Override
+    
     public void itemStateChanged(ItemEvent e) {
         ItemSelectable sel = e.getItemSelectable();
         String label;
@@ -311,9 +311,9 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         currentGTB.setSelected(false);
         cont.setText(currentTr.message);
         cont.setTesselation(currentTr);
-        //                      if(!TessRule.this.wallpaper.accumeMode.getState())
-        //                              System.arraycopy(TessRule.this.wallpaper.inpixels,0,TessRule.this.wallpaper.pixels,0,this.wallpaper.inpixels.length);
-        //                      TessRule.this.fixVerticies(vertexX,vertexY);
+        //                      if(!TessRule.wallpaper.accumeMode.getState())
+        //                              System.arraycopy(TessRule.wallpaper.inpixels,0,TessRule.wallpaper.pixels,0,wallpaper.inpixels.length);
+        //                      TessRule.fixVerticies(vertexX,vertexY);
         cont.applyTessellation();
         currentTr.firstCall=false;
         cont.repaint();
@@ -418,21 +418,21 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
 
 	class GraphicalTesselationBox extends JToggleButton implements ActionListener {
         TessRule tr;
-        public GraphicalTesselationBox(TessRule tr, String iconName) {
+        public GraphicalTesselationBox(TessRule tr1, String iconName) {
             super(iconName);
             String iconFileName = iconPrefix + iconName + iconSuffix;
             ImageIcon icon = GraphicalTesselationPanel.createImageIcon(iconFileName,iconName);
-            this.setIcon(icon);
-            this.setMargin(new Insets(0,0,0,0));
-            this.setBorderPainted(true);
-            //this.setBorder(BorderFactory.createEtchedBorder());
-            this.setToolTipText(iconName);
-            this.setVerticalTextPosition(CENTER);
-            this.setHorizontalTextPosition(RIGHT);
-            this.setHorizontalAlignment(LEFT);
-            this.tr = tr;
-            //this.addItemListener(this);
-            this.addActionListener(this);
+            setIcon(icon);
+            setMargin(new Insets(0,0,0,0));
+            setBorderPainted(true);
+            //setBorder(BorderFactory.createEtchedBorder());
+            setToolTipText(iconName);
+            setVerticalTextPosition(CENTER);
+            setHorizontalTextPosition(RIGHT);
+            setHorizontalAlignment(LEFT);
+            tr = tr1;
+            //addItemListener(this);
+            addActionListener(this);
             allBoxes.add(this);
             cbg.add(this);
         }
@@ -448,9 +448,6 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
                 tr.firstCall=true;
                 cont.setText(tr.message);
                 cont.setTesselation(tr);
-                //                  if(!TessRule.this.wallpaper.accumeMode.getState())
-                //                          System.arraycopy(TessRule.this.wallpaper.inpixels,0,TessRule.this.wallpaper.pixels,0,this.wallpaper.inpixels.length);
-                //                  TessRule.this.fixVerticies(vertexX,vertexY);
                 cont.applyTessellation();
                 tr.firstCall=false;
                 cont.wallpaper.clickCount++;
@@ -469,9 +466,6 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
             tr.firstCall=true;
             cont.setText(tr.name + ": " + tr.message);
             cont.setTesselation(tr);
-            //                  if(!TessRule.this.wallpaper.accumeMode.getState())
-            //                          System.arraycopy(TessRule.this.wallpaper.inpixels,0,TessRule.this.wallpaper.pixels,0,this.wallpaper.inpixels.length);
-            //                  TessRule.this.fixVerticies(vertexX,vertexY);
             cont.applyTessellation();
             tr.firstCall=false;
             cont.wallpaper.clickCount++;
