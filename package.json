@@ -1,6 +1,6 @@
 {
     "bin": {"wallpaper": "jdeploy-bundle/jdeploy.js"},
-    "author": "Richard Morris <rich@singsurf.org",
+    "author": "Richard Morris <rich@singsurf.org>",
     "description": "Wallpaper pattern application",
     "main": "index.js",
     "preferGlobal": true,
