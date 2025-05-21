@@ -14,12 +14,12 @@ public class DrawableRegionTile extends DrawableRegion {
 	int outWidth,outHeight;
 	public DrawableRegionTile(DrawableRegion dr,int w,int h) {
 		super(dr.wall);
-		this.dispRect = new Rectangle(0,0,w,h);
-		this.makeDest(w, h);
-		this.inpixels = dr.inpixels;
-		this.srcRect = dr.srcRect;
-		this.makeOutImage();
-		this.img_ok = true;
+		dispRect = new Rectangle(0,0,w,h);
+		makeDest(w, h);
+		inpixels = dr.inpixels;
+		srcRect = dr.srcRect;
+		makeOutImage();
+		img_ok = true;
 	}
 
 	public void reset() {/*do nothing */ }

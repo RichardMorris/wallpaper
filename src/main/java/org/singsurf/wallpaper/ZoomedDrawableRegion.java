@@ -26,8 +26,8 @@ public class ZoomedDrawableRegion extends DrawableRegion {
     boolean split =false;
     public ZoomedDrawableRegion(Wallpaper wall) {
         super(wall);
-        this.zoomNumer = 1;
-        this.zoomDenom = 1;
+        zoomNumer = 1;
+        zoomDenom = 1;
     }
 
     /**
@@ -47,7 +47,7 @@ public class ZoomedDrawableRegion extends DrawableRegion {
             makeOutImage();
             img_ok = true;
             return img_ok;
-    }
+        }
         
     	/**
     	 * Loads the image into the basePixels array,
@@ -265,7 +265,6 @@ public class ZoomedDrawableRegion extends DrawableRegion {
 
     }
 
-    //@Override
     @Override
     public void rescale(int w, int h) {
         try {
@@ -282,7 +281,6 @@ public class ZoomedDrawableRegion extends DrawableRegion {
 
     }
 
-    //@Override
     @Override
     public void resize(int w, int h, int xoff, int yoff) {
         try {
@@ -321,10 +319,10 @@ public class ZoomedDrawableRegion extends DrawableRegion {
     @Override
 	public
 	void calcDispRegion() {
-		int minX = viewpointL;
-		int minY = viewpointT;
-		int maxX = (destRect.width > viewpointR ? viewpointR : destRect.width);
-		int maxY = (destRect.height > viewpointB ? viewpointB : destRect.height);
+		int minX = viewpointRect.x;
+		int minY = viewpointRect.y;
+		int maxX = (destRect.width > viewpointRect.getMaxX() ? (int) viewpointRect.getMaxX() : destRect.width);
+		int maxY = (destRect.height > viewpointRect.getMaxY() ? (int) viewpointRect.getMaxY() : destRect.height);
 		int width = maxX-minX;
 		int height = maxY-minY;
 		if(split) {
@@ -334,7 +332,7 @@ public class ZoomedDrawableRegion extends DrawableRegion {
 		}
 		if(DEBUG) System.out.println(""+minX+" "+minY+" "+maxX+" "+maxY);
     	if(DEBUG) System.out.println("CDR w "+destRect.width+" h "+destRect.height+" ");
-		if(DEBUG) System.out.println("vp "+viewpointL+" "+viewpointT+" "+viewpointR+" "+viewpointB);
+		if(DEBUG) System.out.println("vp "+viewpointRect);
 	}
 
 	public void setSplit(boolean b) {
