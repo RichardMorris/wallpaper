@@ -19,7 +19,7 @@
             { "dir": ".", "includes": "images/*, patterns/*, sequences/*" },
             { "dir": "doc", "includes": "*,**/*" }
         ],
-        "jar": "target/wallpaper-1.7-jar-with-dependencies.jar",
+        "jar": "target/wallpaper-v1.8.5-jar-with-dependencies.jar",
         "javafx": false,
         "title": "Wallpaper",
 		
