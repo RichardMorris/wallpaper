@@ -10,7 +10,7 @@ public abstract class IrregularHexRule extends TessRule {
 		super(name, message);
 	}
 
-	//@Override
+	@Override
 	public void calcFrame(FundamentalDomain fd, int selectedVertex,
 			boolean constrained) {
 		frameO.set(fd.cellVerts[1]);
@@ -20,7 +20,7 @@ public abstract class IrregularHexRule extends TessRule {
 	}
 
 
-	//@Override
+	@Override
 	public void fixVerticies(FundamentalDomain fd) {
 		fd.cellVerts[0].set(frameO.add(frameV));
 		fd.cellVerts[1].set(frameO);
@@ -39,7 +39,7 @@ public abstract class IrregularHexRule extends TessRule {
             +"The fundamental domain is a trapesium made by cutting the tile in half.") {
     	
         /** Calculates the fundamental domain */
-        //@Override
+        @Override
         public void calcFund(FundamentalDomain fd)
        {
         	fd.fund[0].setLC(1, frameO, 1, frameV);
@@ -52,7 +52,7 @@ public abstract class IrregularHexRule extends TessRule {
         	fd.numFund = 4;
        }
 
-		//@Override
+		@Override
 		public void fun(int[] in, int[] out, int det) {
             int a = (in[0]<0 ? (in[0]+1)/det -1 : in[0]/det); 
             int b = (in[1]<0 ? (in[1]+1)/det -1 : in[1]/det); 
@@ -85,7 +85,7 @@ public abstract class IrregularHexRule extends TessRule {
             }
 		}
 
-		//@Override
+		@Override
 		public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
 			
 		//	drawSimpleEdge(O, O.add(U));
@@ -101,7 +101,7 @@ public abstract class IrregularHexRule extends TessRule {
 			//drawSimpleEdge(O.add(U), Vec.linComb(1, O, 1, U,2,V));
 		}
 
-		//@Override
+		@Override
 		protected void paintSymetries(Vec U, Vec V, Vec O) {
             Vec f23 = new Vec(frameU.x,frameU.y);
             Vec f45 = new Vec(frameV.x,frameV.y);
@@ -121,7 +121,7 @@ public abstract class IrregularHexRule extends TessRule {
             ) {
     	
         /** Calculates the fundamental domain */
-        //@Override
+        @Override
         public void calcFund(FundamentalDomain fd)
        {
         	fd.fund[0].setLC(1, frameO, 1, frameV);
@@ -140,7 +140,7 @@ public abstract class IrregularHexRule extends TessRule {
         	fd.numFund = 6;
        }
 
-		//@Override
+		@Override
 		public void fun(int[] in, int[] out, int det) {
             int a = (in[0]<0 ? (in[0]+1)/det -1 : in[0]/det); 
             int b = (in[1]<0 ? (in[1]+1)/det -1 : in[1]/det); 

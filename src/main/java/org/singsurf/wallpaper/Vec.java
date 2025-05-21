@@ -15,10 +15,10 @@ public class Vec extends Point {
 		super(p);
 	}
 	public Vec add(Point p) {
-		return new Vec(this.x+p.x,this.y+p.y);
+		return new Vec(x+p.x,y+p.y);
 	}
 	public Vec sub(Point p) {
-		return new Vec(this.x-p.x,this.y-p.y);
+		return new Vec(x-p.x,y-p.y);
 	}
 	public Vec negate() {
 		return new Vec(-x,-y);
@@ -107,6 +107,6 @@ public class Vec extends Point {
 	static public Vec linComb(int mul1,Vec v1,int mul2,Vec v2,int mul3,Vec v3,int div) {
 		return new Vec((mul1*v1.x + mul2*v2.x+mul3*v3.x)/div,(mul1*v1.y+mul2*v2.y+mul3*v3.y)/div);
 	}
-	//@Override
+	@Override
     public String toString() { return "("+x+","+y+")"; }
 }

@@ -46,59 +46,59 @@ public class ExpandDialog extends JDialog implements  ChangeListener {
 	JCheckBox tileCB;
         JCheckBox centerCB;
 	Wallpaper wall;
-	public ExpandDialog(JFrame frame,Wallpaper wall) {
+	public ExpandDialog(JFrame frame,Wallpaper w) {
 		super(frame,"Expand",true);
-		this.setPreferredSize(new Dimension(300,200));
-		this.wall = wall;
+		setPreferredSize(new Dimension(300,200));
+		wall = w;
 		GridBagLayout gbl = new GridBagLayout();
-		this.setLayout(gbl);
+		setLayout(gbl);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = 4;
 		gbc.weightx=1;
 		gbc.insets=new Insets(2,2,2,2);
 		gbc.gridx = 0; gbc.gridy = 0; 
 		gbc.gridwidth = 4;
-		this.add(heading,gbc);
+		add(heading,gbc);
 		gbc.gridwidth = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0; gbc.gridy++; 
-		this.add(new JLabel("Width"), gbc);
+		add(new JLabel("Width"), gbc);
 		++gbc.gridx;
 		wSS = new JSpinner(new SpinnerNumberModel(10, 1, null, 1));
-		this.add(wSS,gbc);
+		add(wSS,gbc);
 		
 		gbc.gridx++;
-		this.add(new JLabel("Height"), gbc);
+		add(new JLabel("Height"), gbc);
 		++gbc.gridx;
 		hSS = new JSpinner(new SpinnerNumberModel(10, 1, null, 1)); //hSS.s10,1);
-		this.add(hSS,gbc);
+		add(hSS,gbc);
 		
 		gbc.gridwidth=4;
 		gbc.gridx=0; gbc.gridy++;
-		this.add(new JLabel("Offset"),gbc);
+		add(new JLabel("Offset"),gbc);
 		gbc.gridwidth = 1;
 		
 		gbc.gridx = 0; gbc.gridy++;
-		this.add(new JLabel("Left"), gbc);
+		add(new JLabel("Left"), gbc);
 		++gbc.gridx;
 		xoffSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1));
-		this.add(xoffSS,gbc);
+		add(xoffSS,gbc);
 
 		gbc.gridx++;
-		this.add(new JLabel("Top"), gbc);
+		add(new JLabel("Top"), gbc);
 		++gbc.gridx;
 		yoffSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1));
-		this.add(yoffSS,gbc);
+		add(yoffSS,gbc);
 
 
 		gbc.gridwidth=2;
 		gbc.gridx = 0; gbc.gridy++;
 		tileCB = new JCheckBox("Tile image");
-		this.add(tileCB,gbc);
+		add(tileCB,gbc);
 
 		gbc.gridx = 0; gbc.gridy++;
 	        centerCB = new JCheckBox("Center image",false);
-	        this.add(centerCB,gbc);
+	        add(centerCB,gbc);
 
 		wSS.addChangeListener(this);
 		hSS.addChangeListener(this);
@@ -118,13 +118,12 @@ public class ExpandDialog extends JDialog implements  ChangeListener {
 			}});
 		
 		gbc.gridx = 0; gbc.gridy++;
-		this.add(okBut,gbc);
+		add(okBut,gbc);
 		gbc.gridx+=2;
-		this.add(cancelBut,gbc);
+		add(cancelBut,gbc);
 		
-		this.pack();
-		this.addWindowListener(new WindowAdapter(){
-		    //@Override
+		pack();
+		addWindowListener(new WindowAdapter(){
 		    @Override
             public void windowClosing(WindowEvent arg0) {
 		        close(false);
@@ -133,25 +132,25 @@ public class ExpandDialog extends JDialog implements  ChangeListener {
 
 	public void open(int w,int h) {
 		heading.setText("Current size "+w+" X "+h);
-		this.imageWidth = wall.dr.baseRect.width;
-		this.imageHeight = wall.dr.baseRect.height;
+		imageWidth = wall.dr.baseRect.width;
+		imageHeight = wall.dr.baseRect.height;
 		wSS.setValue(w);
 		hSS.setValue(h);
 		xoffSS.setValue(0);
 		yoffSS.setValue(0);
 		tileCB.setSelected(TessRule.tileBackground);
-		this.pack();
-		this.setVisible(true);
+		pack();
+		setVisible(true);
 	}
 	void close(boolean flag) {
 		if(flag) {
-			this.imageWidth = (Integer) wSS.getValue();
-			this.imageHeight = (Integer) hSS.getValue();
-			this.xoff = (Integer) xoffSS.getValue();
-			this.yoff = (Integer) yoffSS.getValue();
+			imageWidth = (Integer) wSS.getValue();
+			imageHeight = (Integer) hSS.getValue();
+			xoff = (Integer) xoffSS.getValue();
+			yoff = (Integer) yoffSS.getValue();
 			TessRule.tileBackground = tileCB.isSelected();
 		}
-		this.ok = flag;
+		ok = flag;
 		
 		setVisible(false);
 	}
@@ -168,7 +167,7 @@ public class ExpandDialog extends JDialog implements  ChangeListener {
 		int oldw=(Integer) wSS.getValue();
 		int oldh=(Integer) hSS.getValue();
 		
-		if(this.centerCB.isSelected()) {
+		if(centerCB.isSelected()) {
 		    oldx = (oldw-imageWidth)/2;
                     oldy = (oldh-imageHeight)/2;
                     xoffSS.setValue(oldx);

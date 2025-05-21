@@ -116,7 +116,6 @@ public abstract class TessRule
         int i,j,srcX,srcY,x,y;
         int[] in = new int[2];
         int[] res = new int[2];
-
         boolean error_flag = false;
 
         int det = u1 * v2 - v1 * u2;
@@ -324,12 +323,12 @@ public abstract class TessRule
 
     FundamentalDomain paintFd=null;
     public void paintSymetries(Vec U, Vec V, Vec O,FundamentalDomain fd) {
-        this.paintFd = fd;
+        paintFd = fd;
         paintSymetries(U,V,O);
     }
 
     public void paintDomainEdges(Vec U, Vec V, Vec O, FundamentalDomain fd) {
-        this.paintFd = fd;
+        paintFd = fd;
         paintDomainEdges(U,V,O,fd.det);
     }
 

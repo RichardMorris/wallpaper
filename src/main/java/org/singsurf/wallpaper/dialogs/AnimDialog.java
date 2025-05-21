@@ -33,12 +33,12 @@ public class AnimDialog extends JDialog  {
 //	JCheckBox repeatCB;
 	Wallpaper wall;
 
-	public AnimDialog(JFrame frame,Wallpaper wall) {
+	public AnimDialog(JFrame frame,Wallpaper w) {
 		super(frame,"Animation time",true);
-		this.setPreferredSize(new Dimension(300,120));
-		this.wall = wall;
+		setPreferredSize(new Dimension(300,120));
+		wall = w;
 		GridBagLayout gbl = new GridBagLayout();
-		this.setLayout(gbl);
+		setLayout(gbl);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = 4;
 	    gbc.weightx=1;
@@ -47,29 +47,15 @@ public class AnimDialog extends JDialog  {
 	        
 		gbc.gridx = 0; gbc.gridy = 0; 
 		gbc.gridwidth = 2;
-		this.add(heading,gbc);
+		add(heading,gbc);
 		gbc.gridwidth = 1;
 
 		gbc.gridx = 0; gbc.gridy++; 
-		this.add(new JLabel("Elapse Time (s)"), gbc);
+		add(new JLabel("Elapse Time (s)"), gbc);
 		++gbc.gridx;
                 timeSS = new JSpinner(new SpinnerNumberModel(30, 0, null, 1));
-		this.add(timeSS,gbc);
+		add(timeSS,gbc);
 		gbc.gridx++;
-
-
-//		gbc.gridx = 0; gbc.gridy++;
-//		repeatCB = new JCheckBox("Restart",false);
-//		this.add(repeatCB,gbc);
-//		repeatCB.addItemListener((e) -> {
-//				if(repeatCB.isSelected()) {
-//					restart = true;
-//				} else {
-//					restart = false;
-//				}
-//			});
-		
-		//timeSS.addChangeListener(this);
 
 		JButton okBut = new JButton("OK");
 		okBut.addActionListener(new ActionListener(){
@@ -83,13 +69,12 @@ public class AnimDialog extends JDialog  {
 			}});
 		
 		gbc.gridx = 0; gbc.gridy++;
-		this.add(okBut,gbc);
+		add(okBut,gbc);
 		++gbc.gridx;
-		this.add(cancelBut,gbc);
+		add(cancelBut,gbc);
 		
-		this.pack();
-		this.addWindowListener(new WindowAdapter(){
-		    //@Override
+		pack();
+		addWindowListener(new WindowAdapter(){
 		    @Override
             public void windowClosing(WindowEvent arg0) {
 		        close(false);
@@ -97,15 +82,14 @@ public class AnimDialog extends JDialog  {
 	}
 
 	public void open() {
-		this.pack();
-		this.setVisible(true);
+		pack();
+		setVisible(true);
 	}
 	void close(boolean flag) {
 		if(flag) {
-			this.time = (Integer) timeSS.getValue();
-//			this.restart = repeatCB.isSelected();
+			time = (Integer) timeSS.getValue();
 		}
-		this.ok = flag;
+		ok = flag;
 		
 		setVisible(false);
 	}

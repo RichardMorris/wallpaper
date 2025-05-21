@@ -16,7 +16,7 @@ public abstract class PgramRule extends TessRule
 
     int det=1;
 
-    //@Override
+    @Override
     public void calcFrame(FundamentalDomain fd,int selVert, boolean constrained)
     {
     	Vec u = fd.cellVerts[2].sub(fd.cellVerts[1]);
@@ -41,7 +41,7 @@ public abstract class PgramRule extends TessRule
 //        frameV.y = u2;
     }
 
-    //@Override
+    @Override
     public void fixVerticies(FundamentalDomain fd)
     {
     	fd.cellVerts[0].set(frameO.add(frameU));
@@ -73,7 +73,7 @@ public abstract class PgramRule extends TessRule
             +"The boundary of the fundamental domain does not have to be\n"
             +"straight lines.") {
         /** Calculates the fundamental domain */
-        //@Override
+        @Override
         public void calcFund(FundamentalDomain fd)
        {
         	fd.fund[0].set(fd.cellVerts[1]);
@@ -92,7 +92,7 @@ public abstract class PgramRule extends TessRule
 //            fd.fund[3].y = fd.cellVerts[1].y+frameV.y;
         }
 
-        //@Override
+        @Override
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -101,17 +101,17 @@ public abstract class PgramRule extends TessRule
             out[1] = beta;
         }
 
-        //@Override
+        @Override
         public double approxArea() {
             return 0.5;
         }	
 
-        //@Override
+        @Override
         public void paintDomainEdges(Vec U, Vec V, Vec O,int det) {
             Vec A = O.add(U);
             Vec D = O.add(V);
-            this.drawSimpleEdge(O,A);
-            this.drawSimpleEdge(O,D);
+            drawSimpleEdge(O,A);
+            drawSimpleEdge(O,D);
         }
 
     };
@@ -125,7 +125,7 @@ public abstract class PgramRule extends TessRule
     ) {
         static final boolean TRIANGLE_STYLE = true;
 
-        //@Override
+        @Override
         public void calcFund(FundamentalDomain fd)
         {
             if(TRIANGLE_STYLE) {
@@ -160,7 +160,7 @@ public abstract class PgramRule extends TessRule
             }
         }
 
-        //@Override
+        @Override
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -194,7 +194,7 @@ public abstract class PgramRule extends TessRule
             out[1] = beta;
         }
 
-        //@Override
+        @Override
         protected void paintSymetries(Vec u, Vec v, Vec O) {
             drawRotationPoint(O,2);
             drawRotationPoint(u.div(2).add(O),2);
@@ -202,27 +202,27 @@ public abstract class PgramRule extends TessRule
             drawRotationPoint(Vec.linComb(1,u,1,v,2,O,2),2);
         }
 
-        //@Override
+        @Override
         public void paintDomainEdges(Vec U, Vec V, Vec O,int det) {
             if (TRIANGLE_STYLE) {
-                this.drawSimpleEdge(O,O.add(U));
-                this.drawSimpleEdge(O.add(U),O.add(V));
-                this.drawSimpleEdge(O.add(V),O);
+                drawSimpleEdge(O,O.add(U));
+                drawSimpleEdge(O.add(U),O.add(V));
+                drawSimpleEdge(O.add(V),O);
             } else {
                 Vec A = O.add(U);
                 Vec B = Vec.linComb(2, O, 1,U,2);
                 Vec C = Vec.linComb(2, O, 1, U,2,V,2);
                 Vec D = O.add(V);
-                this.drawSimpleEdge(O,A);
-                this.drawSimpleEdge(B,C);
-                this.drawSimpleEdge(O,D);
+                drawSimpleEdge(O,A);
+                drawSimpleEdge(B,C);
+                drawSimpleEdge(O,D);
             }
         }
 
-        //@Override
+        @Override
         public double approxArea() { return 0.25; }
 
-        //@Override
+        @Override
         public double approxAspect() { return 2.0; }
 
     };

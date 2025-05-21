@@ -34,12 +34,12 @@ public class Controller {
         this.fd = fd;
     }
 
-    public void setDr(DrawableRegion dr) {
-        this.dr = dr;
+    public void setDr(DrawableRegion dr1) {
+        dr = dr1;
     }
 
-    public void setFd(FundamentalDomain fd) {
-        this.fd = fd;
+    public void setFd(FundamentalDomain fd1) {
+        fd = fd1;
     }
 
     /**
@@ -115,8 +115,8 @@ public class Controller {
         wallpaper.myCanvas.repaint();
     }
 
-    public void setTesselation(TessRule tr) {
-        this.tr = tr;
+    public void setTesselation(TessRule tr1) {
+        tr = tr1;
         tr.firstCall = true;
         dr.resetDelayed();
     }
@@ -138,9 +138,6 @@ public class Controller {
 			dr.calcDispRegion();
 			showOriginal();
 			applyTessellation();
-//			calcGeom();
-			//dr.makeOutImage();
-//			redraw();
 		}
 	}
 

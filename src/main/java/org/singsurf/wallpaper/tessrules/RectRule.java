@@ -12,7 +12,7 @@ public abstract class RectRule extends TessRule
     int det=1;
     double lenU = -1,lenV = -1.0;
     public RectRule(String name,String message) { super(name,message);	}
-    //@Override
+    
     public void calcFrame(FundamentalDomain fd,int selVert, boolean constrained)
     {
         if(constrained) {
@@ -143,7 +143,7 @@ public abstract class RectRule extends TessRule
         }
     }
 
-    //@Override
+    
     public void fixVerticies(FundamentalDomain fd)
     {
         fd.cellVerts[0].x = frameO.x+frameV.x;
@@ -159,15 +159,15 @@ public abstract class RectRule extends TessRule
         fd.setLatticeType(FundamentalDomain.PARALLOGRAM);
     }
 
-    //@Override
+    
     public void paintDomainEdges(Vec U, Vec V, Vec O,int det) {
         Vec A = O.add(U);
         Vec B = Vec.linComb(2, O, 1,U,2);
         Vec C = Vec.linComb(2, O, 1, U,2,V,2);
         Vec D = O.add(V);
-        this.drawSimpleEdge(O,A);
-        this.drawSimpleEdge(B,C);
-        this.drawSimpleEdge(O,D);
+        drawSimpleEdge(O,A);
+        drawSimpleEdge(B,C);
+        drawSimpleEdge(O,D);
     }
 
     /** Glide reflection, rectangular domain. 
@@ -177,7 +177,7 @@ public abstract class RectRule extends TessRule
             "A Glide-reflection.\n"
             +"This transformation is performed by first translating the domain\n"
             +"and then reflecting it in the line of the translation.\n") {
-        //@Override
+        
         public void calcFund(FundamentalDomain fd)
         {
             int u1,u2,v1,v2; //,w1,w2;
@@ -205,7 +205,7 @@ public abstract class RectRule extends TessRule
 
         }
 
-        //@Override
+        
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -219,16 +219,16 @@ public abstract class RectRule extends TessRule
             out[1] = beta;
         }
 
-        //@Override
+        
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             drawGlideLine(O,U.add(O));
             drawGlideLine(Vec.linComb(1,V,2,O,2),
                     Vec.linComb(2,U,1,V,2,O,2));
         }
 
-        //@Override
+        
         public double approxArea() { return 0.25; }
-        //@Override
+        
         public double approxAspect() { return 2.0; }
 
     };
@@ -239,7 +239,7 @@ public abstract class RectRule extends TessRule
             +"The other translation is at right angles giving a rectangular " 
             +"fundamental domain."
     )	{
-        //@Override
+        
         public void calcFund(FundamentalDomain fd)
         {
             int u1,u2,v1,v2; //,w1,w2;
@@ -265,7 +265,7 @@ public abstract class RectRule extends TessRule
             }
         }
 
-        //@Override
+        
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -279,16 +279,16 @@ public abstract class RectRule extends TessRule
             out[1] = beta;
         }
 
-        //@Override
+        
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             drawReflectionLine(O,O.add(V));
             drawReflectionLine(Vec.linComb(1,U,2,O,2),
                     Vec.linComb(1,U,2,V,2,O,2));
         }
 
-        //@Override
+        
         public double approxArea() { return 0.25; }
-        //@Override
+        
         public double approxAspect() { return 2.0; }
 
     };
@@ -299,7 +299,7 @@ public abstract class RectRule extends TessRule
             +"This pattern also shows a 180\u00ba rotation."
             +"A rather unsatisfactory pattern visually")
     {
-        //@Override
+        
         public void calcFund(FundamentalDomain fd)
         {
             int u1,u2,v1,v2; //,w1,w2;
@@ -315,7 +315,7 @@ public abstract class RectRule extends TessRule
             fd.numFund = 4;
         }
 
-        //@Override
+        
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -345,7 +345,7 @@ public abstract class RectRule extends TessRule
             out[1] = beta;
         }
 
-        //@Override
+        
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             drawGlideLine(
                     Vec.linComb(1,U,4,O,4),
@@ -366,16 +366,16 @@ public abstract class RectRule extends TessRule
             drawRotationPoint(Vec.linComb(1,U,1,V,2,O,2),2);
         }
 
-        //@Override
+        
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
             super.paintDomainEdges(U, V, O, det);
             Vec A = Vec.linComb(2, O, 1,V,2);
             Vec B = Vec.linComb(2, O, 2, U,1,V,2);
-            this.drawSimpleEdge(A,B);
+            drawSimpleEdge(A,B);
 
         }
 
-        //@Override
+        
         public double approxArea() { return 0.125; }
 
     };
@@ -385,7 +385,7 @@ public abstract class RectRule extends TessRule
             +"This pattern also shows a 180\u00ba rotation."
     )
     {
-        //@Override
+        
         public void calcFund(FundamentalDomain fd)
         {
             int u1,u2,v1,v2; //,w1,w2;
@@ -401,7 +401,7 @@ public abstract class RectRule extends TessRule
             fd.numFund = 4;
         }
 
-        //@Override
+        
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -419,7 +419,7 @@ public abstract class RectRule extends TessRule
             out[1] = beta;
         }
 
-        //@Override
+        
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             drawReflectionLine(O,O.add(V));
             drawReflectionLine(Vec.linComb(1,U,2,O,2),
@@ -432,17 +432,17 @@ public abstract class RectRule extends TessRule
             drawRotationPoint(Vec.linComb(3,U,2,V,4,O,4),2);
         }
 
-        //@Override
+        
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
             super.paintDomainEdges(U, V, O, det);
             Vec A = Vec.linComb(2, O, 1,V,2);
             Vec B = Vec.linComb(2, O, 2, U,1,V,2);
-            this.drawSimpleEdge(A,B);
+            drawSimpleEdge(A,B);
 
         }
 
 
-        //@Override
+        
         public double approxArea() { return 0.25; }
 
     };
@@ -452,7 +452,7 @@ public abstract class RectRule extends TessRule
             +"This pattern also shows a 180\u00ba rotation."
     )
     {
-        //@Override
+        
         public void calcFund(FundamentalDomain fd)
         {
             int u1,u2,v1,v2; //,w1,w2;
@@ -468,7 +468,7 @@ public abstract class RectRule extends TessRule
             fd.numFund = 4;
         }
 
-        //@Override
+        
         public void fun(int[] in,int[] out,int det)
         {
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
@@ -485,7 +485,7 @@ public abstract class RectRule extends TessRule
             out[1] = beta;
         }
 
-        //@Override
+        
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             drawReflectionLine(O,U.add(O));
             drawReflectionLine(O,V.add(O));
@@ -499,17 +499,17 @@ public abstract class RectRule extends TessRule
             drawRotationPoint(Vec.linComb(1,U,1,V,2,O,2),2);
         }
 
-        //@Override
+        
         public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
             super.paintDomainEdges(U, V, O, det);
             Vec A = Vec.linComb(2, O, 1,V,2);
             Vec B = Vec.linComb(2, O, 2, U,1,V,2);
-            this.drawSimpleEdge(A,B);
+            drawSimpleEdge(A,B);
 
         }
 
 
-        //@Override
+        
         public double approxArea() { return 0.25; }
 
     };

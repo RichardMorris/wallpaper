@@ -36,17 +36,17 @@ public class JColourPicker  {
     private final JColorChooser jColorChooser;
     public void ok() {
         isOK = true;
-        this.jcd.setVisible(false);
+        jcd.setVisible(false);
     }
     
     public void cancle() {
         isOK = false;
-        this.jcd.setVisible(false);
+        jcd.setVisible(false);
     }
 
     public void open(Color backgroundColour) {
         isOK = false;
-        this.jcd.setVisible(true);
+        jcd.setVisible(true);
         
     }
 

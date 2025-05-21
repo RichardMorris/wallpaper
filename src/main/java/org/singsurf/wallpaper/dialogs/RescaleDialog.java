@@ -36,12 +36,12 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 	boolean locked=true;
 	Wallpaper wall;
 	private JSpinner pcSS;
-	public RescaleDialog(JFrame frame,Wallpaper wall) {
+	public RescaleDialog(JFrame frame,Wallpaper w) {
 		super(frame,"Resize",true);
-		this.setPreferredSize(new Dimension(300,200));
-		this.wall = wall;
+		setPreferredSize(new Dimension(300,200));
+		wall = w;
 		GridBagLayout gbl = new GridBagLayout();
-		this.setLayout(gbl);
+		setLayout(gbl);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = 2;
 		gbc.insets = new Insets(2,2,2,2);
@@ -49,37 +49,37 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
                 gbc.fill = GridBagConstraints.HORIZONTAL;
 
                 gbc.gridx = 0; gbc.gridy = 0;
-		this.add(heading,gbc);
+		add(heading,gbc);
 		gbc.gridwidth = 1;
 
 		gbc.gridx = 0; gbc.gridy++; 
-		this.add(new JLabel("Width"), gbc);
+		add(new JLabel("Width"), gbc);
 
 		++gbc.gridx;
 		sxSS = new JSpinner(new SpinnerNumberModel(10, 1, null, 1));
-		this.add(sxSS,gbc);
+		add(sxSS,gbc);
 		sxSS.addChangeListener(this);
 
 		gbc.gridx = 0; gbc.gridy++;
-		this.add(new JLabel("Height"), gbc);
+		add(new JLabel("Height"), gbc);
 	
 		++gbc.gridx;
 		sySS = new JSpinner(new SpinnerNumberModel(10, 1, null, 1));
-		this.add(sySS,gbc);
+		add(sySS,gbc);
 		sySS.addChangeListener(this);
 
 		gbc.gridx = 0; gbc.gridy++;
-		this.add(new JLabel("Percent"), gbc);
+		add(new JLabel("Percent"), gbc);
 	
 		++gbc.gridx;
 		pcSS = new JSpinner(new SpinnerNumberModel(100, 1, null, 1));
-		this.add(pcSS,gbc);
+		add(pcSS,gbc);
 		pcSS.addChangeListener(this);
 
 		gbc.gridwidth = 2;
 		gbc.gridx = 0; gbc.gridy++;
 		JCheckBox cb = new JCheckBox("Lock aspect ratio",true);
-		this.add(cb,gbc);
+		add(cb,gbc);
 		gbc.gridwidth = 1;
 		cb.addItemListener(e -> {
 			locked = (e.getStateChange()==ItemEvent.SELECTED);
@@ -88,17 +88,17 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 	
 		gbc.gridx = 0; gbc.gridy++;
 		JButton okBut = new JButton("OK");
-		this.add(okBut,gbc);
+		add(okBut,gbc);
 
 		++gbc.gridx;
 		JButton cancelBut = new JButton("Cancel");
-		this.add(cancelBut,gbc);
+		add(cancelBut,gbc);
 		
 		
 		okBut.addActionListener(e -> close(true));
 		cancelBut.addActionListener(e -> close(false));
 		
-		this.addWindowListener(new WindowAdapter(){
+		addWindowListener(new WindowAdapter(){
             @Override
             public void windowClosing(WindowEvent arg0) {
 				close(false);
@@ -108,14 +108,14 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 
 	public void open(int w,int h) {
 		heading.setText("Current size "+w+" X "+h);
-		this.newWidth = w;
-		this.newHeight = h;
-		this.drawn =false;
+		newWidth = w;
+		newHeight = h;
+		drawn =false;
 		sxSS.setValue(w);
 		sySS.setValue(h);
-		this.pack();
-		//this.p
-		this.setVisible(true);
+		pack();
+		//p
+		setVisible(true);
 	}
 	void close(boolean flag) {
 		if(flag) {
@@ -123,15 +123,15 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 				int w = (Integer) sxSS.getValue();
 				double scale = ((double) w)/((double) newWidth);
 				int h = (int) (newHeight*scale);
-				this.newWidth = w;
-				this.newHeight = h;
+				newWidth = w;
+				newHeight = h;
 			}
 			else {
-				this.newWidth = (Integer) sxSS.getValue();
-				this.newHeight = (Integer) sySS.getValue();
+				newWidth = (Integer) sxSS.getValue();
+				newHeight = (Integer) sySS.getValue();
 			}
 		}
-		this.setOk(flag);
+		ok = flag;
 		
 		setVisible(false);
 	}
@@ -142,15 +142,8 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 		Graphics g = wall.myCanvas.getGraphics();
 		wall.paintCanvas(g);
 		CropDialog.clear_background(g, wall.dr);
-
-		//g.translate(wall.offset.x, wall.offset.y);
 		g.setColor(Color.black);
-		//g.setXORMode(Color.white);
 		g.setPaintMode();
-//		if(drawn) {
-//			g.drawLine(oldx,0,oldx,oldy);
-//			g.drawLine(0,oldy,oldx,oldy);
-//		}
 		if(locked) {
 			if(ce.getSource() == sxSS) {
 				int w = (Integer) sxSS.getValue();
@@ -181,7 +174,6 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 		oldy = (oldy * ((ZoomedDrawableRegion) wall.dr).zoomNumer) / ((ZoomedDrawableRegion) wall.dr).zoomDenom;
 		g.drawLine(oldx,0,oldx,oldy);
 		g.drawLine(0,oldy,oldx,oldy);
-		//g.drawLine(10,10,oldx,oldy);
 		drawn=true;
 	}
 
@@ -191,11 +183,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
     	spinner.addChangeListener(this);		
 	}
 
-	public void setOk(boolean ok) {
-        this.ok = ok;
-    }
-
-    public boolean isOk() {
+	public boolean isOk() {
         return ok;
     }
 

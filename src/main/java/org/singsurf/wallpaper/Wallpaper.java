@@ -251,13 +251,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         g.drawString(s2,20,20+accent+height);
     }
 
-    //@Override
-    //@Override
-    //public void paint(Graphics g) {
-      //  if(DEBUG) System.out.println("Applet paint"); 
-        //paintCanvas(g);  
-    //}
-
     private boolean mousePressed = false;
 	protected Cursor pipet;
 

@@ -61,7 +61,7 @@ public abstract class BasicRule extends TessRule
     }
 
     /** Calculates the fundamental domain */
-    //@Override
+    @Override
     public void calcFund(FundamentalDomain fd) {
         fd.fund[0].x = fd.cellVerts[1].x; 
         fd.fund[0].y = fd.cellVerts[1].y;
@@ -73,8 +73,7 @@ public abstract class BasicRule extends TessRule
     @Override
     public void replicate(DrawableRegion dr,FundamentalDomain fd)
     {
-        //                      System.out.println("replicate");
-        if(!dr.img_ok) return;
+    	if(!dr.img_ok) return;
         int x0=frameO.x;
         int y0=frameO.y;
         int i,j,srcX,srcY,x,y;
@@ -158,7 +157,7 @@ public abstract class BasicRule extends TessRule
     public static final TessRule trans = new BasicRule("Translation",
     "A Translation of the image.\n" +
     "Translates green point to red point") {
-        //@Override
+        @Override
         public final void fun(int x,int y,int[] out)
         {
             out[0] = x - frameU.x;
@@ -169,7 +168,7 @@ public abstract class BasicRule extends TessRule
     public static final TessRule id = new BasicRule("Identity",
     "Identity.\n" +
     "Will tile the output") {
-        //@Override
+        @Override
         public final void fun(int x,int y,int[] out)
         {
             out[0] = x;
@@ -180,10 +179,10 @@ public abstract class BasicRule extends TessRule
     public static final TessRule rot = new BasicRule("Rotation",
     "A rotation of the image.\nRotates around the green point") {
         protected void paintSymetries(Vec U, Vec V, Vec O) {
-            this.drawRotationPoint(frameO, 10);
+            drawRotationPoint(frameO, 10);
         }
 
-        //@Override
+        @Override
         public final void fun(int x,int y,int[] out)
         {
             double x1 = cos * x + sin * y;
@@ -198,7 +197,7 @@ public abstract class BasicRule extends TessRule
     public static final TessRule reflect = new BasicRule("Reflection",
     "A reflection of the image.\n"
     + "Reflects along the line through the green point and red point") {
-        //@Override
+        @Override
         public final void fun(int x,int y,int[] out)
         {
             int xdotu = x * frameU.x + y * frameU.y;
@@ -210,14 +209,14 @@ public abstract class BasicRule extends TessRule
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             Vec[] points = laticePoints();
             for(int i=1;i<points.length;++i) {
-                this.drawReflectionLine(points[i-1], points[i]);
+                drawReflectionLine(points[i-1], points[i]);
             }
         }
 
     };
 
     public Vec[] laticePoints() {
-        Rectangle rect = this.paintFd.graphics.getClipBounds();
+        Rectangle rect = paintFd.graphics.getClipBounds();
         Vec[] corners = new Vec[]{new Vec(rect.x,rect.y),
                 new Vec(rect.x+rect.width,rect.y),
                 new Vec(rect.x+rect.width,rect.y+rect.height),
@@ -247,11 +246,11 @@ public abstract class BasicRule extends TessRule
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             Vec[] points = laticePoints();
             for(int i=1;i<points.length;++i) {
-                this.drawGlideLine(points[i-1], points[i]);
+                drawGlideLine(points[i-1], points[i]);
             }
         }
 
-        //@Override
+        @Override
         public final void fun(int x,int y,int[] out)
         {
             int xdotu = x * frameU.x + y * frameU.y;
@@ -265,7 +264,7 @@ public abstract class BasicRule extends TessRule
 
     public static final TessRule scale = new BasicRule("Scale",
     "A uniform scalling") {
-        //@Override
+        @Override
         public final void fun(int x,int y,int[] out)
         {
             double x1 = (len * x)/unitLen;
@@ -277,7 +276,7 @@ public abstract class BasicRule extends TessRule
 
     public static final TessRule scaleXY = new BasicRule("Scale XY",
     "Scalling in XY direction") {
-        //@Override
+        @Override
         public final void fun(int x,int y,int[] out)
         {
             double x1 = (frameU.x * x)/unitLen;
@@ -317,7 +316,7 @@ public abstract class BasicRule extends TessRule
             fd.numFund = 4;
         }
 
-        //@Override
+        @Override
         public final void fun(int x,int y,int[] out)
         {
             out[0] = (frameV.y * x - frameV.x * y)*unitLen/det ;     

@@ -34,9 +34,9 @@ public class AnimationController implements ActionListener {
 	private int yamlListPoss;
 
 	
-	public AnimationController(WallpaperFramed w,Controller controller) {
-		this.controller = controller;
-		this.wall = w;
+	public AnimationController(WallpaperFramed w,Controller c) {
+		controller = c;
+		wall = w;
 		path = AnimationPath.getDefaultPath(w);
 		timer = new Timer(50, this);
 	}
@@ -89,8 +89,6 @@ public class AnimationController implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
         long t1 = System.nanoTime();
-        //long diff = (t1-lastTime)/50;
-        //for(long i=count;i<=diff;++i)
         path.nextItteration(controller.getFD());
         controller.applyTessellation();
         long t2 = System.nanoTime();
@@ -126,9 +124,9 @@ public class AnimationController implements ActionListener {
 	}
 
 
-	public void setYamlList(List<WallpaperML> yamlList) {
-		this.yamlList = yamlList;
-		this.yamlListPoss = -1;
+	public void setYamlList(List<WallpaperML> yamlList1) {
+		yamlList = yamlList1;
+		yamlListPoss = -1;
 		nextYaml();
 	}
 

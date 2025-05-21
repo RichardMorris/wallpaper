@@ -41,9 +41,9 @@ repeat: 10
 frame:
 group: P6m
 vertices:
-  - [440,950]
-  - [297,1034]
-  - [153,952]
+  - [440,23]
+  - [298,105]
+  - [156,23]
 filename: images/stripes.png
 zoom: [1,1]
 anim: up
