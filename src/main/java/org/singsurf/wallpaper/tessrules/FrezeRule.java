@@ -6,6 +6,7 @@ package org.singsurf.wallpaper.tessrules;
 import java.awt.Rectangle;
 
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 
 public abstract class FrezeRule extends TessRule
@@ -73,8 +74,8 @@ public abstract class FrezeRule extends TessRule
         }
         return points;
     }
-    public static TessRule F1 = new FrezeRule("F1",
-            "The simplest frieze group with a single translation in one direction.") {
+    public static TessRule F1 = new FrezeRule(Messages.getString("Rule.F1"), //$NON-NLS-1$
+            Messages.getString("Rule.F1.descript")) { //$NON-NLS-1$
         /** Calculates the fundamental domain */
         @Override
         public void calcFund(FundamentalDomain fd)
@@ -115,8 +116,8 @@ public abstract class FrezeRule extends TessRule
 
     };
 
-    public static TessRule F4 = new FrezeRule("F4",
-    "This group has two reflections in parallel lines and a translation in a perpendicular direction.") {
+    public static TessRule F4 = new FrezeRule(Messages.getString("Rule.F4"), //$NON-NLS-1$
+    Messages.getString("Rule.F4.descript")) { //$NON-NLS-1$
         /** Calculates the fundamental domain */
         @Override
         public void calcFund(FundamentalDomain fd)
@@ -177,8 +178,8 @@ public abstract class FrezeRule extends TessRule
 
     };
 
-    public static TessRule F3 = new FrezeRule("F3",
-    "This has one line of reflection and a translation along that line.") {
+    public static TessRule F3 = new FrezeRule(Messages.getString("Rule.F3"), //$NON-NLS-1$
+    Messages.getString("Rule.F3.descript")) { //$NON-NLS-1$
         /** Calculates the fundamental domain */
         @Override
         public void calcFund(FundamentalDomain fd)
@@ -229,9 +230,8 @@ public abstract class FrezeRule extends TessRule
 
     };
 
-    public static TessRule F7 = new FrezeRule("F7",
-            "Two reflections in parallel lines and one reflection in a perpendicular line.\n" +
-    "It also has a translation and two 180 degree rotations where the lines of reflections meet.\n")
+    public static TessRule F7 = new FrezeRule(Messages.getString("Rule.F7"), //$NON-NLS-1$
+            Messages.getString("Rule.F7.descript")) //$NON-NLS-1$
     {
         /** Calculates the fundamental domain */
         @Override
@@ -298,8 +298,8 @@ public abstract class FrezeRule extends TessRule
 
     };
 
-    public static TessRule F5 = new FrezeRule("F5",
-    "Two 180 degree rotations and a translation.") {
+    public static TessRule F5 = new FrezeRule(Messages.getString("Rule.F5"), //$NON-NLS-1$
+    Messages.getString("Rule.F5.descript")) { //$NON-NLS-1$
         /** Calculates the fundamental domain */
         @Override
         public void calcFund(FundamentalDomain fd)
@@ -361,8 +361,8 @@ public abstract class FrezeRule extends TessRule
 
     };
 
-    public static TessRule F2 = new FrezeRule("F2",
-    "A glide reflection: translate in one direction then reflect.") {
+    public static TessRule F2 = new FrezeRule(Messages.getString("Rule.F2"), //$NON-NLS-1$
+    Messages.getString("Rule.F2.descript")) { //$NON-NLS-1$
         /** Calculates the fundamental domain */
         @Override
         public void calcFund(FundamentalDomain fd)
@@ -419,8 +419,8 @@ public abstract class FrezeRule extends TessRule
 
     };
 
-    public static TessRule F6 = new FrezeRule("F6",
-    "Two rotations, two reflections, a glide reflection and a translation.") {
+    public static TessRule F6 = new FrezeRule(Messages.getString("Rule.F6"), //$NON-NLS-1$
+    Messages.getString("Rule.F6.descript")) { //$NON-NLS-1$
         /** Calculates the fundamental domain */
         @Override
         public void calcFund(FundamentalDomain fd)

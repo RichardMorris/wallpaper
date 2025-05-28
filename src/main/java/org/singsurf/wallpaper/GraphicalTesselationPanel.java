@@ -34,17 +34,17 @@ import org.singsurf.wallpaper.tessrules.TessRule;
 
 public class GraphicalTesselationPanel extends JPanel implements ItemListener {
 
-    private static final String FRIEZE_GROUPS = "Frieze groups";
-	private static final String CYCLIC_GROUPS = "Cyclic groups";
-	private static final String BASICS_TRANSFORMATIONS = "Basics transformations";
-	private static final String DIHEDRAL_GROUPS = "Dihedral groups";
+    private static final String FRIEZE_GROUPS = Messages.getString("GTP.frieze"); //$NON-NLS-1$
+	private static final String CYCLIC_GROUPS = Messages.getString("GTP.cyclic"); //$NON-NLS-1$
+	private static final String BASICS_TRANSFORMATIONS = Messages.getString("GTP.basic"); //$NON-NLS-1$
+	private static final String DIHEDRAL_GROUPS = Messages.getString("GTP.dihedral"); //$NON-NLS-1$
 	final ButtonGroup cbg = new ButtonGroup();
     JComboBox<String> friezeChoice;
     JComboBox<String> cycleChoice;
     JComboBox<String> dyhChoice;
     JComboBox<String> basicChoice;
-    public static final String iconPrefix = "patternIcons/"; 
-    public static final String iconSuffix = "S.png"; 
+    public static final String iconPrefix = Messages.getString("GTP.icon_prefix");  //$NON-NLS-1$
+    public static final String iconSuffix = Messages.getString("GTP.icon_suffix");  //$NON-NLS-1$
     Controller cont;
     GraphicalTesselationBox currentGTB = null;    
 
@@ -60,37 +60,37 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         GridBagConstraints gbc = gbl.getConstraints(p1);
         gbc.insets = new Insets(1,1,1,1);
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        System.out.println(System.getProperty("user.dir"));
+        System.out.println(System.getProperty("user.dir")); //$NON-NLS-1$
         // controller = new Controller(this,)
-        GraphicalTesselationBox TTcb = new GraphicalTesselationBox(PgramRule.rhombusTT,"p1");
-        GraphicalTesselationBox TTAcb = new GraphicalTesselationBox(IrregularHexRule.p1hex,"p1h");
-        GraphicalTesselationBox R1acb = new GraphicalTesselationBox(PgramRule.rhombusR1,"p2");
-        GraphicalTesselationBox R1cb = new GraphicalTesselationBox(IrregularHexRule.p2hex,"p2h");
-        GraphicalTesselationBox CMcb = new GraphicalTesselationBox(DiamondRule.rhombCM,"cm");
-        GraphicalTesselationBox CMMcb = new GraphicalTesselationBox(DiamondRule.rhombCMM,"cmm");
-        GraphicalTesselationBox PMcb = new GraphicalTesselationBox(RectRule.rectPM,"pm");
-        GraphicalTesselationBox PGcb = new GraphicalTesselationBox(RectRule.rectPG,"pg");
-        GraphicalTesselationBox PMGcb = new GraphicalTesselationBox(RectRule.rectPMG,"pmg");
-        GraphicalTesselationBox PGGcb = new GraphicalTesselationBox(RectRule.rectPGG,"pgg");
-        GraphicalTesselationBox PMMcb = new GraphicalTesselationBox(RectRule.rectPMM,"pmm");
-        GraphicalTesselationBox P4cb = new GraphicalTesselationBox(SquRule.squP4,"p4");
-        GraphicalTesselationBox P4Gcb = new GraphicalTesselationBox(SquRule.squP4g,"p4g");
-        GraphicalTesselationBox P4Mcb = new GraphicalTesselationBox(SquRule.squP4m,"p4m");
-        GraphicalTesselationBox P3cb = new GraphicalTesselationBox(HexiRule.triP3,"p3");
-        GraphicalTesselationBox P3M1cb = new GraphicalTesselationBox(HexiRule.triP3m1,"p3m1");
-        GraphicalTesselationBox P31Mcb = new GraphicalTesselationBox(HexiRule.triP31m,"p31m");
-        GraphicalTesselationBox P31Mkcb = new GraphicalTesselationBox(HexiRule.triP31mk,"p31mk");
-        GraphicalTesselationBox P6cb = new GraphicalTesselationBox(HexiRule.triP6,"p6");
-        GraphicalTesselationBox P6Mcb = new GraphicalTesselationBox(HexiRule.triP6m,"p6m");
+        GraphicalTesselationBox TTcb = new GraphicalTesselationBox(PgramRule.rhombusTT,Messages.getString("GTP.p1")); //$NON-NLS-1$
+        GraphicalTesselationBox TTAcb = new GraphicalTesselationBox(IrregularHexRule.p1hex,Messages.getString("GTP.p1h")); //$NON-NLS-1$
+        GraphicalTesselationBox R1acb = new GraphicalTesselationBox(PgramRule.rhombusR1,Messages.getString("GTP.p2")); //$NON-NLS-1$
+        GraphicalTesselationBox R1cb = new GraphicalTesselationBox(IrregularHexRule.p2hex,Messages.getString("GTP.p2h")); //$NON-NLS-1$
+        GraphicalTesselationBox CMcb = new GraphicalTesselationBox(DiamondRule.rhombCM,Messages.getString("GTP.cm")); //$NON-NLS-1$
+        GraphicalTesselationBox CMMcb = new GraphicalTesselationBox(DiamondRule.rhombCMM,Messages.getString("GTP.cmm")); //$NON-NLS-1$
+        GraphicalTesselationBox PMcb = new GraphicalTesselationBox(RectRule.rectPM,Messages.getString("GTP.pm")); //$NON-NLS-1$
+        GraphicalTesselationBox PGcb = new GraphicalTesselationBox(RectRule.rectPG,Messages.getString("GTP.pg")); //$NON-NLS-1$
+        GraphicalTesselationBox PMGcb = new GraphicalTesselationBox(RectRule.rectPMG,Messages.getString("GTP.pmg")); //$NON-NLS-1$
+        GraphicalTesselationBox PGGcb = new GraphicalTesselationBox(RectRule.rectPGG,Messages.getString("GTP.pgg")); //$NON-NLS-1$
+        GraphicalTesselationBox PMMcb = new GraphicalTesselationBox(RectRule.rectPMM,Messages.getString("GTP.pmm")); //$NON-NLS-1$
+        GraphicalTesselationBox P4cb = new GraphicalTesselationBox(SquRule.squP4,Messages.getString("GTP.p4")); //$NON-NLS-1$
+        GraphicalTesselationBox P4Gcb = new GraphicalTesselationBox(SquRule.squP4g,Messages.getString("GTP.p4g")); //$NON-NLS-1$
+        GraphicalTesselationBox P4Mcb = new GraphicalTesselationBox(SquRule.squP4m,Messages.getString("GTP.p4m")); //$NON-NLS-1$
+        GraphicalTesselationBox P3cb = new GraphicalTesselationBox(HexiRule.triP3,Messages.getString("GTP.p3")); //$NON-NLS-1$
+        GraphicalTesselationBox P3M1cb = new GraphicalTesselationBox(HexiRule.triP3m1,Messages.getString("GTP.p3m1")); //$NON-NLS-1$
+        GraphicalTesselationBox P31Mcb = new GraphicalTesselationBox(HexiRule.triP31m,Messages.getString("GTP.p31m")); //$NON-NLS-1$
+        GraphicalTesselationBox P31Mkcb = new GraphicalTesselationBox(HexiRule.triP31mk,Messages.getString("GTP.p31mk")); //$NON-NLS-1$
+        GraphicalTesselationBox P6cb = new GraphicalTesselationBox(HexiRule.triP6,Messages.getString("GTP.p6")); //$NON-NLS-1$
+        GraphicalTesselationBox P6Mcb = new GraphicalTesselationBox(HexiRule.triP6m,Messages.getString("GTP.p6m")); //$NON-NLS-1$
 
 
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0; gbc.gridy = 0; 
         
         gbc.gridwidth = 2;
-        p1.add(new JLabel("Symmetry groups:"),gbc);
+        p1.add(new JLabel(Messages.getString("GTP.title")),gbc); //$NON-NLS-1$
         ++gbc.gridy;
-        p1.add(new JLabel(""),gbc);
+        p1.add(new JLabel(""),gbc); //$NON-NLS-1$
         gbc.gridwidth = 1;
         ++gbc.gridy;
         gbc.gridx = 0;					p1.add(TTcb,gbc);
@@ -125,10 +125,10 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         ++gbc.gridx; 					p1.add(P6Mcb,gbc);
 
         friezeChoice = new JComboBox<String>();
-        String descript[] = {" - pppp"," - pbpb"," - cccc"," - pqpq"," - pdpd"," - pdbq"," - xxxx"};
+        String descript[] = {Messages.getString("GTP.F1.code"),Messages.getString("GTP.F2.code"),Messages.getString("GTP.F3.code"),Messages.getString("GTP.F4.code"),Messages.getString("GTP.F5.code"),Messages.getString("GTP.F6.code"),Messages.getString("GTP.F7.code")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
         friezeChoice.addItem(FRIEZE_GROUPS);
         for(int i=1;i<=7;++i) {
-            friezeChoice.addItem("F"+i+descript[i-1]);
+            friezeChoice.addItem(Messages.getString("GTP.F.prefix")+i+descript[i-1]); //$NON-NLS-1$
         }
         friezeChoice.addItemListener(this);
 
@@ -140,7 +140,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         cycleChoice = new JComboBox<String>();
         cycleChoice.addItem(CYCLIC_GROUPS);
         for(int i=2;i<11;++i) {
-            String label = "C" + i;
+            String label = Messages.getString("GTP.C.prefix") + i; //$NON-NLS-1$
             cycleChoice.addItem(label);
         }
         cycleChoice.addItemListener(this);
@@ -151,8 +151,8 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         dyhChoice = new JComboBox<String>();
         dyhChoice.addItem(DIHEDRAL_GROUPS);
         for(int i=1;i<11;++i) {
-            String label = "D" + i;
-            if(i==1) label = label + "- a reflection";
+            String label = Messages.getString("GTP.D.prefix") + i; //$NON-NLS-1$
+            if(i==1) label = label + Messages.getString("GTP.D1.code"); //$NON-NLS-1$
             dyhChoice.addItem(label);
         }
         dyhChoice.addItemListener(this);
@@ -173,10 +173,10 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         
         gbc.gridwidth = 2;
         ++gbc.gridy;    
-        p1.add(new JLabel(""),gbc);
+        p1.add(new JLabel(""),gbc); //$NON-NLS-1$
         ++gbc.gridy;    
         gbc.gridx = 0;	
-        p1.add(new JLabel("Alternate domains:"),gbc);
+        p1.add(new JLabel(Messages.getString("GTP.alternate_domains")),gbc); //$NON-NLS-1$
         gbc.gridwidth = 1;
         
         
@@ -188,7 +188,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         ++gbc.gridy; gbc.gridx=0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty=10.0;
-        p1.add(new JLabel(""),gbc);
+        p1.add(new JLabel(""),gbc); //$NON-NLS-1$
 
         // done layout
 
@@ -267,19 +267,19 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         {
             int num = Integer.parseInt(label.substring(1,
                     label.length()>2 &&Character.isDigit(label.charAt(2)) ? 3 : 2));
-            if(label.startsWith("C")) {
+            if(label.startsWith(Messages.getString("GTP.C.prefix"))) { //$NON-NLS-1$
                 currentTr = PointRule.cycleRules[num];
                 friezeChoice.setSelectedIndex(0);
                 dyhChoice.setSelectedIndex(0);
                 basicChoice.setSelectedIndex(0);
             }
-            else if(label.startsWith("D")) {
+            else if(label.startsWith(Messages.getString("GTP.D.prefix"))) { //$NON-NLS-1$
                 currentTr = PointRule.dyhRules[num];
                 friezeChoice.setSelectedIndex(0);
                 cycleChoice.setSelectedIndex(0);
                 basicChoice.setSelectedIndex(0);
             }
-            else if(label.startsWith("F")) {
+            else if(label.startsWith(Messages.getString("GTP.F.prefix"))) { //$NON-NLS-1$
                 dyhChoice.setSelectedIndex(0);
                 cycleChoice.setSelectedIndex(0);
                 basicChoice.setSelectedIndex(0);
@@ -330,7 +330,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
     public void tickCheckbox(String name) {
         for(int i=0;i<allBoxes.size();++i) {
             GraphicalTesselationBox tb = allBoxes.elementAt(i);
-            if(name.equals(tb.getTessName())) {
+            if(name.equalsIgnoreCase(tb.getTessName())) {
             	tb.setSelected(true);
                 currentTr = tb.tr;
                 friezeChoice.setSelectedIndex(0);
@@ -344,7 +344,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         {
             int num = Integer.parseInt(name.substring(1,
                     name.length()>2 &&Character.isDigit(name.charAt(2)) ? 3 : 2));
-            if(name.startsWith("C")) {
+            if(name.startsWith(Messages.getString("GTP.C.prefix"))) { //$NON-NLS-1$
                 currentTr = PointRule.cycleRules[num];
                 cycleChoice.setSelectedIndex(num-1);
                 dyhChoice.setSelectedIndex(0);
@@ -352,7 +352,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
                 basicChoice.setSelectedIndex(0);
                 cbg.setSelected(cbg.getSelection(), false);
             }
-            else if(name.startsWith("D")) {
+            else if(name.startsWith(Messages.getString("GTP.D.prefix"))) { //$NON-NLS-1$
                 currentTr = PointRule.dyhRules[num];
                 cycleChoice.setSelectedIndex(0);
                 dyhChoice.setSelectedIndex(num);
@@ -360,7 +360,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
                 basicChoice.setSelectedIndex(0);
                 cbg.setSelected(cbg.getSelection(), false);
             }
-            else if(name.startsWith("F")) {
+            else if(name.startsWith(Messages.getString("GTP.F.prefix"))) { //$NON-NLS-1$
                 dyhChoice.setSelectedIndex(0);
                 cycleChoice.setSelectedIndex(0);
                 basicChoice.setSelectedIndex(0);
@@ -409,7 +409,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
 	            if (imgURL != null) {
 	            	return new ImageIcon(imgURL, description);
 	            } else {
-	            	System.err.println("Couldn't find resource: " + path);
+	            	System.err.println(Messages.getString("GTP.msg.could_not_find_resource") + path); //$NON-NLS-1$
 	                return new ImageIcon(path, description);
 	            }
 	        }
@@ -437,7 +437,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
             cbg.add(this);
         }
 
-        public Object getTessName() {
+        public String getTessName() {
             return tr.name;
         }
 
@@ -464,7 +464,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
             currentTr = tr;
             currentGTB = this;
             tr.firstCall=true;
-            cont.setText(tr.name + ": " + tr.message);
+            cont.setText(tr.name + Messages.getString("GTP.GTP.msg.sep") + tr.message); //$NON-NLS-1$
             cont.setTesselation(tr);
             cont.applyTessellation();
             tr.firstCall=false;

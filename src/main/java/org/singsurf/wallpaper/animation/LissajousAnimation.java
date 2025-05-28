@@ -1,6 +1,3 @@
-/*
-Created 9 Sep 2006 - Richard Morris
-*/
 package org.singsurf.wallpaper.animation;
 
 import java.awt.Rectangle;

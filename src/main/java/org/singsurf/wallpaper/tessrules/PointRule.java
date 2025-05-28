@@ -5,6 +5,7 @@ package org.singsurf.wallpaper.tessrules;
 
 import org.singsurf.wallpaper.DrawableRegion;
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 
 public abstract class PointRule extends TessRule
@@ -154,11 +155,11 @@ public abstract class PointRule extends TessRule
                 catch(Exception e)
                 {
                     if(!error_flag)
-                        System.out.println("Error ("+i+","+j+") det "+det
-                                + " x "+x
-                                + " y "+y
-                                + " sX "+srcX
-                                + " sY "+srcY
+                        System.out.println("Error ("+i+","+j+") det "+det //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + " x "+x //$NON-NLS-1$
+                                + " y "+y //$NON-NLS-1$
+                                + " sX "+srcX //$NON-NLS-1$
+                                + " sY "+srcY //$NON-NLS-1$
                         );
                     error_flag = true;
                     dr.pixels[outInd] = 0;
@@ -169,9 +170,8 @@ public abstract class PointRule extends TessRule
 
     public static class CyclicRule extends PointRule {
         CyclicRule(int n) {
-            super(n,"C"+n,
-                    "Cyclic groups describe rotation by 2 pi/n around a single point.\n" +
-            "It is equivalent to the group of integers mod n under addition.");
+            super(n,Messages.getString("Rule.C.prefix")+n, //$NON-NLS-1$
+                    Messages.getString("Rule.C.descript")); //$NON-NLS-1$
             dihedral = false;
         }
 
@@ -215,12 +215,11 @@ public abstract class PointRule extends TessRule
 
     public static class DihedralRule extends PointRule {
         DihedralRule(int n) {
-            super(n,"D"+n,
-                    "The dihedral group of order n has a rotations of 2pi/n and n axis of reflection.\n" +
-            "It is the symmetry group of and n sided regular polygon.");
+            super(n,Messages.getString("Rule.D.prefix")+n, //$NON-NLS-1$
+                    Messages.getString("Rule.D.descript")); //$NON-NLS-1$
             dihedral = true;
             if(n==1)
-                message = "The first dihedral group D2 is just a reflection in a line";
+                message = Messages.getString("Rule.D2.descript"); //$NON-NLS-1$
         }
 
         /** Calculates the fundamental domain */

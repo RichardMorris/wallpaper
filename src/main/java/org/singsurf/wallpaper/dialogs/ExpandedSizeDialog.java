@@ -11,12 +11,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.MessageFormat;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import org.singsurf.wallpaper.Messages;
 
 public class ExpandedSizeDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -25,7 +28,7 @@ public class ExpandedSizeDialog extends JDialog {
 	JLabel heading = new JLabel();
 	JTextField wTF,hTF;
 	public ExpandedSizeDialog(JFrame frame) {
-		super(frame,"Save expanded",true);
+		super(frame,Messages.getString("Dialog.ExpandedSize.title"),true); //$NON-NLS-1$
 		GridBagLayout gbl = new GridBagLayout();
 		setPreferredSize(new Dimension(250,160));
 		setLayout(gbl);
@@ -37,28 +40,28 @@ public class ExpandedSizeDialog extends JDialog {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridwidth = 1;
 		gbc.gridx = 0; gbc.gridy++; 
-		add(new JLabel("Width"), gbc);
+		add(new JLabel(Messages.getString("Dialog.width")), gbc); //$NON-NLS-1$
 		++gbc.gridx;
 		wTF = new JTextField(10);
 		
 		add(wTF,gbc);
 		gbc.gridx = 0; gbc.gridy++;
-		add(new JLabel("Height"), gbc);
+		add(new JLabel(Messages.getString("Dialog.height")), gbc); //$NON-NLS-1$
 		++gbc.gridx;
 		hTF = new JTextField(10);
 		add(hTF,gbc);
 
 		gbc.gridx = 0; gbc.gridy++;
 		gbc.gridwidth = 2;
-		add(new JLabel("Only bmp/ppm format supported"),gbc);
+		add(new JLabel(Messages.getString("Dialog.ExpandedSize.only_bmp_ppm")),gbc); //$NON-NLS-1$
 		gbc.gridwidth = 1;
 		
-		JButton okBut = new JButton("OK");
+		JButton okBut = new JButton(Messages.getString("Dialog.OK")); //$NON-NLS-1$
 		okBut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				close(true);
 			}});
-		JButton cancelBut = new JButton("Cancel");
+		JButton cancelBut = new JButton(Messages.getString("Dialog.Cancel")); //$NON-NLS-1$
 		cancelBut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				close(false);
@@ -79,7 +82,7 @@ public class ExpandedSizeDialog extends JDialog {
 	}
 
 	public void open(int w,int h) {
-		heading.setText("Current size "+w+" X "+h);
+		heading.setText(MessageFormat.format(Messages.getString("Dialog.current_size"),w,h)); //$NON-NLS-1$ //$NON-NLS-2$
 		wTF.setText(String.valueOf(w));
 		hTF.setText(String.valueOf(h));
 

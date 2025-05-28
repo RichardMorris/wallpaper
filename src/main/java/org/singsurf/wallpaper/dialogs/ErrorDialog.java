@@ -15,6 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.singsurf.wallpaper.Messages;
+
 public class ErrorDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	JLabel line1 = new JLabel();
@@ -25,7 +27,7 @@ public class ErrorDialog extends JDialog {
 		add(line1);
 		add(line2);
 		JPanel pan = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		JButton okBut = new JButton("OK");
+		JButton okBut = new JButton(Messages.getString("Dialog.OK")); //$NON-NLS-1$
 		pan.add(okBut);
 		add(pan);
 		okBut.addActionListener(e -> close(true));
@@ -37,7 +39,7 @@ public class ErrorDialog extends JDialog {
 		pack();
 	}
         public ErrorDialog(JFrame frame) {
-            this(frame,"Error");
+            this(frame,Messages.getString("Dialog.Error.title")); //$NON-NLS-1$
         }
 
 	public void open(String text1,String text2) {
@@ -47,7 +49,7 @@ public class ErrorDialog extends JDialog {
 		setVisible(true);
 	}
         public void open(String text1) {
-            String[] lines = text1.split("[\\r\\n]+");
+            String[] lines = text1.split("[\\r\\n]+"); //$NON-NLS-1$
             line1.setText(lines[0]);
             line2.setText(lines[1]);
             if(lines.length>2) {

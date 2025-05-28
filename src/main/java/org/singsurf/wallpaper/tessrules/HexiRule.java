@@ -1,6 +1,7 @@
 package org.singsurf.wallpaper.tessrules;
 
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 import org.singsurf.wallpaper.Wallpaper;
 
@@ -69,7 +70,7 @@ public abstract class HexiRule extends TessRule
             u = verts[1].sub(verts[0]);
             break;
         default:
-            System.out.println("Only green or red points can be selected");
+            System.out.println(Messages.getString("Rule.Msg.Only_red_or_green")); //$NON-NLS-1$
             return;
         }
 
@@ -89,7 +90,7 @@ public abstract class HexiRule extends TessRule
             verts[1].set(verts[0].add(u2));
             break;
         default:
-            System.out.println("Only green or red points can be selected");
+            System.out.println(Messages.getString("Rule.Msg.Only_red_or_green")); //$NON-NLS-1$
             return;
         }
 
@@ -108,7 +109,7 @@ public abstract class HexiRule extends TessRule
         fd.setLatticeType(FundamentalDomain.HEXAGON);
 
         if(DEBUG) for(int i=0;i<6;++i)
-            System.out.println("polygon ("+fd.cellVerts[i].x+","+fd.cellVerts[i].y+")");
+            System.out.println("polygon ("+fd.cellVerts[i].x+","+fd.cellVerts[i].y+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
 
@@ -168,7 +169,7 @@ public abstract class HexiRule extends TessRule
 
 
 
-    public static TessRule triP3 = new HexiRule("P3","A 120\u00ba rotation alternate domain"){
+    public static TessRule triP3 = new HexiRule(Messages.getString("Rule.P3"),Messages.getString("Rule.P3.descript")){ //$NON-NLS-1$ //$NON-NLS-2$
         @Override
         public void calcFund(FundamentalDomain fd)
         {
@@ -226,7 +227,7 @@ public abstract class HexiRule extends TessRule
 
     };
 
-    public static TessRule triP3a = new HexiRule("P3A","A 120\u00ba rotation"){
+    public static TessRule triP3a = new HexiRule(Messages.getString("Rule.P3A"),Messages.getString("Rule.P3A.descript")){ //$NON-NLS-1$ //$NON-NLS-2$
         @Override
         public void calcFund(FundamentalDomain fd)
         {
@@ -303,8 +304,8 @@ public abstract class HexiRule extends TessRule
     };
 
 
-    public static TessRule triP3m1 = new HexiRule("P3m1",
-    "A 120\u00ba rotation and a reflection through corner of hexagon.")
+    public static TessRule triP3m1 = new HexiRule(Messages.getString("Rule.P3M1"), //$NON-NLS-1$
+    Messages.getString("Rule.P3M1.descript")) //$NON-NLS-1$
     {
         @Override
         public void calcFund(FundamentalDomain fd)
@@ -399,8 +400,8 @@ public abstract class HexiRule extends TessRule
 
     };
 
-    public static TessRule triP31m = new HexiRule("P31M",
-    "A 120\u00ba rotation and a reflection through mid points of edge of hexagon.")
+    public static TessRule triP31m = new HexiRule(Messages.getString("Rule.P31M"), //$NON-NLS-1$
+    Messages.getString("Rule.P31M.descript")) //$NON-NLS-1$
     {
         @Override
         public void calcFund(FundamentalDomain fd)
@@ -488,8 +489,8 @@ public abstract class HexiRule extends TessRule
 
     };
 
-    public static TessRule triP31mk = new HexiRule("P31Mk",
-    "P31Mk P331M with a kite-shaped FD.")
+    public static TessRule triP31mk = new HexiRule(Messages.getString("Rule.P31Mk"), //$NON-NLS-1$
+    Messages.getString("Rule.P31Mk.descript")) //$NON-NLS-1$
     {
         @Override
         public void calcFund(FundamentalDomain fd)
@@ -613,7 +614,7 @@ public abstract class HexiRule extends TessRule
 
 
 
-    public static TessRule triP6 = new HexiRule("P6","A 60\u00ba rotation."){
+    public static TessRule triP6 = new HexiRule(Messages.getString("Rule.P6"),Messages.getString("Rule.P6.descript")){ //$NON-NLS-1$ //$NON-NLS-2$
         @Override
         public void calcFund(FundamentalDomain fd)
         {
@@ -687,7 +688,7 @@ public abstract class HexiRule extends TessRule
 
     };
 
-    public static TessRule triP6m = new HexiRule("P6m","A 60\u00ba rotation and a reflection."){
+    public static TessRule triP6m = new HexiRule(Messages.getString("Rule.P6M"),Messages.getString("Rule.P6M.descript")){ //$NON-NLS-1$ //$NON-NLS-2$
         @Override
         public void calcFund(FundamentalDomain fd)
         {

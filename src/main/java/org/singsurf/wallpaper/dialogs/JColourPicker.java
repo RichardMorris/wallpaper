@@ -11,6 +11,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Wallpaper;
 
 public class JColourPicker  {
@@ -18,7 +19,7 @@ public class JColourPicker  {
     
     public JColourPicker(JFrame parent, Wallpaper wallpaperFramed) {
         jColorChooser = new JColorChooser();
-        jcd = JColorChooser.createDialog(parent, "Pick background colour", true, 
+        jcd = JColorChooser.createDialog(parent, Messages.getString("Dialog.Colour.pick_background"), true,  //$NON-NLS-1$
                 jColorChooser, new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {

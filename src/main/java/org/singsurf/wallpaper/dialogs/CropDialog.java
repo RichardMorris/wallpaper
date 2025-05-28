@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.MessageFormat;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -25,6 +26,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.singsurf.wallpaper.DrawableRegion;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.WallpaperFramed;
 import org.singsurf.wallpaper.ZoomedDrawableRegion;
 import org.singsurf.wallpaper.tessrules.TessRule;
@@ -47,7 +49,7 @@ public class CropDialog extends JDialog implements ChangeListener {
 	JCheckBox tileCB;
 	WallpaperFramed wall;
 	public CropDialog(JFrame frame,WallpaperFramed w) {
-		super(frame,"Crop/Expand",true);
+		super(frame,Messages.getString("Dialog.Crop.title"),true); //$NON-NLS-1$
 		setPreferredSize(new Dimension(300,200));
 		wall = w;
 		GridBagLayout gbl = new GridBagLayout();
@@ -65,35 +67,35 @@ public class CropDialog extends JDialog implements ChangeListener {
 
 		gbc.gridwidth=4;
 		gbc.gridx=0; gbc.gridy++;
-		add(new JLabel("Crop region"),gbc);
+		add(new JLabel(Messages.getString("Dialog.Crop.subtitle")),gbc); //$NON-NLS-1$
 		gbc.gridwidth = 1;
 		
 		gbc.gridx = 0; gbc.gridy++;
-		add(new JLabel("Left"), gbc);
+		add(new JLabel(Messages.getString("Dialog.left")), gbc); //$NON-NLS-1$
 		++gbc.gridx;
 		xoffSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1)); //hSS.s10,1);
 		add(xoffSS,gbc);
 
 		gbc.gridx++;
-		add(new JLabel("Top"), gbc);
+		add(new JLabel(Messages.getString("Dialog.top")), gbc); //$NON-NLS-1$
 		++gbc.gridx;
 		yoffSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1));
 		add(yoffSS,gbc);
 
 		gbc.gridx = 0; gbc.gridy++;
-		add(new JLabel("Right"), gbc);
+		add(new JLabel(Messages.getString("Dialog.right")), gbc); //$NON-NLS-1$
 		++gbc.gridx;
 		rSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1));
 		add(rSS,gbc);
 
 		++gbc.gridx;
-		add(new JLabel("Bottom"), gbc);
+		add(new JLabel(Messages.getString("Dialog.bottom")), gbc); //$NON-NLS-1$
 		++gbc.gridx;
 		bSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1));
 		add(bSS,gbc);
 
 		gbc.gridx = 0; gbc.gridy++;
-		tileCB = new JCheckBox("Tile image");
+		tileCB = new JCheckBox(Messages.getString("Dialog.Crop.tile_image")); //$NON-NLS-1$
 		add(tileCB,gbc);
 		
 		rSS.addChangeListener(this);
@@ -101,12 +103,12 @@ public class CropDialog extends JDialog implements ChangeListener {
 		xoffSS.addChangeListener(this);
 		yoffSS.addChangeListener(this);
 
-		JButton okBut = new JButton("OK");
+		JButton okBut = new JButton(Messages.getString("Dialog.OK")); //$NON-NLS-1$
 		okBut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				close(true);
 			}});
-		JButton cancelBut = new JButton("Cancel");
+		JButton cancelBut = new JButton(Messages.getString("Dialog.Cancel")); //$NON-NLS-1$
 		cancelBut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				close(false);
@@ -126,7 +128,7 @@ public class CropDialog extends JDialog implements ChangeListener {
 	}
 
 	public void open(int w,int h) {
-		heading.setText("Current size "+w+" X "+h);
+		heading.setText(MessageFormat.format(Messages.getString("Dialog.current_size"),w,h)); //$NON-NLS-1$ //$NON-NLS-2$
 		width = wall.dr.baseRect.width;
 		height = wall.dr.baseRect.height;
 		rSS.setValue(w);

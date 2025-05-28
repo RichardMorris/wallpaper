@@ -5,6 +5,7 @@ package org.singsurf.wallpaper.tessrules;
 
 import org.singsurf.wallpaper.DVec;
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 
 public abstract class DiamondRule extends TessRule
@@ -47,8 +48,8 @@ public abstract class DiamondRule extends TessRule
 		}
 
         if(DEBUG) {
-            System.out.println("sel "+selectedVertex+" fc "+firstCall);
-            System.out.println("u "+u1+","+u2+" v "+v1+","+v2);
+            System.out.println("sel "+selectedVertex+" fc "+firstCall); //$NON-NLS-1$ //$NON-NLS-2$
+            System.out.println("u "+u1+","+u2+" v "+v1+","+v2); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
 
         if(selectedVertex==0) {
@@ -76,7 +77,7 @@ public abstract class DiamondRule extends TessRule
         	v2 = (int) Math.rint(ref.y);
         }
         if(DEBUG) {
-            System.out.println("u "+u1+","+u2+" v "+v1+","+v2);
+            System.out.println("u "+u1+","+u2+" v "+v1+","+v2); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
         det = u1 * v2 - v1 * u2;
         frameO.x = fd.cellVerts[1].x;
@@ -146,7 +147,7 @@ public abstract class DiamondRule extends TessRule
 
             break;
         default:
-            System.out.println("Illegal seletion point");
+            System.out.println(Messages.getString("Rule.Msg.illegal_sel_point")); //$NON-NLS-1$
         return;
         }
     }
@@ -167,10 +168,8 @@ public abstract class DiamondRule extends TessRule
         fd.setLatticeType(FundamentalDomain.PARALLOGRAM);
     }
 
-    public static TessRule rhombCM = new DiamondRule("CM",
-            "A reflection through opposite corners of diamond.\n"+
-            "The lengths of each side of the diamond are all equal\n"+
-            "Only one side of the fundamental domain needs to be a straight line"
+    public static TessRule rhombCM = new DiamondRule(Messages.getString("Rule.CM"), //$NON-NLS-1$
+            Messages.getString("Rule.CM.descript") //$NON-NLS-1$
     )
     {
         @Override
@@ -223,11 +222,8 @@ public abstract class DiamondRule extends TessRule
     };
 
 
-    public static TessRule rhombCMM = new DiamondRule("CMM",
-            "Two reflections through opposite corners of diamond.\n"+
-            "The reflections must be at right angles and form "+
-            "two of the sides of the fundamental domain.\n"+
-            "The other side does not needs to be a straight line."
+    public static TessRule rhombCMM = new DiamondRule(Messages.getString("Rule.CMM"), //$NON-NLS-1$
+            Messages.getString("Rule.CMM.descript") //$NON-NLS-1$
     )
     {
         @Override

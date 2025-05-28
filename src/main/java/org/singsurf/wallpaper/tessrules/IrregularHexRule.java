@@ -1,10 +1,10 @@
 package org.singsurf.wallpaper.tessrules;
 
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 
 public abstract class IrregularHexRule extends TessRule {
-	//int det;
 	
 	public IrregularHexRule(String name, String message) {
 		super(name, message);
@@ -34,9 +34,8 @@ public abstract class IrregularHexRule extends TessRule {
 
 	}
 
-    public static TessRule p2hex = new IrregularHexRule("P2H",
-            "A varient on the p2 pattern when the basic tile is an irregular hexagon.\n"
-            +"The fundamental domain is a trapesium made by cutting the tile in half.") {
+    public static TessRule p2hex = new IrregularHexRule(Messages.getString("Rule.P2h"), //$NON-NLS-1$
+            Messages.getString("Rule.P2h.descript")) { //$NON-NLS-1$
     	
         /** Calculates the fundamental domain */
         @Override
@@ -116,8 +115,8 @@ public abstract class IrregularHexRule extends TessRule {
 		
     };
 
-    public static TessRule p1hex = new IrregularHexRule("P1H",
-            "A varient on the p1 pattern when the basic tile is an irregular hexagon.\n"
+    public static TessRule p1hex = new IrregularHexRule(Messages.getString("Rule.P1h"), //$NON-NLS-1$
+            Messages.getString("Rule.P1h.descript") //$NON-NLS-1$
             ) {
     	
         /** Calculates the fundamental domain */

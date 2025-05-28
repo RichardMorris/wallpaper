@@ -4,6 +4,7 @@
 package org.singsurf.wallpaper.tessrules;
 
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 import org.singsurf.wallpaper.Wallpaper;
 
@@ -44,7 +45,7 @@ public abstract class SquRule extends TessRule
             verts[1].set(verts[0].add(u));
             break;
         default:
-            System.out.println("Only green or red points can be selected");
+            System.out.println(Messages.getString("Rule.Msg.Only_red_or_green")); //$NON-NLS-1$
             return;
         }
     }
@@ -119,11 +120,8 @@ public abstract class SquRule extends TessRule
         }
     }
 
-    public static TessRule squP4 = new SquRule("P4",
-            "A 90\u00ba rotation.\n"+
-            "A square has much more symmetry than a rectangle or diamond.\n"+
-            "As well as the two  90\u00ba rotation there is an 180\u00ba rotation.\n"+
-            "and two lines of reflection."
+    public static TessRule squP4 = new SquRule(Messages.getString("Rule.P4"), //$NON-NLS-1$
+            Messages.getString("Rule.P4.descript") //$NON-NLS-1$
     )
     {
         
@@ -163,13 +161,8 @@ public abstract class SquRule extends TessRule
 
     };
 
-    public static TessRule squP4g = new SquRule("P4g",
-            "A 90\u00ba rotation and a glide-reflection.\n"+
-            "There is only one lines of reflection which does not pass through\n"+
-            "the 90\u00ba rotation points.\n"+
-            "One of my favorite patterns with the rotation appearing\n"+
-            "to go in opposite directions.\n"+
-            "The fundamental domain is a right angled isosceles triangle."
+    public static TessRule squP4g = new SquRule(Messages.getString("Rule.P4G"), //$NON-NLS-1$
+            Messages.getString("Rule.P4G.descript") //$NON-NLS-1$
     )
     {
         
@@ -239,11 +232,8 @@ public abstract class SquRule extends TessRule
 
     };
 
-    public static TessRule squP4m = new SquRule("P4m",
-            "A 90\u00ba rotation and a reflection passing through the\n"+
-            "center of rotation.\n"+
-            "Shows the full symmetry of the square with\n"+
-            "three reflections and a 180\u00ba rotation."
+    public static TessRule squP4m = new SquRule(Messages.getString("Rule.P4M"), //$NON-NLS-1$
+            Messages.getString("Rule.P4M.descript") //$NON-NLS-1$
     )
     {
         
