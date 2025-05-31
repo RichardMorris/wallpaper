@@ -69,6 +69,9 @@ public abstract class AnimationPath {
 		else if(label.equals(Messages.getString("Anim.up_down"))) { //$NON-NLS-1$
 			path = new BounceAnimation(rect,0,speed);
 		}
+		else if(label.equals(Messages.getString("Anim.none"))) { //$NON-NLS-1$
+			path = new BounceAnimation(rect,0,0);
+		}
 		else if(label.equals(Messages.getString("Anim.smooth"))) { //$NON-NLS-1$
 			path = new LissajousAnimation(rect,speed);
 		}
