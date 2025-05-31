@@ -21,7 +21,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -29,7 +28,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import org.singsurf.wallpaper.animation.AnimationController;
 import org.singsurf.wallpaper.animation.AnimationPath;
@@ -108,6 +109,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     private boolean mousePressed = false;
 	protected Cursor pipet;
+	private JScrollPane infoScroll;
 
     public Wallpaper(Image img,int w,int h) {
         if(DEBUG) System.out.println("img w "+w+" h "+h); //$NON-NLS-1$ //$NON-NLS-2$
@@ -116,18 +118,17 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         JPanel pan = new JPanel();
         pan.setLayout(new BorderLayout());
         infoPanel = new JTextArea(
-                Messages.getString("Intro1") //$NON-NLS-1$
-                +Messages.getString("Intro2") //$NON-NLS-1$
-                +Messages.getString("Intro3") //$NON-NLS-1$
-                +Messages.getString("Intro4") //$NON-NLS-1$
-                +Messages.getString("Intro5") //$NON-NLS-1$
-                +Messages.getString("Intro6") //$NON-NLS-1$
-                +Messages.getString("Intro7"), //$NON-NLS-1$
+                Messages.getString("Info.Intro"), //$NON-NLS-1$
                 3,60);
         //TODO ta.setS,TextArea.SCROLLBARS_VERTICAL_ONLY);
         infoPanel.setEditable(false);
-        infoPanel.setBackground(Color.white); // use lower case colors for compatability with old jdk
-        infoPanel.setBorder(BorderFactory.createEtchedBorder());
+        infoPanel.setLineWrap(true);
+        infoPanel.setWrapStyleWord(true);
+        infoPanel.setBackground(Color.white); // use lower case colours for compatibility with old jdk
+//        infoPanel.setBorder(BorderFactory.createEtchedBorder());
+        infoScroll = new JScrollPane(infoPanel,
+        		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         //ta.setMargin(new Insets(2, 4, 2, 2));
         //ta.set
         myCanvas = buildCanvas();
@@ -141,7 +142,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         add("Center",pan); //$NON-NLS-1$
         pan.add("North",buttonBar); //$NON-NLS-1$
         pan.add("Center",mainWin); //$NON-NLS-1$
-        pan.add("South",infoPanel); //$NON-NLS-1$
+        pan.add("South",infoScroll); //$NON-NLS-1$
         
         validate();
         doLayout();
@@ -165,7 +166,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();  
         var size = toolkit.getBestCursorSize(32, 32);
-        Image img2 = toolkit.getImage(getClass().getResource("pipet.gif")); //$NON-NLS-1$
+        Image img2 = toolkit.getImage(getClass().getResource(Messages.getString("Resource.pipet_img"))); //$NON-NLS-1$
         var mul = size.width/32.0;
         pipet = toolkit.createCustomCursor(img2, new Point((int) (6*mul),(int) (23*mul)), "Custom Cursor");   //$NON-NLS-1$
 		
@@ -175,13 +176,13 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	public void hideControls() {
 		buttonBar.setVisible(false);
 		tesselationPanel.setVisible(false);
-		infoPanel.setVisible(false);
+		infoScroll.setVisible(false);
 	}
 
 	public void showControls() {
 		buttonBar.setVisible(true);
 		tesselationPanel.setVisible(true);
-		infoPanel.setVisible(true);
+		infoScroll.setVisible(true);
 	}
 
 
@@ -415,23 +416,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     protected JPanel buildButtonBar() {
         JPanel p2 = new JPanel();
         origTileButton = new JButton(Messages.getString("Button.OrigImage")); //$NON-NLS-1$
-        origTileButton.addActionListener(
-                new ActionListener()
-                {	
-                    public void actionPerformed(ActionEvent e)
-                    {
-                    	if(DEBUG) System.out.println("OrigBut "+controller.showingOriginal); //$NON-NLS-1$
-                        if(controller.showingOriginal) {
-                            controller.applyTessellation();
-                            origTileButton.setText(Messages.getString("Button.OrigImage")); //$NON-NLS-1$
-                        }
-                        else {
-                            controller.showOriginal();
-                            origTileButton.setText(Messages.getString("Button.TileImage")); //$NON-NLS-1$
-
-                        }
-                    }
-                } );
+        origTileButton.addActionListener(e -> controller.flipOriginal());
         p2.add(origTileButton);
 
         JButton b4 = new JButton(Messages.getString("Button.Reset")); //$NON-NLS-1$
@@ -525,20 +510,8 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
      */
     public void setText(String message) {
         infoPanel.setText(message);
+        infoPanel.setCaretPosition(0);
     }
-
-
-//    JFrame findParentFrame(){ 
-//        // From http://www.jguru.com/faq/view.jsp?EID=27423
-//        JComponent c = this; 
-//        while(c != null){ 
-//            if (c instanceof JFrame) 
-//                return (JFrame)c; 
-//
-//            c = c.getParent(); 
-//        } 
-//        return null; 
-//    } 
 
 
     public static String programInfo() {
@@ -574,6 +547,8 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 		else if(code == KeyEvent.VK_K) { fd.shiftVertex(2, 0, 1);  curvertex = 2; }
 		else if(code == KeyEvent.VK_L) { fd.shiftVertex(2, 1, 0);  curvertex = 2; }
 
+		else if(code == KeyEvent.VK_O) { controller.flipOriginal(); return; }
+
 		else {
         	return;
         }
@@ -581,8 +556,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         controller.calcGeom();
         if(!interactiveMode)
         {
-            //repaintLines(myCanvas.getGraphics());
-            myCanvas.repaint();			//redraw(false);
+            myCanvas.repaint();
             return;
         }
         if(!paintDone) return;
@@ -630,6 +604,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	    AnimationPath path = AnimationPath.getPathByName(
 	    		animateChoice.getSelectedItem().toString() , 1,dr.destRect);
 	    path.firstItteration(fd);
+	    this.controller.tr.firstCall=true;
 	    animController.setAnimationPath(path);
 	    dr.calcDispRegion();
 	    controller.redraw();
