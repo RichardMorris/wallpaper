@@ -63,7 +63,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
 	public static final String programName = Messages.getString("Program.name"); //$NON-NLS-1$
 	public static final String programVersion = Messages.getString("Program.version"); //$NON-NLS-1$
-	public static final String programInfo = programName + " version " + programVersion; //$NON-NLS-1$
+	public static final String programInfo = MessageFormat.format(Messages.getString("Program.info"), programName,programVersion);  //$NON-NLS-1$
 
 
 	public FileController fileController;
@@ -327,7 +327,12 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 		private JMenu buildOptionsMenu() {
             JMenu optionsMenu = new JMenu(Messages.getString("Menu.options")); //$NON-NLS-1$
             JMenu backgroundMenu = new JMenu(Messages.getString("Menu.options.bgcolour")); //$NON-NLS-1$
-            String colours[] = {Messages.getString("Command.bg.tile"),Messages.getString("Command.bg.black"),Messages.getString("Command.bg.white"),Messages.getString("Command.bg.other"),Messages.getString("Command.bg.pick")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            String colours[] = {
+            		Messages.getString("Command.bg.tile"),//$NON-NLS-1$
+            		Messages.getString("Command.bg.black"),//$NON-NLS-1$
+            		Messages.getString("Command.bg.white"),//$NON-NLS-1$
+            		Messages.getString("Command.bg.other"),//$NON-NLS-1$
+            		Messages.getString("Command.bg.pick")};//$NON-NLS-1$
             for(int i=0;i<colours.length;++i) {
                 JMenuItem mi = new JMenuItem(colours[i]);
                 mi.setActionCommand(Messages.getString("Command.bg.prefix")+colours[i]); //$NON-NLS-1$
@@ -344,9 +349,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                     switch(state) {
                     case ItemEvent.SELECTED:
                         controller.constrainVertices = true;
-                        controller.setText(Messages.getString("Info.constrain1") + //$NON-NLS-1$
-                        		Messages.getString("Info.constrain2") + //$NON-NLS-1$
-                        		Messages.getString("Info.constrain3")); //$NON-NLS-1$
+                        controller.setText(Messages.getString("Info.constrain")); //$NON-NLS-1$
+                        System.out.println(Messages.getString("Info.constrain")); //$NON-NLS-1$
                         controller.calcGeom();
                         controller.redraw();
                         break;
@@ -381,7 +385,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         private void buildViewMenu() {
             viewMenu = new JMenu(Messages.getString("Menu.view")); //$NON-NLS-1$
 
-            String views[] = {Messages.getString("Menu.view.cells"),Messages.getString("Menu.view.tiles"),Messages.getString("Menu.view.domain"),Messages.getString("Menu.view.selpts"),"-", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            String views[] = {Messages.getString("Menu.view.cells"),Messages.getString("Menu.view.tiles"),Messages.getString("Menu.view.domain"),Messages.getString("Menu.view.sel_pts"),"-", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
                     Messages.getString("Menu.view.all"),"-", //$NON-NLS-1$ //$NON-NLS-2$
                     Messages.getString("Menu.view.mirrors"),Messages.getString("Menu.view.rotations"),Messages.getString("Menu.view.glides")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             String viewKeys[] = {Messages.getString("Command.view.cells"),Messages.getString("Command.view.tiles"),Messages.getString("Command.view.domain"),Messages.getString("Command.view.sel_pts"),"-", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$

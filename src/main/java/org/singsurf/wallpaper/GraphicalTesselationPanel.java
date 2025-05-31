@@ -431,7 +431,6 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
             setHorizontalTextPosition(RIGHT);
             setHorizontalAlignment(LEFT);
             tr = tr1;
-            //addItemListener(this);
             addActionListener(this);
             allBoxes.add(this);
             cbg.add(this);

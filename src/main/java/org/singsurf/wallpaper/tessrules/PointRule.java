@@ -219,7 +219,7 @@ public abstract class PointRule extends TessRule
                     Messages.getString("Rule.D.descript")); //$NON-NLS-1$
             dihedral = true;
             if(n==1)
-                message = Messages.getString("Rule.D2.descript"); //$NON-NLS-1$
+                message = Messages.getString("Rule.D1.descript"); //$NON-NLS-1$
         }
 
         /** Calculates the fundamental domain */
