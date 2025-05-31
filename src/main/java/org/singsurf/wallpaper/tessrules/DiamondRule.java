@@ -113,7 +113,7 @@ public abstract class DiamondRule extends TessRule
             // first fix blue point
             u = verts[2].sub(verts[0]);
             u = u.constrainedVec(Math.PI/2);
-            verts[2].set(verts[0].add(u));
+//            verts[2].set(verts[0].add(u));
 
             // now line from mid point of RB to G
             if(u.x==0) {
@@ -149,6 +149,12 @@ public abstract class DiamondRule extends TessRule
         default:
             System.out.println(Messages.getString("Rule.Msg.illegal_sel_point")); //$NON-NLS-1$
         return;
+        }
+        if(verts[0].x == verts[1].x && verts[1].x == verts[2].x) {
+        	--verts[1].x;
+        }
+        if(verts[0].y == verts[1].y && verts[1].y == verts[2].y) {
+        	--verts[1].y;
         }
     }
 
