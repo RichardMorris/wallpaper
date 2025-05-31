@@ -212,4 +212,14 @@ public class Controller {
 	    }
 	    return null;
 	}
+
+	public void flipOriginal() {
+		if(showingOriginal) {
+           applyTessellation();
+        }
+        else {
+           showOriginal();
+        }
+	}
+
 }
