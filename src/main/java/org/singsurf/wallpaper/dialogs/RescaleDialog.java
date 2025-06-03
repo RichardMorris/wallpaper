@@ -142,7 +142,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 	int oldx=0,oldy=0;
 	public void stateChanged(ChangeEvent ce) {
 		Graphics g = wall.myCanvas.getGraphics();
-		wall.paintCanvas(g);
+		wall.controller.paintCanvas(wall, g);
 		CropDialog.clear_background(g, wall.dr);
 		g.setColor(Color.black);
 		g.setPaintMode();

@@ -156,7 +156,7 @@ public class CropDialog extends JDialog implements ChangeListener {
 	    Graphics g = wall.myCanvas.getGraphics();
 //		System.out.println("ExpandD " + wall.dr);
 //		System.out.println("Canvas " +wall.myCanvas);
-		wall.paintCanvas(g);
+		wall.controller.paintCanvas(wall, g);
 		clear_background(g,wall.dr);
 		g.setColor(Color.black);
 		g.setPaintMode();

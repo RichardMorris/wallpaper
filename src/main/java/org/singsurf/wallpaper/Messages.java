@@ -1,5 +1,7 @@
 package org.singsurf.wallpaper;
 
+import java.awt.Color;
+import java.lang.reflect.Field;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -17,5 +19,17 @@ public class Messages {
 		} catch (MissingResourceException e) {
 			return '!' + key + '!';
 		}
+	}
+	
+	public static Color getColor(String key) {
+		var cname = getString(key);
+		Color color;
+		try {
+		    Field field = Class.forName("java.awt.Color").getField(cname.toUpperCase());
+		    color = (Color)field.get(null);
+		} catch (Exception e) {
+		    color = Color.decode(cname); 
+		}
+		return color;
 	}
 }
