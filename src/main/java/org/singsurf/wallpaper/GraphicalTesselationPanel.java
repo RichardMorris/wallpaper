@@ -169,7 +169,6 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
 
         gbc.gridx = 0; ++gbc.gridy;     gbc.gridwidth = 3;
         p1.add(basicChoice,gbc);
-
         
         gbc.gridwidth = 2;
         ++gbc.gridy;    
@@ -178,7 +177,6 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         gbc.gridx = 0;	
         p1.add(new JLabel(Messages.getString("GTP.alternate_domains")),gbc); //$NON-NLS-1$
         gbc.gridwidth = 1;
-        
         
         ++gbc.gridy;    
         gbc.gridx = 0;					p1.add(TTAcb,gbc);
@@ -189,101 +187,30 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty=10.0;
         p1.add(new JLabel(""),gbc); //$NON-NLS-1$
-
-        // done layout
-
-
-        int rand = (int) (Math.random() * 17);
-               //rand = 5;
-        GraphicalTesselationBox box = null;
-        switch (rand) {
-        case 0:
-            box = TTcb;
-            break;
-        case 1:
-            box = R1cb;
-            break;
-        case 2:
-            box = CMcb;
-            break;
-        case 3:
-            box = CMMcb;
-            break;
-        case 4:
-            box = PMcb;
-            break;
-        case 5:
-            box = PGcb;
-            break;
-        case 6:
-            box = PMGcb;
-            break;
-        case 7:
-            box = PGGcb;
-            break;
-        case 8:
-            box = PMMcb;
-            break;
-        case 9:
-            box = P4cb;
-            break;
-        case 10:
-            box = P4Gcb;
-            break;
-        case 11:
-            box = P4Mcb;
-            break;
-        case 12:
-            box = P3cb;
-            break;
-        case 13:
-            box = P31Mcb;
-            break;
-        case 14:
-            box = P3M1cb;
-            break;
-        case 15:
-            box = P6cb;
-            break;
-        case 16:
-            box = P6Mcb;
-            break;
-        }
-        currentTr = box.tr;
-        cbg.setSelected(box.getModel(), true);
-        currentGTB = box;
     }
 
-    
+    boolean recurse=false;
     public void itemStateChanged(ItemEvent e) {
+    	if(recurse)
+    		return;
         ItemSelectable sel = e.getItemSelectable();
         String label;
             label = (String) ((JComboBox<?>) sel).getSelectedItem();
         if( label == FRIEZE_GROUPS || label == CYCLIC_GROUPS || label == DIHEDRAL_GROUPS || label == BASICS_TRANSFORMATIONS) {
 			return;
 		}
-        currentTr = null;
+        TessRule currentTr = null;
         if(Character.isDigit(label.charAt(1)))
         {
             int num = Integer.parseInt(label.substring(1,
                     label.length()>2 &&Character.isDigit(label.charAt(2)) ? 3 : 2));
             if(label.startsWith(Messages.getString("GTP.C.prefix"))) { //$NON-NLS-1$
                 currentTr = PointRule.cycleRules[num];
-                friezeChoice.setSelectedIndex(0);
-                dyhChoice.setSelectedIndex(0);
-                basicChoice.setSelectedIndex(0);
             }
             else if(label.startsWith(Messages.getString("GTP.D.prefix"))) { //$NON-NLS-1$
                 currentTr = PointRule.dyhRules[num];
-                friezeChoice.setSelectedIndex(0);
-                cycleChoice.setSelectedIndex(0);
-                basicChoice.setSelectedIndex(0);
             }
             else if(label.startsWith(Messages.getString("GTP.F.prefix"))) { //$NON-NLS-1$
-                dyhChoice.setSelectedIndex(0);
-                cycleChoice.setSelectedIndex(0);
-                basicChoice.setSelectedIndex(0);
-
                 switch(num) {
                 case 1: currentTr = FrezeRule.F1; break;
                 case 2: currentTr = FrezeRule.F2; break;
@@ -299,44 +226,28 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         } 
         else
         {
-            //friezeChoice.setSelectedIndex(0);
-            //cycleChoice.setSelectedIndex(0);
-            //dyhChoice.setSelectedIndex(0);
-
             currentTr = TessRule.getTessRuleByName(label);
             if(currentTr==null)
                 return;
         }
         cbg.setSelected(cbg.getSelection(), false);
-        currentGTB.setSelected(false);
-        cont.setText(currentTr.message);
-        cont.setTesselation(currentTr);
-        //                      if(!TessRule.wallpaper.accumeMode.getState())
-        //                              System.arraycopy(TessRule.wallpaper.inpixels,0,TessRule.wallpaper.pixels,0,wallpaper.inpixels.length);
-        //                      TessRule.fixVerticies(vertexX,vertexY);
-        cont.applyTessellation();
-        currentTr.firstCall=false;
-        cont.repaint();
-
+        if(currentGTB!=null)
+        	currentGTB.setSelected(false);
+        setTesselation(currentTr);
     }
 
     private static final long serialVersionUID = 1L;
-    TessRule currentTr;
 
-    public TessRule getCurrentTesselation() {
-        return currentTr;
-    }
 
     public void tickCheckbox(String name) {
         for(int i=0;i<allBoxes.size();++i) {
             GraphicalTesselationBox tb = allBoxes.elementAt(i);
             if(name.equalsIgnoreCase(tb.getTessName())) {
-            	tb.setSelected(true);
-                currentTr = tb.tr;
-                friezeChoice.setSelectedIndex(0);
-                cycleChoice.setSelectedIndex(0);
-                basicChoice.setSelectedIndex(0);
-                dyhChoice.setSelectedIndex(0);
+            	setSelected(tb,true);
+            	clearChoice(friezeChoice);
+            	clearChoice(cycleChoice);
+            	clearChoice(basicChoice);
+            	clearChoice(dyhChoice);
                 return;
             }
         }
@@ -345,38 +256,24 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
             int num = Integer.parseInt(name.substring(1,
                     name.length()>2 &&Character.isDigit(name.charAt(2)) ? 3 : 2));
             if(name.startsWith(Messages.getString("GTP.C.prefix"))) { //$NON-NLS-1$
-                currentTr = PointRule.cycleRules[num];
-                cycleChoice.setSelectedIndex(num-1);
+                setChoice(cycleChoice,num-1);
                 dyhChoice.setSelectedIndex(0);
                 friezeChoice.setSelectedIndex(0);
                 basicChoice.setSelectedIndex(0);
                 cbg.setSelected(cbg.getSelection(), false);
             }
             else if(name.startsWith(Messages.getString("GTP.D.prefix"))) { //$NON-NLS-1$
-                currentTr = PointRule.dyhRules[num];
-                cycleChoice.setSelectedIndex(0);
-                dyhChoice.setSelectedIndex(num);
-                friezeChoice.setSelectedIndex(0);
-                basicChoice.setSelectedIndex(0);
+            	setChoice(dyhChoice,num);
+                clearChoice(cycleChoice);
+                clearChoice(basicChoice);
+                clearChoice(friezeChoice);
                 cbg.setSelected(cbg.getSelection(), false);
             }
             else if(name.startsWith(Messages.getString("GTP.F.prefix"))) { //$NON-NLS-1$
-                dyhChoice.setSelectedIndex(0);
-                cycleChoice.setSelectedIndex(0);
-                basicChoice.setSelectedIndex(0);
-                friezeChoice.setSelectedIndex(num);
-
-                switch(num) {
-                case 1: currentTr = FrezeRule.F1; break;
-                case 2: currentTr = FrezeRule.F2; break;
-                case 3: currentTr = FrezeRule.F3; break;
-                case 4: currentTr = FrezeRule.F4; break;
-                case 5: currentTr = FrezeRule.F5; break;
-                case 6: currentTr = FrezeRule.F6; break;
-                case 7: currentTr = FrezeRule.F7; break;
-                default:
-                    return;
-                }
+                clearChoice(dyhChoice);
+                clearChoice(cycleChoice);
+                clearChoice(basicChoice);
+                setChoice(friezeChoice,num);
                 cbg.setSelected(cbg.getSelection(), false);
             }
         }
@@ -384,11 +281,11 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
             for(int i=1;i<basicChoice.getItemCount();++i)
             {
                 if(name.equals(basicChoice.getItemAt(i))) {
-                    basicChoice.setSelectedIndex(i);
-                    currentTr = TessRule.getTessRuleByName(name);
-                    dyhChoice.setSelectedIndex(0);
-                    cycleChoice.setSelectedIndex(0);
-                    friezeChoice.setSelectedIndex(0);
+                    setChoice(basicChoice,i);
+//                    currentTr = TessRule.getTessRuleByName(name);
+                    clearChoice(dyhChoice);
+                    clearChoice(cycleChoice);
+                    clearChoice(friezeChoice);
                     cbg.setSelected(cbg.getSelection(), false);
                 }
             }
@@ -398,22 +295,48 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
 
 
     
-    /**
-	         * Creates an ImageIcon if the path is valid.
-	         * @param String - resource path
-	         * @param String - description of the file
-	         */
-	        static protected ImageIcon createImageIcon(String path,
-	                String description) {
-	            URL imgURL = GraphicalTesselationPanel.class.getResource(path);
-	            if (imgURL != null) {
-	            	return new ImageIcon(imgURL, description);
-	            } else {
-	            	System.err.println(Messages.getString("GTP.msg.could_not_find_resource") + path); //$NON-NLS-1$
-	                return new ImageIcon(path, description);
-	            }
-	        }
+    private void setSelected(GraphicalTesselationBox tb, boolean b) {
+    	
+    	tb.setSelected(b);
+	
+	}
 
+
+	private void setChoice(JComboBox<String> choice, int i) {
+		recurse = true;
+    	choice.setSelectedIndex(i);
+    	recurse = false;
+	}
+
+
+	private void clearChoice(JComboBox<String> choice) {
+		recurse = true;
+    	choice.setSelectedIndex(0);
+		recurse = false;
+	}
+
+
+	/**
+     * Creates an ImageIcon if the path is valid.
+     * @param String - resource path
+     * @param String - description of the file
+     */
+    static protected ImageIcon createImageIcon(String path,
+    		String description) {
+    	URL imgURL = GraphicalTesselationPanel.class.getResource(path);
+    	if (imgURL != null) {
+    		return new ImageIcon(imgURL, description);
+    	} else {
+    		System.err.println(Messages.getString("GTP.msg.could_not_find_resource") + path); //$NON-NLS-1$
+    		return new ImageIcon(path, description);
+    	}
+    }
+
+    void setTesselation(TessRule tr) {
+    	cont.setTesselation(tr);
+    	cont.calcGeom();
+    	cont.redraw();
+    }
 
 
 	class GraphicalTesselationBox extends JToggleButton implements ActionListener {
@@ -425,7 +348,6 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
             setIcon(icon);
             setMargin(new Insets(0,0,0,0));
             setBorderPainted(true);
-            //setBorder(BorderFactory.createEtchedBorder());
             setToolTipText(iconName);
             setVerticalTextPosition(CENTER);
             setHorizontalTextPosition(RIGHT);
@@ -439,40 +361,11 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         public String getTessName() {
             return tr.name;
         }
-
-        public void itemStateChanged(ItemEvent e) {
-            if(e.getStateChange() == ItemEvent.SELECTED)
-            {
-                currentTr = tr;
-                tr.firstCall=true;
-                cont.setText(tr.message);
-                cont.setTesselation(tr);
-                cont.applyTessellation();
-                tr.firstCall=false;
-                cont.wallpaper.clickCount++;
-                friezeChoice.setSelectedIndex(0);
-                cycleChoice.setSelectedIndex(0);
-                dyhChoice.setSelectedIndex(0);
-                cont.repaint();
-            }
-        }
-        
         
         private static final long serialVersionUID = 1L;
         public void actionPerformed(ActionEvent arg0) {
-            currentTr = tr;
             currentGTB = this;
-            tr.firstCall=true;
-            cont.setText(tr.name + Messages.getString("GTP.GTP.msg.sep") + tr.message); //$NON-NLS-1$
-            cont.setTesselation(tr);
-            cont.applyTessellation();
-            tr.firstCall=false;
-            cont.wallpaper.clickCount++;
-            friezeChoice.setSelectedIndex(0);
-            cycleChoice.setSelectedIndex(0);
-            dyhChoice.setSelectedIndex(0);
-            cont.repaint();
- 
+            setTesselation(tr);
         }
 
     }
