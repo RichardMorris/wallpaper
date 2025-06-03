@@ -3,12 +3,8 @@ package org.singsurf.wallpaper;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,7 +40,7 @@ using a portion of an image.
 public class Wallpaper extends JPanel implements MouseListener, MouseMotionListener, KeyListener, ItemListener
 {
     private static final long serialVersionUID = 1L;
-    private static final boolean DEBUG = false;
+    static final boolean DEBUG = false;
 
     /** Labels and action commands for flip/rotate */
     public static final String FLIP_X = Messages.getString("Menu.image.FlipX"); //$NON-NLS-1$
@@ -55,9 +51,6 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     /** the current vertex for moving the triangle */
     public int curvertex=0;
-
-    /** Whether we are in interactive mode */
-    boolean interactiveMode = true;
 
     /** Whether to draw the symmetry lines */
     //private boolean symmetryLines = false;
@@ -76,7 +69,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     JTextArea infoPanel;
     /** whether the paint method has been completed. */
-    private boolean paintDone = true;
+    boolean paintDone = true;
     /** If interactive kaleidoscope more */
 //    private JCheckBox interactiveCB;
 
@@ -89,8 +82,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     public String imageFilename=null;
 //    protected URL imageURL=null;
 
-    public int clickCount = 0;
-	public AnimationController animController;
+    public AnimationController animController;
 
     private GraphicalTesselationPanel tesselationPanel;
     JButton origTileButton;
@@ -160,9 +152,10 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         myCanvas.setPreferredSize(dr.destRect.getSize()); 
         dr.setViewport(dr.destRect);
         fd.resetDomain(dr.dispRect);
-        controller.setTesselation(tesselationPanel.getCurrentTesselation());
+        
+        controller.setTesselation(TessRule.getTessRuleByName("wall"));
         controller.calcGeom();
-        controller.showOriginal();
+//        controller.showOriginal();
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();  
         var size = toolkit.getBestCursorSize(32, 32);
@@ -186,56 +179,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	}
 
 
-	public void paintCanvas(Graphics g) {
-        if(DEBUG) System.out.println("paintCanvas" + dr.dispRect); //$NON-NLS-1$
-        
-        //System.out.printf("cp %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
-        //System.out.printf("%d %d%n", offset.x,offset.y);
-        g.translate(offset.x,offset.y);
-        Rectangle bounds = g.getClipBounds();
-        if(bounds != null && (bounds.x + bounds.width > dr.dispRect.x+dr.dispRect.width)) {
-            g.clearRect(dr.dispRect.x+dr.dispRect.width, bounds.y,
-                    bounds.x + bounds.width - (dr.dispRect.x+dr.dispRect.width), bounds.height);
-        }
-        if(bounds != null && (bounds.y + bounds.height > dr.dispRect.y+dr.dispRect.height)) {
-            g.clearRect(bounds.x,dr.dispRect.y+dr.dispRect.height,
-                    bounds.width,bounds.y + bounds.height - (dr.dispRect.y+dr.dispRect.height));
-        }
-        dr.paint(g,this);
-        g.setPaintMode();
-
-        fd.paintSymetries(g, controller.tr);
-        fd.paint(g);
-
-        if(clickCount==0)
-            paintIntro(g);
-//        if(clickCount==1)
-//            paintIntro2(g);
-
-        if(controller.constrainVertices)
-            fd.paintRegularTile(g);
-
-        g.translate(-offset.x,-offset.y);
-        paintDone = true;
-    }
-
-    private void paintIntro(Graphics g) {
-        Vec base = controller.tr.frameO;
-        String s1 = Messages.getString("IntroBox1a"); //$NON-NLS-1$
-        String s2 = Messages.getString("IntroBox1b"); //$NON-NLS-1$
-        Font f = new Font("SansSerif",Font.BOLD,16); //$NON-NLS-1$
-        g.setFont(f);
-        FontMetrics fm = g.getFontMetrics();
-        int len1 = fm.stringWidth(s1);
-        int height = fm.getHeight();
-        int accent = fm.getMaxAscent();
-        g.setColor(Color.white);
-        g.fillRoundRect(210,base.y+20,len1+20,height*2+20, 20, 20);
-        g.setColor(Color.black);
-
-        g.drawString(s1,220,base.y+30+accent);
-        g.drawString(s2,220,base.y+30+accent+height);
-    }
+	
 
     /*
     private void paintIntro2(Graphics g) {
@@ -262,8 +206,8 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     {
         if(DEBUG) System.out.println(Messages.getString("Mouse released")); //$NON-NLS-1$
         mousePressed = false;
-        ++clickCount;
-        if(clickCount<3) myCanvas.repaint();
+//        ++clickCount;
+//        if(clickCount<3) myCanvas.repaint();
     }
 
     public void mouseClicked(MouseEvent e) 
@@ -318,7 +262,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     public void mousePressed(MouseEvent e)
     {
         if(DEBUG) System.out.println(Messages.getString("Mouse pressed")); //$NON-NLS-1$
-        ++clickCount;
+//        ++clickCount;
         mousePressed = true;
 
         int x = e.getX()-offset.x;
@@ -344,12 +288,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
             if(!paintDone && curtime- lasttime <1000 ) return;
             lasttime = curtime;
             paintDone = false;
-            if(controller.showingOriginal /* || !interactiveMode */ ) {
-                controller.applyTessellation();
-            }
-            else {
-                controller.showOriginal();
-            }
+            controller.redraw();
         }
     }
 
@@ -384,17 +323,12 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         //	        System.out.println("Not tileable");
 
         //System.out.printf("md %d\n",fd.verticies[1].y-fd.verticies[0].y);
-        if(!interactiveMode)
-        {
-            //repaintLines(myCanvas.getGraphics());
-            myCanvas.repaint();			//redraw(false);
-            return;
-        }
 
         if(!paintDone ) return;
         //lasttime = curtime;
         paintDone = false;
-        controller.applyTessellation();
+        controller.firstAction();
+        controller.redraw();
     }
 
     protected static boolean first=true;
@@ -415,7 +349,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     protected JPanel buildButtonBar() {
         JPanel p2 = new JPanel();
-        origTileButton = new JButton(Messages.getString("Button.OrigImage")); //$NON-NLS-1$
+        origTileButton = new JButton(Messages.getString("Button.TileImage")); //$NON-NLS-1$
         origTileButton.addActionListener(e -> controller.flipOriginal());
         p2.add(origTileButton);
 
@@ -424,8 +358,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
                 new ActionListener()
                 {	public void actionPerformed(ActionEvent e)
                 {
-                    fd.resetDomain(dr.dispRect);
-                    controller.tr.firstCall = true;
+                    controller.resetDomain();
                     controller.calcGeom();
                     controller.redraw();
                 }
@@ -552,16 +485,11 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 		else {
         	return;
         }
-
+        controller.firstAction();
         controller.calcGeom();
-        if(!interactiveMode)
-        {
-            myCanvas.repaint();
-            return;
-        }
         if(!paintDone) return;
         paintDone = false;
-        controller.applyTessellation();
+        controller.redraw();
 
     }
     public void keyReleased(KeyEvent e) {/*ignore*/}
@@ -584,6 +512,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	protected void startAnim(String label) {
 	    var path = AnimationPath.getPathByName(label, 1,dr.srcRect);
 	    animController.setAnimationPath(path);
+	    setText(Messages.getString("Anim.shortcuts")); //$NON-NLS-1$
 	    animController.startAnim();
 	}
 
@@ -604,7 +533,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	    AnimationPath path = AnimationPath.getPathByName(
 	    		animateChoice.getSelectedItem().toString() , 1,dr.destRect);
 	    path.firstItteration(fd);
-	    this.controller.tr.firstCall=true;
+	    controller.tr.firstCall=true;
 	    animController.setAnimationPath(path);
 	    dr.calcDispRegion();
 	    controller.redraw();

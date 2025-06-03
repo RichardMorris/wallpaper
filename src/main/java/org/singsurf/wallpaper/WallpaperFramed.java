@@ -47,6 +47,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 
+import org.singsurf.wallpaper.Controller.PaintStyle;
 import org.singsurf.wallpaper.animation.AnimationController;
 import org.singsurf.wallpaper.animation.AnimationPath;
 import org.singsurf.wallpaper.dialogs.CropDialog;
@@ -404,6 +405,25 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                 viewMenu.add(vmi);
                 vmi.addItemListener(viewActionListener);
             }
+            viewMenu.addSeparator();
+            
+            JCheckBoxMenuItem isolateMI = new JCheckBoxMenuItem(Messages.getString("Menu.view.isolate_domain"));
+            isolateMI.addActionListener(e -> {
+            	this.controller.applyIsolate(isolateMI.isSelected());
+            });
+            viewMenu.add(isolateMI);
+
+            JCheckBoxMenuItem isolateTileMI = new JCheckBoxMenuItem(Messages.getString("Menu.view.isolate_tile"));
+            isolateTileMI.addActionListener(e -> {
+            	this.controller.applyIsolateTile(isolateTileMI.isSelected());
+            });
+            viewMenu.add(isolateTileMI);
+
+            JCheckBoxMenuItem splitMI = new JCheckBoxMenuItem(Messages.getString("Menu.view.split")); //$NON-NLS-1$
+            splitMI.addItemListener(e ->
+					controller.split(e.getStateChange()==ItemEvent.SELECTED));
+            viewMenu.add(splitMI);
+
         }
 
 
@@ -457,11 +477,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
             flipMI.add(rot270);
             imageMenu.add(flipMI);
 
-            JCheckBoxMenuItem splitMI = new JCheckBoxMenuItem(Messages.getString("Menu.image.split")); //$NON-NLS-1$
-            splitMI.addItemListener(e ->
-					controller.split(e.getStateChange()==ItemEvent.SELECTED));
-            imageMenu.add(splitMI);
-
+ 
             return imageMenu;
         }
 
@@ -727,8 +743,7 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 
             dr.setViewport(jsp.getViewportBorderBounds());
             if(first) {
-                fd.resetDomain(dr.dispRect);
-                controller.tr.firstCall = true;
+            	controller.resetDomain();
                 controller.calcGeom();
                 first=false;
             }
@@ -846,6 +861,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 			super.setViewCheckboxes();
 			int num = viewMenu.getItemCount();
 			for(int i=0;i<num;++i) {
+				if(!(viewMenu.getItem(i) instanceof JCheckBoxMenuItem))
+					continue;
 				JCheckBoxMenuItem mi = (JCheckBoxMenuItem) viewMenu.getItem(i);
 				if(mi==null) continue;
 //				System.out.println("mi "+i+" "+mi.getText()+" "+mi.isSelected());
@@ -875,6 +892,15 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 				}
 				else if(mi.getText().equals(Messages.getString("Menu.view.hide"))) { //$NON-NLS-1$
 					mi.setSelected(!fd.drawGlideLines && !fd.drawReflectionLines && !fd.drawRotationPoints);
+				}
+				else if(mi.getText().equals(Messages.getString("Menu.view.isolate_domain"))) { //$NON-NLS-1$
+					mi.setSelected(controller.style == PaintStyle.DOMAIN);
+				}
+				else if(mi.getText().equals(Messages.getString("Menu.view.isolate_tile"))) { //$NON-NLS-1$
+					mi.setSelected(controller.style == PaintStyle.TILE);
+				}
+				else if(mi.getText().equals(Messages.getString("Menu.view.split"))) { //$NON-NLS-1$
+					mi.setSelected(controller.style == PaintStyle.SPLIT);
 				}
 			}
 		}

@@ -59,8 +59,20 @@ public abstract class PgramRule extends TessRule
         fd.numOuterPoints = 4;
         fd.setLatticeType(FundamentalDomain.PARALLOGRAM);
     }
+    
+	@Override
+	protected void paintSymetries(Vec U, Vec V, Vec O) {
+		// TODO Auto-generated method stub
+		
+	}
 
-    public static TessRule rhombusTT = new PgramRule(Messages.getString("Rule.P1"), //$NON-NLS-1$
+	@Override
+	public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static TessRule rhombusTT = new PgramRule(Messages.getString("Rule.P1"), //$NON-NLS-1$
             Messages.getString("Rule.P1.descript")) { //$NON-NLS-1$
         /** Calculates the fundamental domain */
         @Override
@@ -103,6 +115,17 @@ public abstract class PgramRule extends TessRule
             drawSimpleEdge(O,A);
             drawSimpleEdge(O,D);
         }
+
+//		@Override
+//		public Polygon calcFundPolygon(FundamentalDomain fd) {
+//			Vec O = fd.cellVerts[0];
+//            Vec A = fd.cellVerts[1];
+//            Vec B = fd.cellVerts[3];
+//            Vec D = fd.cellVerts[2];
+//			int xcoord[] = {O.x, A.x, B.x, D.x};
+//			int ycoord[] = {O.y, A.y, B.x, D.y};
+//			return new Polygon(xcoord,ycoord,4);
+//		}
 
     };
 
@@ -207,7 +230,8 @@ public abstract class PgramRule extends TessRule
             }
         }
 
-        @Override
+
+		@Override
         public double approxArea() { return 0.25; }
 
         @Override

@@ -3,6 +3,8 @@
  */
 package org.singsurf.wallpaper.tessrules;
 
+import java.awt.Polygon;
+
 import org.singsurf.wallpaper.DrawableRegion;
 import org.singsurf.wallpaper.FundamentalDomain;
 import org.singsurf.wallpaper.Messages;
@@ -56,9 +58,10 @@ public abstract class PointRule extends TessRule
         frameV.x = u1;
         frameV.y = u2;
         for(int i=0;i<n;++i) {
-            spokesX[i] = (Math.cos((2*Math.PI*i)/n) * v1 - Math.sin((2*Math.PI*i)/n) * v2) /
+            double fractAng = (2*Math.PI*i)/n;
+			spokesX[i] = (Math.cos(fractAng) * v1 - Math.sin(fractAng) * v2) /
             Math.sqrt(v1*v1+v2*v2); 
-            spokesY[i] = (Math.sin((2*Math.PI*i)/n) * v1 + Math.cos((2*Math.PI*i)/n) * v2) / 
+			spokesY[i] = (Math.sin(fractAng) * v1 + Math.cos(fractAng) * v2) / 
             Math.sqrt(v1*v1+v2*v2); 
         }
     }
@@ -85,8 +88,16 @@ public abstract class PointRule extends TessRule
 
     }
 
-    @Override
+	@Override
     public void replicate(DrawableRegion dr,FundamentalDomain fd) {
+		replicate_isolated_domain(dr, null);
+	}
+
+    @Override
+	public void replicate_isolated_domain(DrawableRegion dr, Polygon poly) {
+		// TODO Auto-generated method stub
+	
+
         int x0=frameO.x;
         int y0=frameO.y;
 
@@ -139,7 +150,14 @@ public abstract class PointRule extends TessRule
                             srcY %= dr.srcRect.height; 
                             if(srcY <0) srcY += dr.srcRect.height;
                             int inInd = srcX+srcY*dr.srcRect.width;
-                            int px = dr.inpixels[inInd];
+                            int px;                            
+                            if(contains(poly,i, j)) {
+                            	px =  dr.inpixels[inInd];
+                            }
+                            else {
+                            	px = backgroundRGB;
+                            }
+
                             dr.pixels[outInd] = px;
                         }
                         else {
@@ -148,7 +166,14 @@ public abstract class PointRule extends TessRule
                     }
                     else {
                         int inInd = srcX+srcY*dr.srcRect.width;
-                        int px = dr.inpixels[inInd];
+                        int px;
+                        if(contains(poly,i, j)) {
+                        	px =  dr.inpixels[inInd];
+                        }
+                        else {
+                        	px = backgroundRGB;
+                        }
+
                         dr.pixels[outInd] = px;
                     }
                 }
@@ -168,7 +193,16 @@ public abstract class PointRule extends TessRule
         dr.fillSource();
     }
 
-    public static class CyclicRule extends PointRule {
+    boolean contains(Polygon poly, int i, int j) {
+    	if(poly==null)
+    		return true;
+    	Vec A = new Vec(i,j).sub(frameO);
+    	var cross1 = A.cross(frameU);
+    	var cross2 = A.cross(frameV);
+    	return (cross1<0 && cross2>0);
+	}
+
+	public static class CyclicRule extends PointRule {
         CyclicRule(int n) {
             super(n,Messages.getString("Rule.C.prefix")+n, //$NON-NLS-1$
                     Messages.getString("Rule.C.descript")); //$NON-NLS-1$
@@ -214,7 +248,9 @@ public abstract class PointRule extends TessRule
     } // end CyclicRule
 
     public static class DihedralRule extends PointRule {
-        DihedralRule(int n) {
+        private Vec frameW;
+
+		DihedralRule(int n) {
             super(n,Messages.getString("Rule.D.prefix")+n, //$NON-NLS-1$
                     Messages.getString("Rule.D.descript")); //$NON-NLS-1$
             dihedral = true;
@@ -257,6 +293,7 @@ public abstract class PointRule extends TessRule
                 fd.fund[2].y = fd.cellVerts[1].y+50*frameU.y+50*frameV.y;
                 fd.numFund = 3;
             }
+            frameW = new Vec(fd.fund[2]);
         }
         
         @Override
@@ -312,6 +349,15 @@ public abstract class PointRule extends TessRule
                                 (int) ((spokesY[i]+spokesY[(i+1)%spokesX.length])*1000)).add(frameO));
             
          }
+
+        boolean contains(Polygon poly, int i, int j) {
+        	if(poly==null)
+        		return true;
+        	Vec A = new Vec(i,j).sub(frameO);
+        	var cross1 = A.cross(frameU);
+        	var cross2 = A.cross(frameW);
+        	return (cross1<0 && cross2>0);
+    	}
 
         
     }

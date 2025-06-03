@@ -155,7 +155,18 @@ public abstract class BasicRule extends TessRule
     abstract void fun(int x,int y,int[] out);
 
 
-    public static final TessRule trans = new BasicRule(Messages.getString("Rule.trans"), //$NON-NLS-1$
+    @Override
+	protected void paintSymetries(Vec U, Vec V, Vec O) {
+    	// not relevant here
+	}
+
+
+	@Override
+	public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
+    	// not relevant here
+	}
+
+	public static final TessRule trans = new BasicRule(Messages.getString("Rule.trans"), //$NON-NLS-1$
     Messages.getString("Rule.trans.descript")) { //$NON-NLS-1$
         @Override
         public final void fun(int x,int y,int[] out)
