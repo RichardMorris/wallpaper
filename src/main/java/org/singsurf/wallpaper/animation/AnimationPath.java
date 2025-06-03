@@ -4,6 +4,7 @@ Created 9 Sep 2006 - Richard Morris
 package org.singsurf.wallpaper.animation;
 
 import java.awt.Rectangle;
+import java.text.MessageFormat;
 
 import org.singsurf.wallpaper.FundamentalDomain;
 import org.singsurf.wallpaper.Messages;
@@ -81,6 +82,28 @@ public abstract class AnimationPath {
 		else if(label.equals(Messages.getString("Anim.grow_centre"))) { //$NON-NLS-1$
 			path = new GrowAnimation(rect,true);
 		}
+		else {
+	        String[] collections = Messages.getString("Anim.collections").split(",");
+			for(var key : collections) {
+	    		if(label.equalsIgnoreCase(key)) { //$NON-NLS-1$
+	    			String[] names = Messages.getString("Anim."+key+".list").split(","); //$NON-NLS-1$ //$NON-NLS-2$
+	    			int rnd = (int) (Math.random() * names.length);
+	    			var path2 = getPathByName(names[rnd],speed,rect);
+	    			if(path2==null) {
+						System.out.println(MessageFormat.format(Messages.getString("Rule.error_tess_rule"),names[rnd])); //$NON-NLS-1$
+					}
+					else {
+						return path2;
+					}
+	    		}
+			}
+//			if(label.equals(Messages.getString("Anim.nice"))) { //$NON-NLS-1$
+//			String[] name = Messages.getString("Anim.nice.list").split(","); //$NON-NLS-1$ //$NON-NLS-2$
+//			int rnd = (int) (Math.random() * name.length);
+//			return getPathByName(name[rnd],speed,rect);
+
+		}
+			
 		path.label = label;
 		return path;
 	}
