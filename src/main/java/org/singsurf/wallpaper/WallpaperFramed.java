@@ -253,6 +253,8 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                     fd.drawRotationPoints = cbmi.isSelected();
                 if(label.equals(Messages.getString("Command.view.glides"))) //$NON-NLS-1$
                     fd.drawGlideLines = cbmi.isSelected();
+                if(label.equals(Messages.getString("Command.view.lattice_pts"))) //$NON-NLS-1$
+                    fd.drawLatticePoints = cbmi.isSelected();
                 if(label.equals(Messages.getString("Command.view.domain"))) //$NON-NLS-1$
                     fd.drawDomain = cbmi.isSelected();
                 if(label.equals(Messages.getString("Command.view.sel_pts"))) //$NON-NLS-1$
@@ -263,11 +265,13 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                     fd.drawGlideLines = cbmi.isSelected();
                     fd.drawReflectionLines = cbmi.isSelected();
                     fd.drawRotationPoints = cbmi.isSelected();
+                    fd.drawLatticePoints = cbmi.isSelected();
                 }
                 if(label.equals(Messages.getString("Command.view.hide"))) { //$NON-NLS-1$
                     fd.drawGlideLines = !cbmi.isSelected();
                     fd.drawReflectionLines = !cbmi.isSelected();
                     fd.drawRotationPoints = !cbmi.isSelected();
+                    fd.drawLatticePoints = !cbmi.isSelected();
                 }
 
 //                imageChanged();
@@ -386,15 +390,35 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
         private void buildViewMenu() {
             viewMenu = new JMenu(Messages.getString("Menu.view")); //$NON-NLS-1$
 
-            String views[] = {Messages.getString("Menu.view.cells"),Messages.getString("Menu.view.tiles"),Messages.getString("Menu.view.domain"),Messages.getString("Menu.view.sel_pts"),"-", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                    Messages.getString("Menu.view.all"),"-", //$NON-NLS-1$ //$NON-NLS-2$
-                    Messages.getString("Menu.view.mirrors"),Messages.getString("Menu.view.rotations"),Messages.getString("Menu.view.glides")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            String viewKeys[] = {Messages.getString("Command.view.cells"),Messages.getString("Command.view.tiles"),Messages.getString("Command.view.domain"),Messages.getString("Command.view.sel_pts"),"-", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                    Messages.getString("Command.view.all"),"-", //$NON-NLS-1$ //$NON-NLS-2$
-                    Messages.getString("Command.view.mirrors"),Messages.getString("Command.view.rotations"),Messages.getString("Command.view.glides")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            String views[] = {
+            		Messages.getString("Menu.view.cells"),
+            		Messages.getString("Menu.view.tiles"),
+            		Messages.getString("Menu.view.domain"),
+            		Messages.getString("Menu.view.sel_pts"),
+            		"-", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    Messages.getString("Menu.view.all"),
+                    "-", //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("Menu.view.mirrors"),
+                    Messages.getString("Menu.view.rotations"),
+                    Messages.getString("Menu.view.glides"),
+                    Messages.getString("Menu.view.lattice_pts")
+                    }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            String viewKeys[] = {
+            		Messages.getString("Command.view.cells"),
+            		Messages.getString("Command.view.tiles"),
+            		Messages.getString("Command.view.domain"),
+            		Messages.getString("Command.view.sel_pts"),
+            		"-", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    Messages.getString("Command.view.all"),
+                    "-", //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("Command.view.mirrors"),
+                    Messages.getString("Command.view.rotations"),
+                    Messages.getString("Command.view.glides"),
+                    Messages.getString("Command.view.lattice_pts")                                 
+            }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             boolean viewStates[] = {false,false,true,true,false,
                     false,false,
-                    false,false,false};
+                    false,false,false,false};
             for(int i=0;i<views.length;++i) {
                 if(views[i].equals("-")) { //$NON-NLS-1$
                     viewMenu.addSeparator();
@@ -886,6 +910,9 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
 				}
 				else if(mi.getText().equals(Messages.getString("Menu.view.glides"))) { //$NON-NLS-1$
 					mi.setSelected(fd.drawGlideLines);
+				}
+				else if(mi.getText().equals(Messages.getString("Menu.view.lattice_pts"))) { //$NON-NLS-1$
+					mi.setSelected(fd.drawLatticePoints);
 				}
 				else if(mi.getText().equals(Messages.getString("Menu.view.all"))) { //$NON-NLS-1$
 					mi.setSelected(fd.drawGlideLines && fd.drawReflectionLines && fd.drawRotationPoints);

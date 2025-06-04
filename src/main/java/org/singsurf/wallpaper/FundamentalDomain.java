@@ -49,6 +49,7 @@ public class FundamentalDomain {
 	boolean drawGlideLines = false;
 	boolean drawReflectionLines = false;
 	boolean drawRotationPoints = false;
+	boolean drawLatticePoints = false;
 	boolean drawCells = false;
 	boolean drawDomain = true;
 	boolean drawSelectionPoints = true;
@@ -59,6 +60,7 @@ public class FundamentalDomain {
 	static final Color glideColour =  Messages.getColor("Paint.glide_colour"); //$NON-NLS-1$
 	static final Color rotateColour = Messages.getColor("Paint.rotate_colour"); //$NON-NLS-1$
     static final Color laticeColour = Messages.getColor("Paint.lattice_colour"); //$NON-NLS-1$
+    static final Color laticePointColour = Messages.getColor("Paint.lattice_point_colour"); //$NON-NLS-1$
 	static final int dashLen = 8;
 	static final int shapeSize = 4;
 	static final double root32 = Math.sqrt(3)/2;
@@ -532,6 +534,12 @@ public class FundamentalDomain {
 					drawLatticeLine(p2, p2.add(Vec.linComb(-1, U, 2, V, 3)));
 				}
 		}
+		
+		if(drawLatticePoints) {
+			for(var p:points) {
+				drawLaticePoint(p.add(diff));
+			}
+		}
 		if (drawReflectionLines) {
 			boolean oldGlide = drawGlideLines;
 			boolean oldRot = drawRotationPoints;
@@ -623,6 +631,12 @@ public class FundamentalDomain {
             if(!drawCells) return;
             graphics.setColor(laticeColour);
             graphics.drawLine(p.x,p.y,q.x,q.y);
+	}
+
+	public final void drawLaticePoint(Vec P) {
+	    if(!drawLatticePoints) return;
+	    graphics.setColor(laticePointColour);
+        graphics.fillOval(P.x-shapeSize, P.y-shapeSize,shapeSize*2,shapeSize*2);
 	}
 
 	public final void drawRotationPoint(Vec P,int angle) {
