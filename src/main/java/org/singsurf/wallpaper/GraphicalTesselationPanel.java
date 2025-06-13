@@ -46,7 +46,6 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
     public static final String iconPrefix = Messages.getString("GTP.icon_prefix");  //$NON-NLS-1$
     public static final String iconSuffix = Messages.getString("GTP.icon_suffix");  //$NON-NLS-1$
     Controller cont;
-    GraphicalTesselationBox currentGTB = null;    
 
     Vector<GraphicalTesselationBox> allBoxes = new Vector<GraphicalTesselationBox>();
     /**
@@ -63,11 +62,15 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         System.out.println(System.getProperty("user.dir")); //$NON-NLS-1$
         // controller = new Controller(this,)
         GraphicalTesselationBox TTcb = new GraphicalTesselationBox(PgramRule.rhombusTT,Messages.getString("GTP.p1")); //$NON-NLS-1$
-        GraphicalTesselationBox TTAcb = new GraphicalTesselationBox(IrregularHexRule.p1hex,Messages.getString("GTP.p1h")); //$NON-NLS-1$
+        GraphicalTesselationBox TTAcb = new GraphicalTesselationBox(IrregularHexRule.p1hex,Messages.getString("GTP.p1h"),Messages.getString("GTP.p1h.icon")); //$NON-NLS-1$
         GraphicalTesselationBox R1acb = new GraphicalTesselationBox(PgramRule.rhombusR1,Messages.getString("GTP.p2")); //$NON-NLS-1$
-        GraphicalTesselationBox R1cb = new GraphicalTesselationBox(IrregularHexRule.p2hex,Messages.getString("GTP.p2h")); //$NON-NLS-1$
+        GraphicalTesselationBox R1cb = new GraphicalTesselationBox(IrregularHexRule.p2hex,Messages.getString("GTP.p2h"),Messages.getString("GTP.p2h.icon")); //$NON-NLS-1$
         GraphicalTesselationBox CMcb = new GraphicalTesselationBox(DiamondRule.rhombCM,Messages.getString("GTP.cm")); //$NON-NLS-1$
         GraphicalTesselationBox CMMcb = new GraphicalTesselationBox(DiamondRule.rhombCMM,Messages.getString("GTP.cmm")); //$NON-NLS-1$
+        GraphicalTesselationBox CMrcb = new GraphicalTesselationBox(DiamondRule.rhombCMr,Messages.getString("GTP.cmr"),
+        		Messages.getString("GTP.cmr.icon")); //$NON-NLS-1$
+        GraphicalTesselationBox CMMrcb = new GraphicalTesselationBox(DiamondRule.rhombCMMr,Messages.getString("GTP.cmmr"),
+        		Messages.getString("GTP.cmmr.icon")); //$NON-NLS-1$
         GraphicalTesselationBox PMcb = new GraphicalTesselationBox(RectRule.rectPM,Messages.getString("GTP.pm")); //$NON-NLS-1$
         GraphicalTesselationBox PGcb = new GraphicalTesselationBox(RectRule.rectPG,Messages.getString("GTP.pg")); //$NON-NLS-1$
         GraphicalTesselationBox PMGcb = new GraphicalTesselationBox(RectRule.rectPMG,Messages.getString("GTP.pmg")); //$NON-NLS-1$
@@ -77,9 +80,13 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         GraphicalTesselationBox P4Gcb = new GraphicalTesselationBox(SquRule.squP4g,Messages.getString("GTP.p4g")); //$NON-NLS-1$
         GraphicalTesselationBox P4Mcb = new GraphicalTesselationBox(SquRule.squP4m,Messages.getString("GTP.p4m")); //$NON-NLS-1$
         GraphicalTesselationBox P3cb = new GraphicalTesselationBox(HexiRule.triP3,Messages.getString("GTP.p3")); //$NON-NLS-1$
+        GraphicalTesselationBox P3hcb = new GraphicalTesselationBox(HexiRule.triP3h,Messages.getString("GTP.p3h"),
+        		Messages.getString("GTP.p3h.icon")); //$NON-NLS-1$
         GraphicalTesselationBox P3M1cb = new GraphicalTesselationBox(HexiRule.triP3m1,Messages.getString("GTP.p3m1")); //$NON-NLS-1$
         GraphicalTesselationBox P31Mcb = new GraphicalTesselationBox(HexiRule.triP31m,Messages.getString("GTP.p31m")); //$NON-NLS-1$
-        GraphicalTesselationBox P31Mkcb = new GraphicalTesselationBox(HexiRule.triP31mk,Messages.getString("GTP.p31mk")); //$NON-NLS-1$
+        GraphicalTesselationBox P31Mkcb = new GraphicalTesselationBox(HexiRule.triP31mk,Messages.getString("GTP.p31mk"),Messages.getString("GTP.p31mk.icon")); //$NON-NLS-1$
+        GraphicalTesselationBox P31Mtcb = new GraphicalTesselationBox(HexiRule.triP31Mt,Messages.getString("GTP.p31mt"),
+        		Messages.getString("GTP.p31mt.icon")); //$NON-NLS-1$
         GraphicalTesselationBox P6cb = new GraphicalTesselationBox(HexiRule.triP6,Messages.getString("GTP.p6")); //$NON-NLS-1$
         GraphicalTesselationBox P6Mcb = new GraphicalTesselationBox(HexiRule.triP6m,Messages.getString("GTP.p6m")); //$NON-NLS-1$
 
@@ -181,7 +188,15 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         ++gbc.gridy;    
         gbc.gridx = 0;					p1.add(TTAcb,gbc);
         ++gbc.gridx; 					p1.add(R1cb,gbc);
+        ++gbc.gridx; 					p1.add(P3hcb,gbc);
+
+        ++gbc.gridy;    
+        gbc.gridx = 0;					p1.add(P31Mtcb,gbc);
         ++gbc.gridx; 					p1.add(P31Mkcb,gbc);
+
+        ++gbc.gridy;    
+        gbc.gridx = 0;					p1.add(CMrcb,gbc);
+        ++gbc.gridx; 					p1.add(CMMrcb,gbc);
 
         ++gbc.gridy; gbc.gridx=0;
         gbc.fill = GridBagConstraints.BOTH;
@@ -230,9 +245,6 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
             if(currentTr==null)
                 return;
         }
-        cbg.setSelected(cbg.getSelection(), false);
-        if(currentGTB!=null)
-        	currentGTB.setSelected(false);
         setTesselation(currentTr);
     }
 
@@ -240,8 +252,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
 
 
     public void tickCheckbox(String name) {
-        for(int i=0;i<allBoxes.size();++i) {
-            GraphicalTesselationBox tb = allBoxes.elementAt(i);
+        for(GraphicalTesselationBox tb: allBoxes) {
             if(name.equalsIgnoreCase(tb.getTessName())) {
             	setSelected(tb,true);
             	clearChoice(friezeChoice);
@@ -251,6 +262,8 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
                 return;
             }
         }
+        // Not a GTB so clear selection
+        cbg.clearSelection();
         if(Character.isDigit(name.charAt(1)))
         {
             int num = Integer.parseInt(name.substring(1,
@@ -260,21 +273,18 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
                 dyhChoice.setSelectedIndex(0);
                 friezeChoice.setSelectedIndex(0);
                 basicChoice.setSelectedIndex(0);
-                cbg.setSelected(cbg.getSelection(), false);
             }
             else if(name.startsWith(Messages.getString("GTP.D.prefix"))) { //$NON-NLS-1$
             	setChoice(dyhChoice,num);
                 clearChoice(cycleChoice);
                 clearChoice(basicChoice);
                 clearChoice(friezeChoice);
-                cbg.setSelected(cbg.getSelection(), false);
             }
             else if(name.startsWith(Messages.getString("GTP.F.prefix"))) { //$NON-NLS-1$
                 clearChoice(dyhChoice);
                 clearChoice(cycleChoice);
                 clearChoice(basicChoice);
                 setChoice(friezeChoice,num);
-                cbg.setSelected(cbg.getSelection(), false);
             }
         }
         else {
@@ -282,11 +292,9 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
             {
                 if(name.equals(basicChoice.getItemAt(i))) {
                     setChoice(basicChoice,i);
-//                    currentTr = TessRule.getTessRuleByName(name);
                     clearChoice(dyhChoice);
                     clearChoice(cycleChoice);
                     clearChoice(friezeChoice);
-                    cbg.setSelected(cbg.getSelection(), false);
                 }
             }
         }
@@ -296,7 +304,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
 
     
     private void setSelected(GraphicalTesselationBox tb, boolean b) {
-    	
+  System.out.println("setSelected "+tb.getTessName()+" "+b); //$NON-NLS-1$ //$NON-NLS-2$  	
     	tb.setSelected(b);
 	
 	}
@@ -333,6 +341,7 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
     }
 
     void setTesselation(TessRule tr) {
+    	cont.firstAction();
     	cont.setTesselation(tr);
     	cont.calcGeom();
     	cont.redraw();
@@ -341,14 +350,29 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
 
 	class GraphicalTesselationBox extends JToggleButton implements ActionListener {
         TessRule tr;
-        public GraphicalTesselationBox(TessRule tr1, String iconName) {
-            super(iconName);
+        /**
+		 * Creates a button with the given TessRule button and name.
+		 * The {@code name} is used for the icon file name.
+		 * @param tr - the TessRule associated with this button
+		 * @param name - the name of the icon file (without prefix/suffix)
+		 */
+        public GraphicalTesselationBox(TessRule tr, String name) {
+        	this(tr, name, name);
+        }
+        /**
+		 * Creates a button with the given TessRule button  and icon name.
+		 * @param tr1 - the TessRule associated with this button
+		 * @param name - the name of the button
+		 * @param iconName - the name of the icon file (without prefix/suffix)
+		 */
+        public GraphicalTesselationBox(TessRule tr1, String name, String iconName) {
+            super(name);
             String iconFileName = iconPrefix + iconName + iconSuffix;
-            ImageIcon icon = GraphicalTesselationPanel.createImageIcon(iconFileName,iconName);
+            ImageIcon icon = GraphicalTesselationPanel.createImageIcon(iconFileName,name);
             setIcon(icon);
             setMargin(new Insets(0,0,0,0));
             setBorderPainted(true);
-            setToolTipText(iconName);
+            setToolTipText(name);
             setVerticalTextPosition(CENTER);
             setHorizontalTextPosition(RIGHT);
             setHorizontalAlignment(LEFT);
@@ -364,7 +388,6 @@ public class GraphicalTesselationPanel extends JPanel implements ItemListener {
         
         private static final long serialVersionUID = 1L;
         public void actionPerformed(ActionEvent arg0) {
-            currentGTB = this;
             setTesselation(tr);
         }
 
