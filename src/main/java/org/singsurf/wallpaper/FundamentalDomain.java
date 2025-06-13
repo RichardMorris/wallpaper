@@ -487,8 +487,11 @@ public class FundamentalDomain {
 		Rectangle rect = g.getClipBounds();
 		if (rect == null)
 			return;
-		Vec[] points = getLatticePoints(new Rectangle(rect.x - getLatticeWidth(), rect.y - getLatticeHeight(),
-				rect.width + getLatticeWidth() * 2, rect.height + getLatticeHeight() * 2));
+		Vec[] points = getLatticePoints(
+				new Rectangle(rect.x - getLatticeWidth()*2, 
+						rect.y - getLatticeHeight() *2,
+				rect.width + getLatticeWidth() * 4, 
+				rect.height + getLatticeHeight() * 4));
 		if (points == null || points.length == 0)
 			return;
 		Vec index2 = getLaticeIndicies(O);
@@ -515,23 +518,10 @@ public class FundamentalDomain {
 			}
 		}
 		if (drawTiles) {
-			if (latticeType == FundamentalDomain.PARALLOGRAM)
 				for (int i = 0; i < points.length; ++i) {
 					Vec p = points[i];
 					Vec p2 = p.add(diff);
-					drawLatticeLine(p2, p2.add(U));
-					drawLatticeLine(p2, p2.add(V));
-					drawLatticeLine(p2, p2.add(U.negate()));
-					drawLatticeLine(p2, p2.add(V.negate()));
-				}
-
-			if (latticeType == FundamentalDomain.HEXAGON)
-				for (int i = 0; i < points.length; ++i) {
-					Vec p = points[i];
-					Vec p2 = p.add(diff);
-					drawLatticeLine(p2, p2.add(Vec.linComb(-1, U, -1, V, 3)));
-					drawLatticeLine(p2, p2.add(Vec.linComb(2, U, -1, V, 3)));
-					drawLatticeLine(p2, p2.add(Vec.linComb(-1, U, 2, V, 3)));
+					tr.paintTileEdges(U, V, p2, this);
 				}
 		}
 		
@@ -621,7 +611,7 @@ public class FundamentalDomain {
 			graphics.drawLine(P1.x,P1.y,P2.x,P2.y);
 	}
 
-	final protected void drawLatticeLine(Vec P1,Vec P2) {
+	public final void drawLatticeLine(Vec P1,Vec P2) {
             if(!drawTiles) return;
 	    graphics.setColor(laticeColour);
 	    graphics.drawLine(P1.x,P1.y,P2.x,P2.y);
