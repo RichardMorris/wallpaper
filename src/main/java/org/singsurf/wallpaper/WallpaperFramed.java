@@ -355,7 +355,6 @@ public class WallpaperFramed extends Wallpaper implements ActionListener, Compon
                     case ItemEvent.SELECTED:
                         controller.constrainVertices = true;
                         controller.setText(Messages.getString("Info.constrain")); //$NON-NLS-1$
-                        System.out.println(Messages.getString("Info.constrain")); //$NON-NLS-1$
                         controller.calcGeom();
                         controller.redraw();
                         break;
