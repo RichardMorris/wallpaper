@@ -166,6 +166,10 @@ public abstract class BasicRule extends TessRule
     	// not relevant here
 	}
 
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+	}
+
 	public static final TessRule trans = new BasicRule(Messages.getString("Rule.trans"), //$NON-NLS-1$
     Messages.getString("Rule.trans.descript")) { //$NON-NLS-1$
         @Override

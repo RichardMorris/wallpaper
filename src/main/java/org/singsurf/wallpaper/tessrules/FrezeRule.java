@@ -74,6 +74,12 @@ public abstract class FrezeRule extends TessRule
         }
         return points;
     }
+    
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+	}
+
+    
     public static TessRule F1 = new FrezeRule(Messages.getString("Rule.F1"), //$NON-NLS-1$
             Messages.getString("Rule.F1.descript")) { //$NON-NLS-1$
         /** Calculates the fundamental domain */
