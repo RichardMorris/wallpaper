@@ -175,9 +175,6 @@ public class Controller {
 	}
 
 	protected void copy() {
-//		if(!showingOriginal) {
-//			applyFull();
-//		}
 		redraw();
 	    copyImageToClipboard(dr.getActiveImage());
 	}
@@ -201,8 +198,8 @@ public class Controller {
 	    Graphics2D g = newImage.createGraphics();
 	    g.setClip(0, 0, image.getWidth(null), image.getHeight(null));
 	    wallpaper.controller.paintCanvas(wallpaper, g);
-	    //	          g.drawImage(image, 0, 0, null);
-	    //	          fd.paintSymetries(g, controller.tr);
+	    g.drawImage(image, 0, 0, null);
+	    fd.paintSymetries(g,tr);
 	
 	    ImageSelection imageSelection = new ImageSelection(newImage);
 	    Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -217,7 +214,6 @@ public class Controller {
 	    Graphics2D g = newImage.createGraphics();
 	    g.setClip(0, 0, image.getWidth(null), image.getHeight(null));
 	    g.drawImage(image, 0, 0, null);
-	    System.out.println("copyImageToClipboard "+image.getWidth(null)+" "+image.getHeight(null));
 	    ImageSelection imageSelection = new ImageSelection(newImage);
 	    Toolkit toolkit = Toolkit.getDefaultToolkit();
 	    toolkit.getSystemClipboard().setContents(imageSelection, null);
@@ -245,6 +241,7 @@ public class Controller {
         else {
 			wallpaper.origTileButton.setText(Messages.getString("Button.TileImage"));
 			style = PaintStyle.ORIG;
+			wallpaper.setViewCheckboxes();
         }
 		redraw();
 	}
@@ -253,7 +250,7 @@ public class Controller {
         tr.calcFrame(fd,wallpaper.curvertex, constrainVertices);
         tr.fixVerticies(fd);
         tr.calcFund(fd);
-        Polygon poly = fd.make_tile_polygon();
+        Polygon poly = tr.make_tile_polygon(fd);
         tr.replicate_isolated_domain(dr, poly);
         repaint();
 	}
