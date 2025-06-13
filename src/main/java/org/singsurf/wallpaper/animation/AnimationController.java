@@ -94,7 +94,7 @@ public class AnimationController implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
         long t1 = System.nanoTime();
         path.nextItteration(controller.getFD());
-        controller.applyTessellation();
+        controller.redraw();
         long t2 = System.nanoTime();
         long elapsed = t2-t1;
         sum += elapsed;
@@ -138,7 +138,7 @@ public class AnimationController implements ActionListener {
 
 
 	void processYaml(WallpaperML yaml) {
-
+		controller.firstAction();
 		if(yaml.filename!=null) {
 			loadAnimImage(yaml);
 		}
@@ -155,7 +155,8 @@ public class AnimationController implements ActionListener {
 		        wall.fd.setVertex(i, yaml.vertX[i],yaml.vertY[i]);
 	
 		    wall.curvertex = -1;
-		    wall.controller.setTesselation(tr1);
+		    controller.setTesselation(tr1);
+		    controller.calcGeom();
 		}
 
 		if(yaml.anim!=null) {
@@ -171,9 +172,9 @@ public class AnimationController implements ActionListener {
 		}
 		if(yaml.anim!=null)
 			startAnim();
-		else
-	        controller.applyTessellation();
-
+		else {
+	        controller.redraw();
+		}
 	}
 
 	/**
