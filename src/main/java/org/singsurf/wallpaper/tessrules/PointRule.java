@@ -201,6 +201,11 @@ public abstract class PointRule extends TessRule
     	var cross2 = A.cross(frameV);
     	return (cross1<0 && cross2>0);
 	}
+    
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+	}
+
 
 	public static class CyclicRule extends PointRule {
         CyclicRule(int n) {

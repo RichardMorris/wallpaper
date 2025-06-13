@@ -281,13 +281,10 @@ public abstract class TessRule
 
                 int outInd = i+j*dr.destRect.width;
                 dr.pixels[outInd] = px;
-                if(poly.contains(i, j)) {
-                	px =  dr.inpixels[inInd];
-                }
-                else {
+                if(!poly.contains(i, j)) {
                 	px = backgroundRGB;
                 }
-                    dr.pixels[outInd] = px;
+                dr.pixels[outInd] = px;
             }
 
         dr.fillSource();
@@ -350,7 +347,9 @@ public abstract class TessRule
             if(name.equalsIgnoreCase(Messages.getString("Rule.P2a"))) return IrregularHexRule.p2hex; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P2h"))) return IrregularHexRule.p2hex; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.CM"))) return DiamondRule.rhombCM; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.CMr"))) return DiamondRule.rhombCMr; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.CMM"))) return DiamondRule.rhombCMM; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.CMMr"))) return DiamondRule.rhombCMMr; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.PM"))) return RectRule.rectPM; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.PG"))) return RectRule.rectPG; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.PMG"))) return RectRule.rectPMG; //$NON-NLS-1$
@@ -360,9 +359,11 @@ public abstract class TessRule
             if(name.equalsIgnoreCase(Messages.getString("Rule.P4M"))) return SquRule.squP4m; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P4G"))) return SquRule.squP4g; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P3"))) return HexiRule.triP3; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P3h"))) return HexiRule.triP3h; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P3M1"))) return HexiRule.triP3m1; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P31M"))) return HexiRule.triP31m; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P31Mk"))) return HexiRule.triP31mk; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P31Mt"))) return HexiRule.triP31Mt; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P6"))) return HexiRule.triP6; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P6M"))) return HexiRule.triP6m; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.F1"))) return FrezeRule.F1; //$NON-NLS-1$
@@ -396,9 +397,11 @@ public abstract class TessRule
         		if(name.equalsIgnoreCase(key)) { //$NON-NLS-1$
         			String[] names = Messages.getString("Rule."+key+".list").split(","); //$NON-NLS-1$ //$NON-NLS-2$
         			int rnd = (int) (Math.random() * names.length);
-        			var rule = getTessRuleByName(names[rnd]);
+        			String name2 = names[rnd];
+        			System.out.println("Chosen name "+name2);
+					var rule = getTessRuleByName(name2);
         			if(rule==null) {
-    					System.out.println(MessageFormat.format(Messages.getString("Rule.error_tess_rule"),names[rnd])); //$NON-NLS-1$
+    					System.out.println(MessageFormat.format(Messages.getString("Rule.error_tess_rule"),name2)); //$NON-NLS-1$
     				}
     				else {
     					return rule;
@@ -410,4 +413,9 @@ public abstract class TessRule
             return(getTessRuleByName(WallpaperNames[rand]));
         }
 
+		public Polygon make_tile_polygon(FundamentalDomain fd) {
+			return fd.make_tile_polygon();
+		}
+
+		public abstract void paintTileEdges(Vec u, Vec v, Vec p2, FundamentalDomain fundamentalDomain);
 }

@@ -78,6 +78,14 @@ public abstract class SquRule extends TessRule
         drawSimpleEdge(F,G);
     }
 
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+		fd.drawLatticeLine(p2, p2.add(U));
+		fd.drawLatticeLine(p2, p2.add(V));
+		fd.drawLatticeLine(p2, p2.add(U.negate()));
+		fd.drawLatticeLine(p2, p2.add(V.negate()));
+	}
+
     
     public void fixFlip(String code, FundamentalDomain fd) {
         if((code == Wallpaper.FLIP_X || code == Wallpaper.FLIP_Y)) {
@@ -174,9 +182,12 @@ public abstract class SquRule extends TessRule
             u2 =	frameV.y;
             v1 = 	frameU.x;
             v2 = 	frameU.y;
-            fd.fund[0].x = fd.cellVerts[1].x; fd.fund[0].y = fd.cellVerts[1].y;
-            fd.fund[1].x = fd.cellVerts[1].x + u1/2; fd.fund[1].y = fd.cellVerts[1].y + u2/2;
-            fd.fund[2].x = fd.cellVerts[1].x + v1/2; fd.fund[2].y = fd.cellVerts[1].y + v2/2;
+            fd.fund[0] = Vec.linComb(2,fd.cellVerts[1],1,frameV,1,frameU,2); 
+//            fd.fund[0].y = fd.cellVerts[1].y;
+            fd.fund[1].x = fd.cellVerts[1].x + u1/2; 
+            fd.fund[1].y = fd.cellVerts[1].y + u2/2;
+            fd.fund[2].x = fd.cellVerts[1].x + v1/2; 
+            fd.fund[2].y = fd.cellVerts[1].y + v2/2;
             fd.numFund=3;
         }
 
@@ -188,7 +199,7 @@ public abstract class SquRule extends TessRule
             int res[] = new int[2];
             calcRot4(alpha,beta,det,res);
             alpha = res[0]; beta = res[1];
-            if(2 * (alpha + beta ) > det)
+            if(2 * (alpha + beta ) < det)
             {
                 alpha = det/2 - res[1];
                 beta = det/2 - res[0]; 

@@ -72,6 +72,14 @@ public abstract class PgramRule extends TessRule
 		
 	}
 
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+		fd.drawLatticeLine(p2, p2.add(U));
+		fd.drawLatticeLine(p2, p2.add(V));
+		fd.drawLatticeLine(p2, p2.add(U.negate()));
+		fd.drawLatticeLine(p2, p2.add(V.negate()));
+	}
+
 	public static TessRule rhombusTT = new PgramRule(Messages.getString("Rule.P1"), //$NON-NLS-1$
             Messages.getString("Rule.P1.descript")) { //$NON-NLS-1$
         /** Calculates the fundamental domain */
@@ -170,7 +178,7 @@ public abstract class PgramRule extends TessRule
                 fd.numFund = 4;
             }
         }
-
+        
         @Override
         public void fun(int[] in,int[] out,int det)
         {

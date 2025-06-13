@@ -160,7 +160,14 @@ public abstract class RectRule extends TessRule
         fd.setLatticeType(FundamentalDomain.PARALLOGRAM);
     }
 
-    
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+		fd.drawLatticeLine(p2, p2.add(U));
+		fd.drawLatticeLine(p2, p2.add(V));
+		fd.drawLatticeLine(p2, p2.add(U.negate()));
+		fd.drawLatticeLine(p2, p2.add(V.negate()));
+	}
+
     public void paintDomainEdges(Vec U, Vec V, Vec O,int det) {
         Vec A = O.add(U);
         Vec B = Vec.linComb(2, O, 1,U,2);

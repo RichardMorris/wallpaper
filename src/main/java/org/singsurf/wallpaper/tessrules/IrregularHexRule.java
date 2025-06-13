@@ -33,6 +33,14 @@ public abstract class IrregularHexRule extends TessRule {
         fd.setLatticeType(FundamentalDomain.HEXAGON);
 
 	}
+	
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+		fd.drawLatticeLine(p2, p2.add(Vec.linComb(-1, U, -1, V, 3)));
+		fd.drawLatticeLine(p2, p2.add(Vec.linComb(2, U, -1, V, 3)));
+		fd.drawLatticeLine(p2, p2.add(Vec.linComb(-1, U, 2, V, 3)));
+	}
+
 
     public static TessRule p2hex = new IrregularHexRule(Messages.getString("Rule.P2h"), //$NON-NLS-1$
             Messages.getString("Rule.P2h.descript")) { //$NON-NLS-1$
