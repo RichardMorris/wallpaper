@@ -3,12 +3,8 @@ package org.singsurf.wallpaper;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +17,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -29,7 +24,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import org.singsurf.wallpaper.animation.AnimationController;
 import org.singsurf.wallpaper.animation.AnimationPath;
@@ -43,20 +40,17 @@ using a portion of an image.
 public class Wallpaper extends JPanel implements MouseListener, MouseMotionListener, KeyListener, ItemListener
 {
     private static final long serialVersionUID = 1L;
-    private static final boolean DEBUG = false;
+    static final boolean DEBUG = false;
 
     /** Labels and action commands for flip/rotate */
-    public static final String FLIP_X = "Flip X";
-    public static final String FLIP_Y = "Flip Y";
-    public static final String FLIP_90 = "Rotate clockwise";
-    public static final String FLIP_180 = "Rotate 180";
-    public static final String FLIP_270 = "Rotate anti-clockwise";
+    public static final String FLIP_X = Messages.getString("Menu.image.FlipX"); //$NON-NLS-1$
+    public static final String FLIP_Y = Messages.getString("Menu.image.FlipY"); //$NON-NLS-1$
+    public static final String FLIP_90 = Messages.getString("Menu.image.RotClock"); //$NON-NLS-1$
+    public static final String FLIP_180 = Messages.getString("Menu.image.Rot180"); //$NON-NLS-1$
+    public static final String FLIP_270 = Messages.getString("Menu.image.RotAnti"); //$NON-NLS-1$
 
     /** the current vertex for moving the triangle */
     public int curvertex=0;
-
-    /** Whether we are in interactive mode */
-    boolean interactiveMode = true;
 
     /** Whether to draw the symmetry lines */
     //private boolean symmetryLines = false;
@@ -75,7 +69,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     JTextArea infoPanel;
     /** whether the paint method has been completed. */
-    private boolean paintDone = true;
+    boolean paintDone = true;
     /** If interactive kaleidoscope more */
 //    private JCheckBox interactiveCB;
 
@@ -88,8 +82,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     public String imageFilename=null;
 //    protected URL imageURL=null;
 
-    public int clickCount = 0;
-	public AnimationController animController;
+    public AnimationController animController;
 
     private GraphicalTesselationPanel tesselationPanel;
     JButton origTileButton;
@@ -106,26 +99,28 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
     protected static final int MOUSE_PIPET = 1;
     protected int mouseMode = MOUSE_NORMAL;
 
+    private boolean mousePressed = false;
+	protected Cursor pipet;
+	private JScrollPane infoScroll;
 
     public Wallpaper(Image img,int w,int h) {
-        if(DEBUG) System.out.println("img w "+w+" h "+h);
+        if(DEBUG) System.out.println("img w "+w+" h "+h); //$NON-NLS-1$ //$NON-NLS-2$
 
         setLayout(new BorderLayout());
         JPanel pan = new JPanel();
         pan.setLayout(new BorderLayout());
         infoPanel = new JTextArea(
-                "This applet calculate a symmetry pattern based on one of 17 different patterns.\n"
-                +"Click and drag the Red, Green or Blue points to move the yellow polygon.\n"
-                +"Select a button on left to change the type.\n"
-                +"The blue polygon gives the 'Fundamental Domain'. The patten is created by\n"
-                +"taking this region and reflecting, rotating and translating it.\n"
-                +"The yellow polygon gives the region which is repeated by translation only.\n"
-                +"Double click to redraw and right click to revert back to original image.",
+                Messages.getString("Info.Intro"), //$NON-NLS-1$
                 3,60);
         //TODO ta.setS,TextArea.SCROLLBARS_VERTICAL_ONLY);
         infoPanel.setEditable(false);
-        infoPanel.setBackground(Color.white); // use lower case colors for compatability with old jdk
-        infoPanel.setBorder(BorderFactory.createEtchedBorder());
+        infoPanel.setLineWrap(true);
+        infoPanel.setWrapStyleWord(true);
+        infoPanel.setBackground(Color.white); // use lower case colours for compatibility with old jdk
+//        infoPanel.setBorder(BorderFactory.createEtchedBorder());
+        infoScroll = new JScrollPane(infoPanel,
+        		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         //ta.setMargin(new Insets(2, 4, 2, 2));
         //ta.set
         myCanvas = buildCanvas();
@@ -135,11 +130,11 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         tesselationPanel = new GraphicalTesselationPanel(controller);
         buttonBar = buildButtonBar();
 
-        add("West",tesselationPanel);
-        add("Center",pan);
-        pan.add("North",buttonBar);
-        pan.add("Center",mainWin);
-        pan.add("South",infoPanel);
+        add("West",tesselationPanel); //$NON-NLS-1$
+        add("Center",pan); //$NON-NLS-1$
+        pan.add("North",buttonBar); //$NON-NLS-1$
+        pan.add("Center",mainWin); //$NON-NLS-1$
+        pan.add("South",infoScroll); //$NON-NLS-1$
         
         validate();
         doLayout();
@@ -147,7 +142,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
         dr = buildDrawableRegion();
         if(!dr.loadImage(img)) {
-            System.out.println("Using default image");
+            System.out.println(Messages.getString("Msg.DefaultImage")); //$NON-NLS-1$
             dr.loadImage(DefaultImage.createDefaultImage());
         }
         fd = new FundamentalDomain();
@@ -157,87 +152,40 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         myCanvas.setPreferredSize(dr.destRect.getSize()); 
         dr.setViewport(dr.destRect);
         fd.resetDomain(dr.dispRect);
-        controller.setTesselation(tesselationPanel.getCurrentTesselation());
+        
+        controller.setTesselation(TessRule.getTessRuleByName("wall"));
         controller.calcGeom();
-        controller.showOriginal();
+//        controller.showOriginal();
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();  
         var size = toolkit.getBestCursorSize(32, 32);
-        Image img2 = toolkit.getImage(getClass().getResource("pipet.gif"));
+        Image img2 = toolkit.getImage(getClass().getResource(Messages.getString("Resource.pipet_img"))); //$NON-NLS-1$
         var mul = size.width/32.0;
-        pipet = toolkit.createCustomCursor(img2, new Point((int) (6*mul),(int) (23*mul)), "Custom Cursor");  
+        pipet = toolkit.createCustomCursor(img2, new Point((int) (6*mul),(int) (23*mul)), "Custom Cursor");   //$NON-NLS-1$
 		
-		if(DEBUG) System.out.println("initialise done");
+		if(DEBUG) System.out.println(Messages.getString("Msg.InitDone")); //$NON-NLS-1$
     }
 
 	public void hideControls() {
 		buttonBar.setVisible(false);
 		tesselationPanel.setVisible(false);
-		infoPanel.setVisible(false);
+		infoScroll.setVisible(false);
 	}
 
 	public void showControls() {
 		buttonBar.setVisible(true);
 		tesselationPanel.setVisible(true);
-		infoPanel.setVisible(true);
+		infoScroll.setVisible(true);
 	}
 
 
-	public void paintCanvas(Graphics g) {
-        if(DEBUG) System.out.println("paintCanvas" + dr.dispRect);
-        
-        //System.out.printf("cp %d %d %d %d %d %d\n",fd.verticies[0].x,fd.verticies[0].y,fd.verticies[1].x,fd.verticies[1].y,fd.verticies[2].x,fd.verticies[2].y);
-        //System.out.printf("%d %d%n", offset.x,offset.y);
-        g.translate(offset.x,offset.y);
-        Rectangle bounds = g.getClipBounds();
-        if(bounds != null && (bounds.x + bounds.width > dr.dispRect.x+dr.dispRect.width)) {
-            g.clearRect(dr.dispRect.x+dr.dispRect.width, bounds.y,
-                    bounds.x + bounds.width - (dr.dispRect.x+dr.dispRect.width), bounds.height);
-        }
-        if(bounds != null && (bounds.y + bounds.height > dr.dispRect.y+dr.dispRect.height)) {
-            g.clearRect(bounds.x,dr.dispRect.y+dr.dispRect.height,
-                    bounds.width,bounds.y + bounds.height - (dr.dispRect.y+dr.dispRect.height));
-        }
-        dr.paint(g,this);
-        g.setPaintMode();
+	
 
-        fd.paintSymetries(g, controller.tr);
-        fd.paint(g);
-
-        if(clickCount==0)
-            paintIntro(g);
-        if(clickCount==1)
-            paintIntro2(g);
-
-        if(controller.constrainVertices)
-            fd.paintRegularTile(g);
-
-        g.translate(-offset.x,-offset.y);
-        paintDone = true;
-    }
-
-    private void paintIntro(Graphics g) {
-        Vec base = controller.tr.frameO;
-        String s1 = "Click and drag the red, green or blue dots";
-        String s2 = "to change the pattern.";
-        Font f = new Font("SansSerif",Font.BOLD,16);
-        g.setFont(f);
-        FontMetrics fm = g.getFontMetrics();
-        int len1 = fm.stringWidth(s1);
-        int height = fm.getHeight();
-        int accent = fm.getMaxAscent();
-        g.setColor(Color.white);
-        g.fillRoundRect(210,base.y+20,len1+20,height*2+20, 20, 20);
-        g.setColor(Color.black);
-
-        g.drawString(s1,220,base.y+30+accent);
-        g.drawString(s2,220,base.y+30+accent+height);
-    }
-
+    /*
     private void paintIntro2(Graphics g) {
-        String s1 = "Click a button on the left";
-        String s2 = "to change the type of pattern.";
-        Font f = new Font("SansSerif",Font.BOLD,16);
+        String s1 = Messages.getString("IntroBox2a"); //$NON-NLS-1$
+        String s2 = Messages.getString("IntroBox2b"); //$NON-NLS-1$
+        Font f = new Font("SansSerif",Font.BOLD,16); //$NON-NLS-1$
         g.setFont(f);
         FontMetrics fm = g.getFontMetrics();
         int len2 = fm.stringWidth(s2);
@@ -250,23 +198,21 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         g.drawString(s1,20,20+accent);
         g.drawString(s2,20,20+accent+height);
     }
-
-    private boolean mousePressed = false;
-	protected Cursor pipet;
+*/
 
     public void mouseEntered(MouseEvent e) {/*ignore*/}
     public void mouseExited(MouseEvent e) {/*ignore*/}
     public void mouseReleased(MouseEvent e) 
     {
-        if(DEBUG) System.out.println("Mouse released");
+        if(DEBUG) System.out.println(Messages.getString("Mouse released")); //$NON-NLS-1$
         mousePressed = false;
-        ++clickCount;
-        if(clickCount<3) myCanvas.repaint();
+//        ++clickCount;
+//        if(clickCount<3) myCanvas.repaint();
     }
 
     public void mouseClicked(MouseEvent e) 
     {
-        if(DEBUG) System.out.println("Mouse clicked");
+        if(DEBUG) System.out.println(Messages.getString("Mouse clicked")); //$NON-NLS-1$
         
         if(mouseMode==MOUSE_PIPET) {
             int x = e.getX()-offset.x;
@@ -288,7 +234,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     public void mouseMoved(MouseEvent e)
     {
-        if(DEBUG) System.out.println("Mouse moved");
+        if(DEBUG) System.out.println(Messages.getString("Mouse moved")); //$NON-NLS-1$
 
         if(mouseMode==MOUSE_PIPET) {
             int x = e.getX()-offset.x;
@@ -315,8 +261,8 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     public void mousePressed(MouseEvent e)
     {
-        if(DEBUG) System.out.println("Mouse pressed");
-        ++clickCount;
+        if(DEBUG) System.out.println(Messages.getString("Mouse pressed")); //$NON-NLS-1$
+//        ++clickCount;
         mousePressed = true;
 
         int x = e.getX()-offset.x;
@@ -333,7 +279,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         }
         if(e.getClickCount()>1)
         {
-            if(DEBUG) System.out.println("clicks "+e.getClickCount());
+            if(DEBUG) System.out.println(Messages.getString("clicks")+e.getClickCount()); //$NON-NLS-1$
             // Only recalculate when paint has been completed or 1 sec passed.
             // and 0.1s has passed.
             long curtime = System.currentTimeMillis();
@@ -342,12 +288,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
             if(!paintDone && curtime- lasttime <1000 ) return;
             lasttime = curtime;
             paintDone = false;
-            if(controller.showingOriginal /* || !interactiveMode */ ) {
-                controller.applyTessellation();
-            }
-            else {
-                controller.showOriginal();
-            }
+            controller.redraw();
         }
     }
 
@@ -355,9 +296,9 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     public void mouseDragged(MouseEvent e)
     {
-        if(DEBUG) System.out.println("mouseDragged "+e);
+        if(DEBUG) System.out.println(Messages.getString("mouse dragged")+e); //$NON-NLS-1$
         if(!mousePressed) {
-            System.out.println("FAKE Event "+e);
+            System.out.println("FAKE Event "+e); //$NON-NLS-1$
             return;
         }
         if((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK )!= 0) return;
@@ -382,17 +323,12 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
         //	        System.out.println("Not tileable");
 
         //System.out.printf("md %d\n",fd.verticies[1].y-fd.verticies[0].y);
-        if(!interactiveMode)
-        {
-            //repaintLines(myCanvas.getGraphics());
-            myCanvas.repaint();			//redraw(false);
-            return;
-        }
 
         if(!paintDone ) return;
         //lasttime = curtime;
         paintDone = false;
-        controller.applyTessellation();
+        controller.firstAction();
+        controller.redraw();
     }
 
     protected static boolean first=true;
@@ -413,40 +349,23 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 
     protected JPanel buildButtonBar() {
         JPanel p2 = new JPanel();
-        origTileButton = new JButton("Original Image");
-        origTileButton.addActionListener(
-                new ActionListener()
-                {	
-                    public void actionPerformed(ActionEvent e)
-                    {
-                    	if(DEBUG) System.out.println("OrigBut "+controller.showingOriginal);
-                        if(controller.showingOriginal) {
-                            controller.applyTessellation();
-                            origTileButton.setText("Original Image");
-                        }
-                        else {
-                            controller.showOriginal();
-                            origTileButton.setText("Tile Image");
-
-                        }
-                    }
-                } );
+        origTileButton = new JButton(Messages.getString("Button.TileImage")); //$NON-NLS-1$
+        origTileButton.addActionListener(e -> controller.flipOriginal());
         p2.add(origTileButton);
 
-        JButton b4 = new JButton("Reset");
+        JButton b4 = new JButton(Messages.getString("Button.Reset")); //$NON-NLS-1$
         b4.addActionListener(
                 new ActionListener()
                 {	public void actionPerformed(ActionEvent e)
                 {
-                    fd.resetDomain(dr.dispRect);
-                    controller.tr.firstCall = true;
+                    controller.resetDomain();
                     controller.calcGeom();
                     controller.redraw();
                 }
                 } );
         p2.add(b4);
 
-        showFund = new JCheckBox("Show Domain",true);
+        showFund = new JCheckBox(Messages.getString("CheckBox.ShowDomain"),true); //$NON-NLS-1$
         p2.add(showFund);
         showFund.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
@@ -456,7 +375,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
             }});
 
 
-        symmetryCB = new JCheckBox("Draw symmetry");
+        symmetryCB = new JCheckBox(Messages.getString("CheckBox.DrawSymmetry")); //$NON-NLS-1$
         symmetryCB.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if(e.getStateChange() == ItemEvent.SELECTED)
@@ -479,10 +398,10 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
             }});
         p2.add(symmetryCB);
 
-        p2.add(new JLabel("Anim"));
+        p2.add(new JLabel(Messages.getString("Label.Anim"))); //$NON-NLS-1$
         JComboBox<String> animateMenu = buildAnimationChoice();
         p2.add(animateMenu);
-        stopBut = new JButton("Start");
+        stopBut = new JButton(Messages.getString("Button.Start")); //$NON-NLS-1$
         stopBut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 animController.stopStartAnim();
@@ -524,30 +443,17 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
      */
     public void setText(String message) {
         infoPanel.setText(message);
+        infoPanel.setCaretPosition(0);
     }
 
 
-//    JFrame findParentFrame(){ 
-//        // From http://www.jguru.com/faq/view.jsp?EID=27423
-//        JComponent c = this; 
-//        while(c != null){ 
-//            if (c instanceof JFrame) 
-//                return (JFrame)c; 
-//
-//            c = c.getParent(); 
-//        } 
-//        return null; 
-//    } 
-
-
     public static String programInfo() {
-        return "org.singsurf.wallpaper version 1.5\nCopyright R. J. Morris 2010\nhttp://www.singsurf.org/";
+        return Messages.getString("Msg.ProgramInfo"); //$NON-NLS-1$
 
     }
 
     public static String helpInfo() {
-        return "Syntax:\n" +
-        "\tjava -jar wallpaper.jar imageName [width height]"; 
+        return Messages.getString("Msg.HelpInfo"); //$NON-NLS-1$
     }
 
 
@@ -574,20 +480,16 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 		else if(code == KeyEvent.VK_K) { fd.shiftVertex(2, 0, 1);  curvertex = 2; }
 		else if(code == KeyEvent.VK_L) { fd.shiftVertex(2, 1, 0);  curvertex = 2; }
 
+		else if(code == KeyEvent.VK_O) { controller.flipOriginal(); return; }
+
 		else {
         	return;
         }
-
+        controller.firstAction();
         controller.calcGeom();
-        if(!interactiveMode)
-        {
-            //repaintLines(myCanvas.getGraphics());
-            myCanvas.repaint();			//redraw(false);
-            return;
-        }
         if(!paintDone) return;
         paintDone = false;
-        controller.applyTessellation();
+        controller.redraw();
 
     }
     public void keyReleased(KeyEvent e) {/*ignore*/}
@@ -610,6 +512,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	protected void startAnim(String label) {
 	    var path = AnimationPath.getPathByName(label, 1,dr.srcRect);
 	    animController.setAnimationPath(path);
+	    setText(Messages.getString("Anim.shortcuts")); //$NON-NLS-1$
 	    animController.startAnim();
 	}
 
@@ -630,6 +533,7 @@ public class Wallpaper extends JPanel implements MouseListener, MouseMotionListe
 	    AnimationPath path = AnimationPath.getPathByName(
 	    		animateChoice.getSelectedItem().toString() , 1,dr.destRect);
 	    path.firstItteration(fd);
+	    controller.tr.firstCall=true;
 	    animController.setAnimationPath(path);
 	    dr.calcDispRegion();
 	    controller.redraw();

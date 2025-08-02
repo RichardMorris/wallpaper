@@ -4,6 +4,7 @@
 package org.singsurf.wallpaper.tessrules;
 
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 
 public abstract class RectRule extends TessRule
@@ -37,7 +38,7 @@ public abstract class RectRule extends TessRule
         frameO.x= fd.cellVerts[1].x;
         frameO.y= fd.cellVerts[1].y;
         det = u1 * v2 - u2 * v1;
-        if(DEBUG) System.out.println("det "+det+" sel "+selVert+" first "+firstCall);
+        if(DEBUG) System.out.println("det "+det+" sel "+selVert+" first "+firstCall); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if(selVert==2 || lenV < 0.0 || firstCall) 
             lenV = Math.sqrt((v1 * v1 + v2 * v2));
 
@@ -138,7 +139,7 @@ public abstract class RectRule extends TessRule
  
             break;
         default:
-            System.out.println("Illegal seletion point");
+            System.out.println(Messages.getString("Rule.Msg.illegal_sel_point")); //$NON-NLS-1$
             return;
         }
     }
@@ -159,7 +160,14 @@ public abstract class RectRule extends TessRule
         fd.setLatticeType(FundamentalDomain.PARALLOGRAM);
     }
 
-    
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+		fd.drawLatticeLine(p2, p2.add(U));
+		fd.drawLatticeLine(p2, p2.add(V));
+		fd.drawLatticeLine(p2, p2.add(U.negate()));
+		fd.drawLatticeLine(p2, p2.add(V.negate()));
+	}
+
     public void paintDomainEdges(Vec U, Vec V, Vec O,int det) {
         Vec A = O.add(U);
         Vec B = Vec.linComb(2, O, 1,U,2);
@@ -173,10 +181,8 @@ public abstract class RectRule extends TessRule
     /** Glide reflection, rectangular domain. 
      * If(b>.5) { a = 1-a; b = b-.5; } */
 
-    static public TessRule rectPG = new RectRule("PG",
-            "A Glide-reflection.\n"
-            +"This transformation is performed by first translating the domain\n"
-            +"and then reflecting it in the line of the translation.\n") {
+    static public TessRule rectPG = new RectRule(Messages.getString("Rule.PG"), //$NON-NLS-1$
+            Messages.getString("Rule.PG.descript")) { //$NON-NLS-1$
         
         public void calcFund(FundamentalDomain fd)
         {
@@ -234,10 +240,8 @@ public abstract class RectRule extends TessRule
     };
 
     /** Two parallel mirrors. **/
-    public static TessRule rectPM = new RectRule("PM",
-            "A Reflection along one of the translation directions.\n"
-            +"The other translation is at right angles giving a rectangular " 
-            +"fundamental domain."
+    public static TessRule rectPM = new RectRule(Messages.getString("Rule.PM"), //$NON-NLS-1$
+            Messages.getString("Rule.PM.descript") //$NON-NLS-1$
     )	{
         
         public void calcFund(FundamentalDomain fd)
@@ -294,10 +298,8 @@ public abstract class RectRule extends TessRule
     };
 
 
-    public static TessRule rectPGG = new RectRule("PGG",
-            "Two glide reflections at right angles.\n"
-            +"This pattern also shows a 180\u00ba rotation."
-            +"A rather unsatisfactory pattern visually")
+    public static TessRule rectPGG = new RectRule(Messages.getString("Rule.PGG"), //$NON-NLS-1$
+            Messages.getString("Rule.PGG.descript")) //$NON-NLS-1$
     {
         
         public void calcFund(FundamentalDomain fd)
@@ -380,9 +382,8 @@ public abstract class RectRule extends TessRule
 
     };
 
-    public static TessRule rectPMG = new RectRule("PMG",
-            "A Glide reflection and a reflection."
-            +"This pattern also shows a 180\u00ba rotation."
+    public static TessRule rectPMG = new RectRule(Messages.getString("Rule.PMG"), //$NON-NLS-1$
+            Messages.getString("Rule.PMG.descript") //$NON-NLS-1$
     )
     {
         
@@ -447,9 +448,8 @@ public abstract class RectRule extends TessRule
 
     };
 
-    public static TessRule rectPMM = new RectRule("PMM",
-            "Two reflections at right angles"
-            +"This pattern also shows a 180\u00ba rotation."
+    public static TessRule rectPMM = new RectRule(Messages.getString("Rule.PMM"), //$NON-NLS-1$
+            Messages.getString("Rule.PMM.descript") //$NON-NLS-1$
     )
     {
         

@@ -3,8 +3,11 @@
  */
 package org.singsurf.wallpaper.tessrules;
 
+import java.awt.Polygon;
+
 import org.singsurf.wallpaper.DrawableRegion;
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 
 public abstract class PointRule extends TessRule
@@ -15,16 +18,17 @@ public abstract class PointRule extends TessRule
     boolean dihedral;
     double spokesX[],spokesY[];
     
-    static final int NUM_RULES = 10;
-    public static final CyclicRule[] cycleRules = new CyclicRule[NUM_RULES+1];
-    public static final DihedralRule[] dyhRules = new DihedralRule[NUM_RULES+1];
+    static final int C_MAX = Messages.getInt("GTP.C.max");
+    static final int D_MAX = Messages.getInt("GTP.D.max");
+    public static final CyclicRule[] cycleRules = new CyclicRule[C_MAX+1];
+    public static final DihedralRule[] dyhRules = new DihedralRule[D_MAX+1];
 
     static {
-        for(int i=1;i<=NUM_RULES;++i) {
-            if(i>=2) {
+        for(int i=2;i<=C_MAX;++i) {
                 cycleRules[i] = new CyclicRule(i);
-            }
-            dyhRules[i] = new DihedralRule(i);
+        }
+        for(int i=1;i<=D_MAX;++i) {
+            	dyhRules[i] = new DihedralRule(i);
         }
     }
     public PointRule(int num,String name, String message) {
@@ -55,9 +59,10 @@ public abstract class PointRule extends TessRule
         frameV.x = u1;
         frameV.y = u2;
         for(int i=0;i<n;++i) {
-            spokesX[i] = (Math.cos((2*Math.PI*i)/n) * v1 - Math.sin((2*Math.PI*i)/n) * v2) /
+            double fractAng = (2*Math.PI*i)/n;
+			spokesX[i] = (Math.cos(fractAng) * v1 - Math.sin(fractAng) * v2) /
             Math.sqrt(v1*v1+v2*v2); 
-            spokesY[i] = (Math.sin((2*Math.PI*i)/n) * v1 + Math.cos((2*Math.PI*i)/n) * v2) / 
+			spokesY[i] = (Math.sin(fractAng) * v1 + Math.cos(fractAng) * v2) / 
             Math.sqrt(v1*v1+v2*v2); 
         }
     }
@@ -84,8 +89,16 @@ public abstract class PointRule extends TessRule
 
     }
 
-    @Override
+	@Override
     public void replicate(DrawableRegion dr,FundamentalDomain fd) {
+		replicate_isolated_domain(dr, null);
+	}
+
+    @Override
+	public void replicate_isolated_domain(DrawableRegion dr, Polygon poly) {
+		// TODO Auto-generated method stub
+	
+
         int x0=frameO.x;
         int y0=frameO.y;
 
@@ -138,7 +151,14 @@ public abstract class PointRule extends TessRule
                             srcY %= dr.srcRect.height; 
                             if(srcY <0) srcY += dr.srcRect.height;
                             int inInd = srcX+srcY*dr.srcRect.width;
-                            int px = dr.inpixels[inInd];
+                            int px;                            
+                            if(contains(poly,i, j)) {
+                            	px =  dr.inpixels[inInd];
+                            }
+                            else {
+                            	px = backgroundRGB;
+                            }
+
                             dr.pixels[outInd] = px;
                         }
                         else {
@@ -147,18 +167,25 @@ public abstract class PointRule extends TessRule
                     }
                     else {
                         int inInd = srcX+srcY*dr.srcRect.width;
-                        int px = dr.inpixels[inInd];
+                        int px;
+                        if(contains(poly,i, j)) {
+                        	px =  dr.inpixels[inInd];
+                        }
+                        else {
+                        	px = backgroundRGB;
+                        }
+
                         dr.pixels[outInd] = px;
                     }
                 }
                 catch(Exception e)
                 {
                     if(!error_flag)
-                        System.out.println("Error ("+i+","+j+") det "+det
-                                + " x "+x
-                                + " y "+y
-                                + " sX "+srcX
-                                + " sY "+srcY
+                        System.out.println("Error ("+i+","+j+") det "+det //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + " x "+x //$NON-NLS-1$
+                                + " y "+y //$NON-NLS-1$
+                                + " sX "+srcX //$NON-NLS-1$
+                                + " sY "+srcY //$NON-NLS-1$
                         );
                     error_flag = true;
                     dr.pixels[outInd] = 0;
@@ -167,11 +194,24 @@ public abstract class PointRule extends TessRule
         dr.fillSource();
     }
 
-    public static class CyclicRule extends PointRule {
+    boolean contains(Polygon poly, int i, int j) {
+    	if(poly==null)
+    		return true;
+    	Vec A = new Vec(i,j).sub(frameO);
+    	var cross1 = A.cross(frameU);
+    	var cross2 = A.cross(frameV);
+    	return (cross1<0 && cross2>0);
+	}
+    
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+	}
+
+
+	public static class CyclicRule extends PointRule {
         CyclicRule(int n) {
-            super(n,"C"+n,
-                    "Cyclic groups describe rotation by 2 pi/n around a single point.\n" +
-            "It is equivalent to the group of integers mod n under addition.");
+            super(n,Messages.getString("Rule.C.prefix")+n, //$NON-NLS-1$
+                    Messages.getString("Rule.C.descript")); //$NON-NLS-1$
             dihedral = false;
         }
 
@@ -214,13 +254,14 @@ public abstract class PointRule extends TessRule
     } // end CyclicRule
 
     public static class DihedralRule extends PointRule {
-        DihedralRule(int n) {
-            super(n,"D"+n,
-                    "The dihedral group of order n has a rotations of 2pi/n and n axis of reflection.\n" +
-            "It is the symmetry group of and n sided regular polygon.");
+        private Vec frameW;
+
+		DihedralRule(int n) {
+            super(n,Messages.getString("Rule.D.prefix")+n, //$NON-NLS-1$
+                    Messages.getString("Rule.D.descript")); //$NON-NLS-1$
             dihedral = true;
             if(n==1)
-                message = "The first dihedral group D2 is just a reflection in a line";
+                message = Messages.getString("Rule.D1.descript"); //$NON-NLS-1$
         }
 
         /** Calculates the fundamental domain */
@@ -258,6 +299,7 @@ public abstract class PointRule extends TessRule
                 fd.fund[2].y = fd.cellVerts[1].y+50*frameU.y+50*frameV.y;
                 fd.numFund = 3;
             }
+            frameW = new Vec(fd.fund[2]);
         }
         
         @Override
@@ -313,6 +355,15 @@ public abstract class PointRule extends TessRule
                                 (int) ((spokesY[i]+spokesY[(i+1)%spokesX.length])*1000)).add(frameO));
             
          }
+
+        boolean contains(Polygon poly, int i, int j) {
+        	if(poly==null)
+        		return true;
+        	Vec A = new Vec(i,j).sub(frameO);
+        	var cross1 = A.cross(frameU);
+        	var cross2 = A.cross(frameW);
+        	return (cross1<0 && cross2>0);
+    	}
 
         
     }

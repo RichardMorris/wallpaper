@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="-135 -115 270 360">
+ <title>Klein bottle colouring</title>
+ <desc>A complete map of 6 regions on a Klein bottle with each region touching every other by CMG Lee. Regions of the same colour wrap around the back.</desc>
+ <filter id="filter_shade" x="-50%" y="-50%" width="200%" height="200%">
+  <feOffset in="SourceAlpha" dx="0" dy="3"/>
+  <feMorphology operator="erode" radius="2"/>
+  <feGaussianBlur stdDeviation="2" result="shadow"/>
+  <feOffset in="SourceAlpha" dx="-8" dy="-16"/>
+  <feGaussianBlur stdDeviation="64"/>
+  <feComposite operator="out" in="SourceAlpha"/>
+  <feBlend in2="SourceGraphic" mode="multiply"/>
+  <feBlend in2="shadow"/>
+ </filter>
+ <radialGradient id="grad_hole" cx="50%" cy="50%" r="50%" fx="50%" fy="99%">
+  <stop offset="0" stop-color="#000000" stop-opacity="0.5"/>
+  <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+ </radialGradient>
+ <circle cx="0" cy="0" r="99999" fill="#ffffff"/>
+ <g stroke="#000000" transform="scale(0.7,1)" filter="url(#filter_shade)">
+  <path fill="#ff0000" d="M 180,0 a 180,108 0 0 0 -360,0 a 180,90 0 0 0 360,0"/>
+  <path fill="#ffcc00" d="M 156,45 a 180,90 0 0 1 -246,33 q -30,-60 30,-116 a 120,60 0 0 0 164,-22 q 80,30 52,105"/>
+  <path fill="#009900" d="M -180,0 a 180,90 0 0 0 360,0 c 0,60 -60,90 -60,120 a 120,60 0 0 1 -240,0 c 0,-30 -60,-60 -60,-120"/>
+  <path fill="#0099cc" d="M -156,45 a 180,90 0 0 0 246,33 c 0,30 -30,60 -30,94 a 120,60 0 0 1 -164,-22 c 0,-60 -52,-80 -52,-105"/>
+  <path fill="#0000ff" d="M 120,-60 a 120,45 0 1 0 0,0.1 M -120,120 a 120,60 0 0 0 240,0 c 0,30 30,30 7,-20 l 13,-17 c 90,200 -260,200 -260,37"/>
+  <path fill="#ff00ff" d="M -104,-37 a 120,45 0 0 0 164,16 q -9,-40 -30,-41 a 60,30 0 0 1 -60,0 q -40,-15 -74,25 M 104,150 a 120,60 0 0 1 -164,22 c 0,90 270,80 195,-82 l -4,5 c 35,70 -30,90 -27,55"/>
+  <path fill="url(#grad_hole)" stroke-width="2" stroke-linecap="round" d="M -52,-73 a 60,30 0 0 0 104,0"/>
+ </g>
+</svg>

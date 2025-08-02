@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project basedir="." default="dist" name="math-kaleidoscope">
-	<target name="properties">
 		<property name="build" value="build" />
 		<property name="dist" value="dist" />
 		<property name="src" value="src/main/java" />
@@ -12,9 +11,9 @@
  		<property name="productVersion" value="1.7.5" />
 		<property name="productPublisher" value="R Morris." />
 		<property name="productWebSite" value="http://www.singsurf.org/" />
-	</target>
+		<property name="outputDir" value="C:\Users\rich\eclipse-workspace\SingSurf Website\wallpaper" />
 
-        <target name="init" depends="properties" />
+        <target name="init"/>
 
 	<target name="compile" depends="init">
 	       <mkdir dir="${build}" />
@@ -24,7 +23,7 @@
 		
 		<copy todir="${build}">
 			<fileset dir="${resources}" />
-			</copy>
+		</copy>
 	</target>
 
 
@@ -69,6 +68,9 @@
                 <include name="*" />
                 <exclude name="Thumbs.db" />
             </fileset>
+		</copy>
+		<mkdir dir="${dist}/${appname}/simpleImages" />
+		<copy todir="${dist}/${appname}/simpleImages">
             <fileset dir="simpleImages">
                 <include name="*" />
                 <exclude name="Thumbs.db" />
@@ -100,5 +102,39 @@
 		<delete dir="${dist}" />
 	</target>
         
+	<target name="pushOut">
+		<copy file="dist/wallpaper-app.zip" 
+              toDir="${outputDir}" />
+	</target>
+		
+	<target name="pushDocs">
+		
+		<filterset id="myFilterSet" begintoken="&quot;" endtoken="&quot;" >
+		    <filter token="help.html" value="&quot;help.php&quot;"/>
+		    <filter token="maths.html" value="&quot;maths.php&quot;"/>
+		    <filter token="code.html" value="&quot;code.php&quot;"/>
+		    <filter token="groups.html" value="&quot;groups.php&quot;"/>
+		</filterset>
+		
+		<copy file="doc/help.html" tofile="${outputDir}/help.php">
+			<filterset refid="myFilterSet"/>
+		</copy>
+		<copy file="doc/code.html" tofile="${outputDir}/code.php">
+			<filterset refid="myFilterSet"/>
+		</copy>
+		<copy file="doc/maths.html" tofile="${outputDir}/maths.php">
+			<filterset refid="myFilterSet"/>
+		</copy>
+		<copy file="doc/groups.html" tofile="${outputDir}/groups.php">
+			<filterset refid="myFilterSet"/>
+		</copy>
 
+		<copy todir="${outputDir}/naut">
+			<fileset dir="doc/naut"/>
+		</copy>
+		<copy todir="${outputDir}/orbifolds">
+			<fileset dir="doc/orbifolds"/>
+		</copy>
+		
+	</target>
 </project>

@@ -1,0 +1,170 @@
+frame:
+group: P1
+vertices:
+  - [251,228]
+  - [113,228]
+  - [113,90]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 10
+frame:
+group: P2
+vertices:
+  - [251,228]
+  - [113,228]
+  - [113,90]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 10
+frame:
+group: CM
+vertices:
+  - [251,228]
+  - [113,228]
+  - [113,90]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 10
+frame:
+group: CMM
+vertices:
+  - [251,228]
+  - [113,228]
+  - [113,90]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 10
+frame:
+group: PMM
+vertices:
+  - [251,228]
+  - [113,228]
+  - [113,90]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 10
+frame:
+group: PMG
+vertices:
+  - [251,228]
+  - [113,228]
+  - [113,90]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: PGG
+vertices:
+  - [251,228]
+  - [113,228]
+  - [113,90]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: P4
+vertices:
+  - [251,228]
+  - [113,228]
+  - [113,90]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: P4M
+vertices:
+  - [251,228]
+  - [113,228]
+  - [113,90]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: P4G
+vertices:
+  - [251,228]
+  - [113,228]
+  - [113,90]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: P3
+vertices:
+  - [261,262]
+  - [123,262]
+  - [54,142]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: P3M1
+vertices:
+  - [261,262]
+  - [123,262]
+  - [54,142]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: P31M
+vertices:
+  - [261,262]
+  - [123,262]
+  - [54,142]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: P6
+vertices:
+  - [261,262]
+  - [123,262]
+  - [54,142]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: P6M
+vertices:
+  - [261,262]
+  - [123,262]
+  - [54,142]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: P2H
+vertices:
+  - [261,262]
+  - [123,262]
+  - [54,142]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: P1
+vertices:
+  - [298,263]
+  - [74,263]
+  - [74,39]
+filename: orbifolds/flower.jpg
+zoom: [1,1]
+anim: none
+repeat: 30

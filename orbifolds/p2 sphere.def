@@ -1,0 +1,34 @@
+<definition name="Plane to sphere" type="psurf" opType="none">
+ [l,m,n];
+l = sin(th) cos(phi);
+m = sin(th) sin(phi);
+n = -cos(th);
+phi = if(y>=0, 
+           if(x>=0, ang, pi -ang),
+           if(x>=0, -ang, -pi +ang));
+ang = if(k < 1 , 
+             atan2(abs(y)^q, abs(x)^q) , 
+             atan2(abs(Y)^q, abs(X)^q)); 
+X = if( x>=0, 1-abs(y), abs(y)-1) ;
+Y = if( y>=0 , 1-abs(x), abs(x)-1) ;
+th= if( k < 1 , k^p * pi/2, (2 - (2-k)^p)*pi/2); 
+
+k = abs(x) + abs(y);
+
+
+<variable name="x" min="-0.9999999999999998" max="1.0" steps="31" type="none">
+<variable name="y" min="-0.9999999999999997" max="1.0" steps="31" type="none">
+<parameter name="p" value="0.8200000000000001">
+<parameter name="q" value="0.8">
+<option name="textureXmin" value="-0.9999999999999998"/>
+<option name="textureXmax" value="1.0"/>
+<option name="textureYmin" value="-0.9999999999999997"/>
+<option name="textureYmax" value="1.0"/>
+<option name="showFace" value="true"/>
+<option name="showEdge" value="true"/>
+<option name="showVert" value="false"/>
+<option name="surfColour" value="Colours from XYZ"/>
+<option name="colourMinVal" value="-1.0"/>
+<option name="colourMaxVal" value="1.0"/>
+<option name="clipping" value="100.0"/>
+</definition>

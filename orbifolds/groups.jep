@@ -1,0 +1,20 @@
+Rot = theta => [ [cos(theta),-sin(theta)], [sin(theta), cos(theta) ]] 
+R0 = apply(Rot,0)
+R60 = apply(Rot,pi/3)
+R90 = apply(Rot,pi/2)
+R120 = apply(Rot,2 pi/3)
+R180 = apply(Rot,pi)
+R240 = apply(Rot,4 pi/3)
+R270 = apply(Rot,3 pi/2)
+R300 = apply(Rot,5 pi/3)
+
+Ref = th => apply([x,y]=>[[x^2-y^2,2*x*y],[2*x*y,y^2-x^2]], cos(th), sin(th))
+M0 = apply(Ref,0)
+M45 = apply(Ref,pi/4)
+M60 = apply(Ref,pi/3)
+M90 = apply(Ref,pi/2)
+M120 = apply(Ref,2 pi/3)
+M135 = apply(Ref,3 pi/4)
+tol = 1e-6
+ApproxEq = [x,y] => abs(x-y)<tol
+MatEq = [M,N] => apply(ApproxEq,M[1][1],N[1][1]) && apply(ApproxEq,M[1][2],N[1][2]) && apply(ApproxEq,M[2][1],N[2][1]) && apply(ApproxEq,M[2][2],N[2][2])

@@ -28,7 +28,8 @@ public class WallpaperML {
 	public int animSpeed=1;
 
 	public int repeat=-1;
-
+	public String description= null;
+	
 //	public boolean restart=false;
 
 	static final Pattern vertexRE = Pattern.compile(".*\\[\\s*-?(\\d+)\\s*,\\s*-?(\\d+)\\s*\\]");
@@ -116,6 +117,10 @@ public class WallpaperML {
 				String fn = line.substring(9).trim();
 				obj.filename = fn;
 			}
+			else if(line.startsWith("description:")) {
+				String fn = line.substring(12).trim();
+				obj.description = fn;
+			}
 			else if(line.startsWith("anim:")) {
 				var parts = line.split(" ");
 				obj.anim = parts[1].trim();
@@ -134,6 +139,9 @@ public class WallpaperML {
 					list.add(obj);
 				}
 			}
+			else if(line.trim().startsWith("#")) { 
+				// ignore comments
+			}
 			else if(line.length() > 0) {
 				System.out.println("Unknown line in wallpaper file: "+line);
 			}
@@ -145,6 +153,6 @@ public class WallpaperML {
 	public String toString() {
 		return "WallpaperML [group=" + group + ", vertX=" + Arrays.toString(vertX) + ", vertY=" + Arrays.toString(vertY)
 				+ ", zNumer=" + zNumer + ", zDenom=" + zDenom + ", filename=" + filename + ", anim=" + anim
-				+ ", animSpeed=" + animSpeed + ", repeat=" + repeat +"]"; //"+ ", restart=" + restart + "]";
+				+ ", animSpeed=" + animSpeed + ", repeat=" + repeat + ", description=" + description +"]"; //"+ ", restart=" + restart + "]";
 	}
 }

@@ -3,12 +3,10 @@ Created 9 Apr 2007 - Richard Morris
 */
 package org.singsurf.wallpaper;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +14,6 @@ import org.singsurf.wallpaper.tessrules.TessRule;
 
 public class FundamentalDomain {
     final static boolean DEBUG=false;
-    final static boolean BW_SYMS=false;
     public static final int PARALLOGRAM = 0;
     public static final int HEXAGON = 1;
     public static final int FRIEZE = 2;
@@ -44,22 +41,26 @@ public class FundamentalDomain {
 			new Vec(0,0),new Vec(0,0),new Vec(0,0)};
 
 	private int latticeType=0;
-	Vec U=null,V=null,O=null;
+	public Vec U=null;
+	public Vec V=null;
+	public Vec O=null;
 	public int det=0;
 	
 	boolean drawGlideLines = false;
 	boolean drawReflectionLines = false;
 	boolean drawRotationPoints = false;
+	boolean drawLatticePoints = false;
 	boolean drawCells = false;
 	boolean drawDomain = true;
 	boolean drawSelectionPoints = true;
 	boolean drawTiles = false;
 	
 	
-	static final Color reflectColour = BW_SYMS ? Color.black : Color.green;
-	static final Color glideColour = BW_SYMS ? Color.black : Color.red;
-	static final Color rotateColour = BW_SYMS ? Color.black : Color.yellow;
-    static final Color laticeColour = Color.black;
+	static final Color reflectColour = Messages.getColor("Paint.reflect_colour"); //$NON-NLS-1$
+	static final Color glideColour =  Messages.getColor("Paint.glide_colour"); //$NON-NLS-1$
+	static final Color rotateColour = Messages.getColor("Paint.rotate_colour"); //$NON-NLS-1$
+    static final Color laticeColour = Messages.getColor("Paint.lattice_colour"); //$NON-NLS-1$
+    static final Color laticePointColour = Messages.getColor("Paint.lattice_point_colour"); //$NON-NLS-1$
 	static final int dashLen = 8;
 	static final int shapeSize = 4;
 	static final double root32 = Math.sqrt(3)/2;
@@ -119,6 +120,26 @@ public class FundamentalDomain {
 	    }
 	}
 
+	public Polygon make_FD_polygon() {
+		int xcoord[] = new int[numFund];
+		int ycoord[] = new int[numFund];
+		for(int i=0;i<numFund;++i) {
+			xcoord[i] = fund[i].x;
+			ycoord[i] = fund[i].y;
+		}
+		return new Polygon(xcoord,ycoord,numFund);
+	}
+
+	public Polygon make_tile_polygon() {
+		int xcoord[] = new int[numOuterPoints];
+		int ycoord[] = new int[numOuterPoints];
+		for(int i=0;i<numOuterPoints;++i) {
+			xcoord[i] = cellVerts[i].x;
+			ycoord[i] = cellVerts[i].y;
+		}
+		return new Polygon(xcoord,ycoord,numOuterPoints);
+	}
+	
 	/**
 	 * Reset the domain to something suitable
 	 * @param r
@@ -134,6 +155,7 @@ public class FundamentalDomain {
 		cellVerts[2].x = r.x + w/2;
 		cellVerts[2].y = r.y + h/2 - min/4;
 		numFund=0; numOuterPoints =3;
+		
 	}
 
 	public void resetDomain(Rectangle r,int xsize,int ysize) {
@@ -279,26 +301,26 @@ public class FundamentalDomain {
 
 	private Vec calcOrigin() {
 		if(latticeType == FundamentalDomain.PARALLOGRAM)
-			return new Vec(cellVerts[1].x,cellVerts[1].y);
+			return  (Vec) cellVerts[1].clone();
 		else if(latticeType==FundamentalDomain.HEXAGON)
-			return new Vec(cellVerts[0].x,cellVerts[0].y);
+			return (Vec) cellVerts[0].clone();
 		else
-			return new Vec(cellVerts[1].x,cellVerts[1].y);
+			return  (Vec) cellVerts[1].clone();
 	}
 	private Vec calcU() {
 		if(latticeType == FundamentalDomain.PARALLOGRAM)
-			return new Vec(cellVerts[0].x-cellVerts[1].x,cellVerts[0].y-cellVerts[1].y);
+			return  cellVerts[0].sub(cellVerts[1]);
 		else if(latticeType==FundamentalDomain.HEXAGON)
-			return new Vec(cellVerts[2].x-cellVerts[0].x,cellVerts[2].y-cellVerts[0].y);
+			return  cellVerts[2].sub(cellVerts[0]);
 		else
 			return null;
 	}
 
 	private Vec calcV() {
 		if(latticeType == FundamentalDomain.PARALLOGRAM)
-			return new Vec(cellVerts[2].x-cellVerts[1].x,cellVerts[2].y-cellVerts[1].y);
+			return  cellVerts[2].sub(cellVerts[1]);
 		else if(latticeType==FundamentalDomain.HEXAGON)
-			return new Vec(cellVerts[4].x-cellVerts[0].x,cellVerts[4].y-cellVerts[0].y);
+			return  cellVerts[4].sub(cellVerts[0]);
 		else
 			return null;
 	}
@@ -360,7 +382,9 @@ public class FundamentalDomain {
 	public Vec getLaticeIndicies(Vec P) {
 		int alpha = V.y * P.x - V.x * P.y;
 		int beta  = -U.y * P.x + U.x * P.y;
-		if(DEBUG) System.out.println("gli: "+P+" "+alpha+" "+beta);
+		if(DEBUG) System.out.println("gli: "+P+" "+alpha+" "+beta); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		if(det==0)
+			return new Vec(Integer.MAX_VALUE,Integer.MAX_VALUE);
 		return new Vec(alpha / det,beta / det);
 
 	}
@@ -373,7 +397,7 @@ public class FundamentalDomain {
 			return new Vec[]{new Vec(rect.x,rect.y)};
 		List<Vec> points = new ArrayList<Vec>();
 		Vec corners[] = new Vec[4];
-		if(DEBUG) System.out.println("glp "+rect);
+		if(DEBUG) System.out.println("glp "+rect); //$NON-NLS-1$
 		corners[0] = new Vec(rect.x,rect.y);
 		corners[1] = new Vec(rect.x+rect.width,rect.y);
 		corners[2] = new Vec(rect.x+rect.width,rect.y+rect.height);
@@ -381,7 +405,7 @@ public class FundamentalDomain {
 		Vec indices[] = new Vec[4];
 		for(int i=0;i<4;++i) {
 			indices[i] = getLaticeIndicies(corners[i]);
-			if(DEBUG) System.out.println("indicies["+i+"] "+indices[i]);
+			if(DEBUG) System.out.println("indicies["+i+"] "+indices[i]); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		int minIndX = indices[0].x;
 		int maxIndX = indices[0].x;
@@ -393,16 +417,16 @@ public class FundamentalDomain {
 			if(indices[i].y<minIndY) minIndY = indices[i].y;
 			if(indices[i].y>maxIndY) maxIndY = indices[i].y;
 		}
-		if(DEBUG) System.out.println("U "+U+" V "+V);
+		if(DEBUG) System.out.println("U "+U+" V "+V); //$NON-NLS-1$ //$NON-NLS-2$
 		for(int i=minIndX;i<=maxIndX;++i) 
 			for(int j=minIndY;j<=maxIndY;++j) {
 				Vec p = Vec.linComb(i,U,j,V);
 				if( rect.contains(p) ) {
 					points.add(p);
-					if(DEBUG) System.out.println("good lattice point: "+i+" "+j+" "+p);
+					if(DEBUG) System.out.println("good lattice point: "+i+" "+j+" "+p); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 				else
-				    if(DEBUG) System.out.println("bad  lattice point: "+i+" "+j+" "+p);
+				    if(DEBUG) System.out.println("bad  lattice point: "+i+" "+j+" "+p); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 		
 		return (Vec[]) points.toArray(new Vec[points.size()]);
@@ -463,8 +487,11 @@ public class FundamentalDomain {
 		Rectangle rect = g.getClipBounds();
 		if (rect == null)
 			return;
-		Vec[] points = getLatticePoints(new Rectangle(rect.x - getLatticeWidth(), rect.y - getLatticeHeight(),
-				rect.width + getLatticeWidth() * 2, rect.height + getLatticeHeight() * 2));
+		Vec[] points = getLatticePoints(
+				new Rectangle(rect.x - getLatticeWidth()*2, 
+						rect.y - getLatticeHeight() *2,
+				rect.width + getLatticeWidth() * 4, 
+				rect.height + getLatticeHeight() * 4));
 		if (points == null || points.length == 0)
 			return;
 		Vec index2 = getLaticeIndicies(O);
@@ -491,24 +518,17 @@ public class FundamentalDomain {
 			}
 		}
 		if (drawTiles) {
-			if (latticeType == FundamentalDomain.PARALLOGRAM)
 				for (int i = 0; i < points.length; ++i) {
 					Vec p = points[i];
 					Vec p2 = p.add(diff);
-					drawLatticeLine(p2, p2.add(U));
-					drawLatticeLine(p2, p2.add(V));
-					drawLatticeLine(p2, p2.add(U.negate()));
-					drawLatticeLine(p2, p2.add(V.negate()));
+					tr.paintTileEdges(U, V, p2, this);
 				}
-
-			if (latticeType == FundamentalDomain.HEXAGON)
-				for (int i = 0; i < points.length; ++i) {
-					Vec p = points[i];
-					Vec p2 = p.add(diff);
-					drawLatticeLine(p2, p2.add(Vec.linComb(-1, U, -1, V, 3)));
-					drawLatticeLine(p2, p2.add(Vec.linComb(2, U, -1, V, 3)));
-					drawLatticeLine(p2, p2.add(Vec.linComb(-1, U, 2, V, 3)));
-				}
+		}
+		
+		if(drawLatticePoints) {
+			for(var p:points) {
+				drawLaticePoint(p.add(diff));
+			}
 		}
 		if (drawReflectionLines) {
 			boolean oldGlide = drawGlideLines;
@@ -563,7 +583,7 @@ public class FundamentalDomain {
 		var bounds = g.getClipBounds();
 		if(bounds==null) 
 		{
-			System.out.println("No bounds");
+			System.out.println("No bounds"); //$NON-NLS-1$
 			return;
 		}
 	    Rectangle rect = tileableRegion(bounds);
@@ -587,24 +607,11 @@ public class FundamentalDomain {
 
 	public final void drawReflectionLine(Vec P1,Vec P2) {
 		if(!drawReflectionLines) return;
-		if(BW_SYMS) {
-			Graphics2D g2 = (Graphics2D) graphics; 
-			Stroke oldStroke = g2.getStroke();
-			g2.setStroke(new BasicStroke(5));
 			graphics.setColor(reflectColour);
 			graphics.drawLine(P1.x,P1.y,P2.x,P2.y);
-			graphics.setColor(Color.white);
-			g2.setStroke(new BasicStroke(3));
-			graphics.drawLine(P1.x,P1.y,P2.x,P2.y);
-			g2.setStroke(oldStroke);
-		}
-		else {
-			graphics.setColor(reflectColour);
-			graphics.drawLine(P1.x,P1.y,P2.x,P2.y);
-		}
 	}
 
-	final protected void drawLatticeLine(Vec P1,Vec P2) {
+	public final void drawLatticeLine(Vec P1,Vec P2) {
             if(!drawTiles) return;
 	    graphics.setColor(laticeColour);
 	    graphics.drawLine(P1.x,P1.y,P2.x,P2.y);
@@ -614,6 +621,12 @@ public class FundamentalDomain {
             if(!drawCells) return;
             graphics.setColor(laticeColour);
             graphics.drawLine(p.x,p.y,q.x,q.y);
+	}
+
+	public final void drawLaticePoint(Vec P) {
+	    if(!drawLatticePoints) return;
+	    graphics.setColor(laticePointColour);
+        graphics.fillOval(P.x-shapeSize, P.y-shapeSize,shapeSize*2,shapeSize*2);
 	}
 
 	public final void drawRotationPoint(Vec P,int angle) {
@@ -654,7 +667,7 @@ public class FundamentalDomain {
 		sb.append(cellVerts[i].x);
 		sb.append(',');
 		sb.append(cellVerts[i].y);
-		sb.append(") ");
+		sb.append(") "); //$NON-NLS-1$
 	    }
 	    return sb.toString();
 	}
@@ -665,10 +678,10 @@ public class FundamentalDomain {
 	 */
 	public Rectangle tileableRegion(Rectangle rect)
 	{
-	    if(DEBUG) System.out.println("tr: "+rect);
+	    if(DEBUG) System.out.println("tr: "+rect); //$NON-NLS-1$
 	    Vec[] points = getLatticePoints(rect);
 	    if(DEBUG) {
-		    System.out.println("Lattice points");
+		    System.out.println("Lattice points"); //$NON-NLS-1$
 		    for(int i=0;i<points.length;++i)
 			System.out.println(points[i]);
 		    }
@@ -703,9 +716,9 @@ public class FundamentalDomain {
 	    String s = toString();
 	    Rectangle rect = tileableRegion(dr.dispRect);
 	    if(rect==null) 
-		s += " cannot be tiled";
+		s += " cannot be tiled"; //$NON-NLS-1$
 	    else 
-		s += " tileable region: (" + rect.x + "," + rect.y +") ("+(rect.x+rect.width)+","+(rect.y+rect.height)+")";
+		s += " tileable region: (" + rect.x + "," + rect.y +") ("+(rect.x+rect.width)+","+(rect.y+rect.height)+")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 	    return s;
 	}
 

@@ -1,0 +1,17 @@
+body {
+}
+#navline {
+	position: relative;
+	padding: 0px 0px;
+	margin: 0;
+}
+h1 { margin-top: 3px; margin-bottom: 3px; }
+body,p,ul,li,td { font-family: Verdana, Arial, Helvetica, sans-serif;  }
+dt { font-weight: bold; }
+th {
+	font-weight: bold;
+}
+td {	vertical-align: top; }
+pre { font-size: larger; }
+
+#footer { font-size: x-small; padding-top: 2em; }

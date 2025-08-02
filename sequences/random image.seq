@@ -1,0 +1,10 @@
+frame:
+group: nice
+vertices:
+  - [389,282]
+  - [170,282]
+  - [170,81]
+filename: images/*.{jpg,png}
+zoom: [1,1]
+anim: nice
+repeat: 10

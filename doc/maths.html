@@ -1,10 +1,24 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"  "http://www.w3.org/TR/html4/strict.dtd">
-  <html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Wallpaper patterns - Mathematics</title>
+<meta charset="UTF-8">
+<title>Wallpaper patterns - The mathematics</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\$', '\$']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style type="text/css">
+body { font-family: sans-serif; }
 .latticeTable td {
 	width: 150px;
 }
@@ -14,18 +28,80 @@ th {
 td {	vertical-align: top; }
 
 .rotTable td { text-align: center; width: 100px; }
+
+table.orbifoldTable, .orbifoldTable td, .orbifoldTable th {
+	//border: 1px solid; border-collapse: collapse; 
+	border-spacing: 0;
+	padding-bottom: 2px;
+	}
+.costTable td {
+    //border: 1px solid; border-collapse: collapse; 
+	border-top: 1px solid #ddd;
+    border-spacing: 0;
+    padding: 2px;
+    }
+	.costTable td:nth-child(3) {
+        text-align: center;
+		padding-left: 5px;
+    }
+	
+.orbifoldExamples td {
+    vertical-align: middle;
+	text-align: center;
+    padding: 5px;
+}
+.groupTable {
+	border-collapse: collapse; 
+	margin: 5px;
+	margin-left: 20px;
+}
+.groupTable td, .groupTable th {
+	border-right: 1px solid; 
+	border-bottom: 1px solid; 
+	border-spacing: 0;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-align: bottom;
+	font-size: smaller;
+}
+.groupTable td:nth-child(1), .groupTable th:nth-child(1) {
+	border-right: 2px solid; 
+}
+.groupTable tr:nth-child(1) th {
+	border-bottom: 2px solid; 
+}
+
+
 </style>
 </head>
 <body>
-<div id="head1"></div>
-<div id="col2">
+
 <p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
-<a href="help.html">help</a>
-<a href="maths.html">maths</a>
+	<?php
+	echo '<a href="wallpaper.php">Wallpaper app</a> '
+	?>
+<a href="help.html">Help</a>
+<a href="maths.html">Maths</a>
+<a href="groups.html">Groups</a>
+<a href="code.html">Code</a>
 </p>
+<hr>
 
 <h1>Wallpaper patterns - the mathematics</h1>
-<h2>Basic transformations</h2>
+<p>
+	Below  we describe the 
+	four <a href="#BASIC">basic transformations</a>, translations, reflection, rotation
+	and glide reflection that all patterns are mode of; the  
+	17 different <a href="#PAT">Wallpaper patterns</a>
+	the <a href="#FRIEZE">Freize groups, cyclic group and dyhedral groups</a>.
+	Further sections describe the alternative <a href="#ORBIFOLD">orbifold notation</a>
+	and how orbifolds can be used to find the <a href="#CHROME">Chromatic number</a> of each pattern 
+	giving the minimum number of colours needed to colour symmetrical tilings
+	so that no two tiles of the same colour share an edge.  
+<p>
+	Separate pages give more details on <a href="groups.html">group theory</a>
+	and the mathematics behind the <a href="code.html">code</a>.
+<a name="BASIC"></a><h2>Basic transformations</h2>
 
 The wallpaper patterns are produced by combining a number of transformations. The basic transformations are
 <table class="rotTable">
@@ -87,7 +163,7 @@ and if the  pattern contains a line of reflection
 </table>
 
 
-<h2>The patterns</h2>
+<a name="PAT"><h2>The patterns</h2>
 
 <table class="latticeTable">
 <tr>
@@ -139,7 +215,7 @@ and if the  pattern contains a line of reflection
 </table>
 
 
-<h2>Frieze groups, cyclic groups and dihedral groups</h2>
+<a name="FRIEZE"></a><h2>Frieze groups, cyclic groups and dihedral groups</h2>
 <p>As well as the wallpaper groups their are three other families of symetries in the plane.</p>
 <ul>
 <li>The seven frieze groups </li>
@@ -194,115 +270,740 @@ Dihedral groups have an n-fold rotational symmetry and two reflections in lines 
 <td><b>D1</b> <img src="naut/shellsD1.png" width=122 height=122 alt="dihedral group D1" align="top"></td>
 </tr></table>
 
+<a name="ORBIFOLD"></a><h2>Orbifold and topology</h2>
+<p>
+An alternative way of specifying the groups is using Thurston's 
+<a href="https://en.wikipedia.org/wiki/Orbifold_notation">orbifold notation</a>. 
+It uses numbers to represent the order of rotation points, <b>*</b> for a reflection, <b>x</b> for a glide-reflection and 
+<b>o</b> for the "wonder" with no aditional symmetries other than translations. 
+Symbols are listed in order, number before a * represent cyclic rotations and those after dihedral rotations.  
+<p>
+Each type of symmetry has a cost:
+<table class="costTable">
+	<tr><th>Symmetry</th><th>Symbol</th><th>Cost</th>
+	<tr><td>Cyclic Cn points<td><b>n</b><br/>(before a *)<td> $\frac{n-1}{n}$</td>
+	<tr><td>Reflection<td><b>*</b><td> 1</td>
+	<tr><td>Dihedral Dn points<td><b>n</b><br/>(after a *)<td> $\frac{n-1}{2n}$</td>
+	<tr><td>Glide-reflection<td><b>x</b><td> 1</td>
+	<tr><td>The wonder<td><b>o</b><td> 2</td>
+</table>
+<p>The "Magic theorem" states that for Wallpaper groups
+these costs must sum to 2. The theorem is derived from the calculating the 
+<a href="https://en.wikipedia.org/wiki/Euler_characteristic">Euler characteristic</a> of a tesselation
+of the plane from multiple copies of the fundamental domain. Each vertex and edge is given a weighting,
+for example a C3 vertex has a weight of $\frac13$ as three copies of the vertex contribute to a single vertex in the 
+tesselations, likewise edge have a weight of $\frac12$ and D2 vertex has a weight of $\frac14$. Costs 
+for each symmetry are found from these weights and a calculation show the Euler chararateristic of the plane is $2-\text{total cost}=0$.  
+A sketch proof of the result can be found in
+<a href="http://www.geom.uiuc.edu/docs/doyle/mpls/handouts/node35.html">
+	Geometry and the Imagination: The Euler characteristic of an orbifold</a>
 
-<h2>The code</h2>
-<p>Each symmetry group is represented by a member of the class <b>TessRule</b> which defines the type of pattern
-and a set of vectors which specify a coordinate frame. 
-The origin of this frame is the green dot and the two coordinate axis are the lines 
-from the green dot to the red and blue dots.
-This frame defines at lattice which tessellate the the plane by parallelograms, 
-and the image inside each parallelogram will be the same.
-</p>
+<p>
+Some of the edges of the fundamental domain can be identified, so it forms a topologial manifold, $M$.
+If are lines of reflection it will be a manifold with boundary.
+This manifold is
+either a sphere (p2, p3, p4, p6) a disk (pmm, p3m1, p4m, p6m, pmg, cmm, p31m, p4g) a cylinder (pm), Klein bottle (pg), 
+Möbius band (cm), real-projective plane (pgg) or torus (p1).
+<p>
+Further structure is added to form an <i>orbifold</i> where cyclic rotations give conical points,
+reflections lines give boundary points and dihedral rotations
+form corners on the boundary. 
+There is a group actions $\mathbb{R}^2/\Gamma$ associated with each symmetry in the orbifold. 
 
-<img src="naut/frames2.png" alt="Transformation of coordinate frames" width="670" align="center">
-<p>First consider the case of the simplest group P1. To calculate the tessellated image for each point in the image P<sub>dest</sub> we wish to find 
-the point P<sub>src</sub> inside the fundamental domain. To achieve this first transform to coordinates in the new frame to
-give the point Q<sub>dest</sub>. As the image in each 
-parallelogram is identical we can take coordinates in this frame mod 1 giving the point Q<sub>src</sub>. Finally
-transform back to image coordinates giving the P<sub>src</sub>. Finally the colour of the pixel at P<dest> is set to the color at P<src>.</p>
+<table class="orbifoldTable">
+	<tbody>
+		<tr> 
+			<th colspan="1">Pure gyrations</th>
+		<tr>
+			<td colspan="3">These patterns are generated by a three or four cyclic rotation points.
+			The two edges adjacent each rotation point are identified so the underlying manifold forms a topological
+			sphere, with Euler chrarateristic, χ=2. Each n-fold rotation point gives a conical point in
+			the orbifold with cost $1-\frac{1}{n}$.
+				  
+		<tr>
+			<td><b>p2: 2222</b><br/>
+			Four C2 rotations.<br/>
+			Cost: $\frac12+\frac12+\frac12+\frac12=2$<br/>
+			Manifold: sphere<br/>
+			Euler chrarateristic: χ=2<br/>
+			Chromatic number: 4
+			</td>	
+			<td><img src="orbifolds/p2h domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			<td><img src="orbifolds/p2h tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+		</tr>
+		<tr>
+			<td><b>p3: 333</b><br/>
+			Three C3 rotations.<br/>
+			Cost: $\frac23+\frac23+\frac23=2$<br/>
+			Manifold: sphere<br/>
+			Euler chrarateristic: χ=2<br/>
+			Chromatic number: 4
+			</td>	
+			<td><img src="orbifolds/p3h domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			<td><img src="orbifolds/p3h tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+		</tr>
+		<tr>
+			<td><b>p4: 442</b><br/>
+			Two C4 rotations and one C2 rotation.<br/>
+			Cost: $\frac34+\frac34+\frac12=2$		<br/>
+			Manifold: sphere<br/>
+			Euler chrarateristic: χ=2<br/>
+			Chromatic number: 4			</td>	
+			<td><img src="orbifolds/p4 domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			<td><img src="orbifolds/p4 tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+		</tr>
+		<tr>
+			<td><b>p6: 632</b><br/>
+			One C6, one C3 and one C2 rotation.<br/>
+			Cost: $\frac5/6+\frac23+\frac12=2$
+			<br/>
+			Manifold: sphere<br/>
+			Euler chrarateristic: χ=2<br/>
+			Chromatic number: 4			</td>	
+			<td><img src="orbifolds/p6 domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			<td><img src="orbifolds/p6 tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+		</tr>
+		<tr>
+			<th colspan=1>Pure kalidoscopes</th>
+		<tr>
+			<td colspan=3>These patterns are generated by three or four dihedral rotations. 
+			The edges of the fundamental domain are lines of reflection, giving rise to a boundary
+			of the orbifold. Hence the underlying manifold is a disk with Euler chrarateristic, χ=1. 
+			The boundary, *, has a cost of 1 and each n-fold dihedral rotation has a cost of $\frac{n-1}{2n}$.
+			</td>
+		<tr>
+			<td><b>pmm: *2222</b><br/>
+			One reflection, four D2 rotations.<br/>
+			Cost: $1+\frac14+\frac14+\frac14+\frac14=2$
+			<br/>
+			Manifold: disk<br/>
+			Euler chrarateristic: χ=1<br/>
+			Chromatic number: 4		</td>	
+			<td><img src="orbifolds/pmm domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			<td><img src="orbifolds/pmm tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+		</tr>
+		<tr>
+			<td><b>p3m1: *333</b><br/>
+			One reflection, three D3 rotations.<br/>
+			Cost: $1+\frac26+\frac26+\frac26=2$
+			<br/>
+			Manifold: disk<br/>
+			Euler chrarateristic: χ=1<br/>
+			Chromatic number: 4		</td>	
+			</td>	
+			<td><img src="orbifolds/p3m1 domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			<td><img src="orbifolds/p3m1 tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+		</tr>
+		<tr>
+			<td><b>p4m: *442</b><br/>
+			One reflection, two D4 rotations and one D2 rotation.<br/>
+			Cost: $1+\frac38+\frac38+\frac14=2$
+		<br/>
+		Manifold: disk<br/>
+		Euler chrarateristic: χ=1<br/>
+		Chromatic number: 4		</td>	
+			</td>	
+			<td><img src="orbifolds/p4m domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			<td><img src="orbifolds/p4m tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+		</tr>
+		<tr>
+			<td><b>p6m: *632</b><br/>
+			One reflection, one D6, one D3 and one D2 rotation.<br/>
+			Cost: $1+\frac{5}{12}+\frac26+\frac14=2$
+		<br/>
+		Manifold: disk<br/>
+		Euler chrarateristic: χ=1<br/>
+		Chromatic number: 4		</td>	
+			</td>	
+			<td><img src="orbifolds/p6m domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			<td><img src="orbifolds/p6m tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+		</tr>
+		<tr>
+			<th colspan=1>Parallel reflections</th>
+		<tr>
+			<td colspan=3>This patterns is generated by two parallel reflections and a translation. 
+			Two edges of the fundamental domain are lines of reflection, giving rise to a boundary
+			of the orbifold, the other two are identified. 
+			Hence the underlying manifold is a cylinder with Euler chrarateristic, χ=0. 
+			</td>
+		<tr>
+			<td><b>pm: **</b><br/>
+			Two reflections.<br/>
+			Cost: $1+1=2$
+		<br/>
+		Manifold: cylinder<br/>
+		Euler chrarateristic: χ=0<br/>
+		Chromatic number: 4		</td>	
+			</td>	
+			<td><img src="orbifolds/pm domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			<td><img src="orbifolds/pm tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+		</tr>
+		<tr>
+			<th colspan=1>Hybrid types</th>
+		<tr>
+			<td colspan=3>These patterns have both cyclic points, reflections and sometimes dihedral rotations. 
+				The lines of reflection give a boundary
+				of the orbifold, so the underlying manifold is a disk with Euler chrarateristic, χ=1.
+				The cyclic rotations correspond to conical points and the dihedral rotations give corners. 
+			</td>
+			<tr>
+				<td><b>pmg: 22*</b><br/>
+				Two C2 rotations and one line of reflections.<br/>
+				Cost: $\frac12+\frac12+1=2$
+			<br/>
+			Manifold: disk<br/>
+			Euler chrarateristic: χ=1<br/>
+			Chromatic number: 4		</td>	
+				</td>	
+				<td><img src="orbifolds/pmg domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+				<td><img src="orbifolds/pmg tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			</tr>
+			<tr>
+				<td><b>cmm: 2*22</b><br/>
+				One C2 rotation, one reflection and two D2 reflections.<br/>
+				Cost: $\frac12+1+\frac14+\frac14=2$
+			<br/>
+			Manifold: disk<br/>
+			Euler chrarateristic: χ=1<br/>
+			Chromatic number: 4		</td>	
+				</td>	
+				<td><img src="orbifolds/cmm domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+				<td><img src="orbifolds/cmm tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			</tr>
+			<tr>
+				<td><b>p31m: 3*3</b><br/>
+				One C3 rotation, one reflection and one D3 rotation.<br/>
+				Cost: $\frac13+1+\frac26=2$
+			<br/>
+			Manifold: disk<br/>
+			Euler chrarateristic: χ=1<br/>
+			Chromatic number: 4		</td>	
+				</td>	
+				<td><img src="orbifolds/p31m domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+				<td><img src="orbifolds/p31m tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			</tr>
+			<tr>
+				<td><b>p4g: 4*2</b><br/>
+				One C4 rotation, one reflections and one D2 rotation.<br/>
+				Cost: $\frac34+1+\frac14=2$
+			<br/>
+			Manifold: disk<br/>
+			Euler chrarateristic: χ=1<br/>
+			Chromatic number: 4		</td>	
+				</td>	
+				<td><img src="orbifolds/p4g domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+				<td><img src="orbifolds/p4g tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			</tr>
+			<tr>
+				<th colspan=1>Glide-reflections and cross-caps</th>
+			<tr>
+				<td colspan=3>These patterns all have glide refleftions
+				indicated by a x with cost 1. 
+				Oposite edges are idetified in a revese direction, yielding 
+				non-orientable manifolds. 
+				</td>
+			<tr>
+				<td><b>pg: xx</b><br/>
+				Two parallel glide-reflections.<br/>
+				Cost: $1+1=2$<br/>
+				Manifold: Klein bottle<br/>
+				Euler chrarateristic, χ=0.<br/>
+				Chromatic number: 6
+				</td>	
+				<td><img src="orbifolds/pg domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+				<td><img src="orbifolds/pg tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			</tr>
+			<tr>
+				<td><b>cm: *x</b><br/>
+				A reflection and a glide-reflections.<br/>
+				Cost: $1+1=2$</br/>
+				Manifold: Möbius band<br/>
+				Euler chrarateristic: χ=0.<br/>
+				Chromatic number: 6
+				</td>	
+				<td><img src="orbifolds/cm domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+				<td><img src="orbifolds/cm tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			</tr>
+			<tr>
+				<td><b>pgg: 22x</b><br/>
+				Two C2 rotations, and a glide-reflection.<br/>
+				Cost: $\frac12+\frac12+1=2$</br/>
+				Manifold: real-projective plane RP²<br/>
+				Euler chrarateristic: χ=1.<br/>
+				Chromatic number: 6
+				</td>	
+				<td><img src="orbifolds/pgg domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+				<td><img src="orbifolds/pgg tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			</tr>
+			<tr>
+				<th colspan=1>The wonder: just translations</th>
+			<tr>
+				<td colspan=3>
+				This pattern has no aditional symmetries.
+				Oposite edges are identified, so the underlying manifold is a torus with Euler chrarateristic, χ=0.
+				</td>	
+			<tr> 
+				<td>p1: o<br/>
+				Cost: $2$<br/>
+				Manifold: torus<br/>
+				Euler chrarateristic: χ=0.<br/>
+				Chromatic number: 7
+<				</td>
+				<td><img src="orbifolds/p1 domain.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+				<td><img src="orbifolds/p1 tile.jpg" width=200 height=150 alt="p1 fundamental domain" align="top"></td>
+			</tr>
+	</tbody>
+</table>
 
-<p>For other transformations a little more work is needed. Consider Pmm which is obtained by reflection in two lines at right angles. 
-In the transformed coordinates this is in the lines x=0.5 and y=0.5. Let Q<sub>mod</sub> be the point after the modulus is taken
-which has coordinates (<em>x</em><sub>mod</sub>,<em>y</em><sub>mod</sub>) 
-with <em>x</em><sub>mod</sub> and <em>y</em><sub>mod</sub> in the range 0 to 1.
-The <em>y</em>-coordinates of Q<sub>src</sub>, <em>x</em><sub>src</sub> is calculate as follow:</p>
+<a name="CHROME"></a><h2>Chromatic number for orbifolds and tilings</h2>
+
+<p>Given a wallpaper group with a specified lattice, we can consider the
+	set of tilings that are invarient under the that group. 
+	Similar to the <a href="https://en.wikipedia.org/wiki/Four_color_theorem">four-colour theorem</a>
+	for planer graphs we can consider the <b>Chromatic number for the wallpaper group</b>:
+	<blockquote>
+		The smallest number χ, such that any tiling invarient under the group
+		can be coloured with χ colours such that:
+		<ul>
+			<li>No two tiles with the same colour share a common edge
+			<li>The colouring is invarient under that tiling
+		</ul>
+	</blockquote>
+
+<p>Calculating the chromatic number is easy, it is the
+	same as the chromatic number of the underlying topological
+	manifold of the orbifold, and the chromatic numbers
+	of the each type of manifold are well known -
+	Torus: 7, Möbius band: 6, Klein bottle: 6, Projective Plane: 6,
+	sphere: 4, disk: 4, open cylinder or anulus: 4. 
+	All that remains is to find a tiling that acheives the maximum bound.
+	Again there are well known graphs on the various manifold that acheive
+	the maximum, so we simply have unwrap these graphs to
+	form a tiling of the plane. We give examples of each of these
+	below and discuss how the underlying manifold is derived.
+
+		
+<h3>P1, manifold: torus, chromatic number: 7</h3>
+
+<p>
+Given a topological space X and a group G we can form the quotient space 
+by factoring out the group action. Say with the P1 group
+<p>
+<img src="orbifolds/beanish p1.png" width="602" height="279" alt="P1 pattern applied to beanish motif">	
+<p>
+Using a motif of Beanish from <a href="https://larrymarder.blogspot.com/">Tales of the beanworld</a>.
+<p>
+Factoring out the group action generated by the two translations
+gives a single cell with opposite edges are identified.
+<p>
+<img src="orbifolds/beanish identified.png" width="602" height="142" alt="Cell with identified edges">
+<p>
+We can wrap the image around a cylinder, so the blue arrows match, and then join the top of the cylinder to the bottom to form a torus:
+<p>
+<img src="orbifolds/beanish torus.png" width="301" height="241" alt="Cell wrapped to form a torus">
+	
+<p>The torus has Euler characteristic χ=0, and following the
+	<a href="https://en.wikipedia.org/wiki/Heawood_conjecture">Heawood conjecture</a>
+	any tiling with this symmetry can be coloured with 7 colours,
+	so that no two faces of the same colour share an edge.
+	One such tiling is based on hexagons.
+<table>
+<tr>
+<td>
+<img src="orbifolds/7x-torus.svg" width="150" height="150" alt="Unit cell for 7 colouring">	
+<td>
+<img src="orbifolds/7x-torus-wallpaper.png" width="280" height="213" alt="Repeaded copies of the unit cell filling the plane">	
+<td>
+<img src="orbifolds/7x-torus-torus.png" width="227" height="155" alt="Unit cell wrapped around a torus">	
+<tr>
+	<td>Unit cell
+	<td>Wallpaper pattern
+	<td>Wrapped around a torus
+</table>	
+
+<h4>CM, manifold: Möbius band, chromatic number: 6</h4>
+This pattern has a reflections and a parallel glide-reflection.
+<p>
+<img src="orbifolds/beanish cm wallpaper.png" width="250" height="240" alt="Cell wrapped to form a torus">
+<p>
+Folding along the reflection lines gives a strip with glide-reflection.
+The fundametal domain has top and bottom identified in opposite directions,
+and forms a Möbius band.
+<p>
+<table class="orbifoldExamples"
+<tr>
+	<td><img src="orbifolds/beanish cm strip.png" width="123" height="238" alt="Cell wrapped to form a torus">
+	<td><img src="orbifolds/beanish cm cell.png" width="210" height="185" alt="Cell wrapped to form a torus">
+	<td><img src="orbifolds/beanish mobius.png" width="314" height="241" alt="Cell wrapped to form a torus">
+		
+<tr>
+	<td>A strip formed by folding along the reflection lines, has a glide-reflection.
+	<td>
+The unit cell has top and bottom identified, but in opposite directions:
+<td>Joining edges forms a Möbius band.
+</table>
+<p>
+	
+<p>
+The Euler charateristic of the Möbius band is 0, 
+and in 1910 Heinrich Tietze found a <a href="https://en.wikipedia.org/wiki/Tietze%27s_graph">subdivision</a> into
+six mutally adjacent regions. This can be used as the basis of
+a tiling of the plane requiring 6 colours.
+<table  class="orbifoldExamples">
+<tr>
+<td>
+<img src="orbifolds/cm oct domain.png" width="225" height="150" alt="Unit cell for 7 colouring">	
+<td>
+<img src="orbifolds/cm oct wallpaper plain.png" width="300" height="240" alt="Repeaded copies of the unit cell filling the plane">	
+<td>
+<img src="orbifolds/cm oct mobius.png" width="256" height="250" alt="Unit cell wrapped around a torus">	
+<tr>
+	<td>Unit cell
+	<td>Wallpaper pattern
+	<td>Wrapped around a Möbius band
+</table>	
+
+<h4>PG: xx</h4>
+This pattern is generated by two parallel glide reflections.
+So the motif is translated in one direction and flipped and translated in the other direction.
+The unit cell has opposite edges identifed, one pair with the same
+orientation, and the other with reversed orientation.
+Identifying edges gives a Klein bottle. 
+
+<table class="orbifoldExamples">
+    <tr>
+<td><img src="orbifolds/beanish pg wallpaper.png" width="250" height="240" alt="Cell wrapped to form a torus">
+<td><img src="orbifolds/beanish pg domain.png" width="300" height="200" alt="Cell wrapped to form a torus">
+<tr>
+    <td>Wallpaper pattern
+    <td>Unit cell
+</tr>
+</table>
+<p>
+This has Euler characteristic χ=0, and chromatic number 6.
+<table  class="orbifoldExamples">
+<tr>
+<td>
+<img src="orbifolds/pg hex domain.png" width="225" height="150" alt="Unit cell for 7 colouring">	
+<td>
+<img src="orbifolds/pg hex wallpaper.png" width="300" height="240" alt="Repeaded copies of the unit cell filling the plane">	
+<td>
+<img src="orbifolds/Klein_bottle_colouring.svg" width="180" height="240" alt="Unit cell wrapped around a torus">	
+<tr>
+	<td>Unit cell
+	<td>Wallpaper pattern
+	<td>Wrapped around a Klien bottle. 
+		(<a href="https://commons.wikimedia.org/wiki/File:Klein_bottle_colouring.svg">source</a>)
+
+</table>	
+
+
+<h4>PGG: 22x</h4>
+This pattern has two perpendicular glide reflections
+and two C2 cyclic rotations.
+So the motif is flipped and translated in the both direction.
+The unit cell has opposite edges identifed, each pair with reversed orientation,
+and joining the opposite edges gives a real projective plane.
+<table class="orbifoldExamples">
+	<tr>
+<td><img src="orbifolds/pgg beanish wallpaper.png" width="250" height="240" alt="Cell wrapped to form a torus">
+<td><img src="orbifolds/pgg beanish domain.png" width="300" height="200" alt="Cell wrapped to form a torus">
+<td><img src="orbifolds/pgg beanish roman.png" width="288" height="261" alt="Cell wrapped to form a torus">
+<tr>
+    <td>Wallpaper pattern
+    <td>Unit cell
+    <td>Wrapped around a real projective plane.
+</table>
+<p>
+This has Euler characteristic χ=1, and chromatic number 6.
+<table  class="orbifoldExamples">
+<tr>
+<td>
+<img src="orbifolds/pgg pent domain.png" width="225" height="150" alt="Unit cell for 7 colouring">	
+<td>
+<img src="orbifolds/pgg pent wallpaper plain.png" width="300" height="240" alt="Repeaded copies of the unit cell filling the plane">	
+<td>
+<img src="orbifolds/pgg pent roman.png" width="195" height="179" alt="Unit cell wrapped around a torus">	
+<tr>
+	<td>Unit cell
+	<td>Wallpaper pattern
+	<td>Wrapped around a Klien bottle. 
+</table>	
+<p>
+The cell division here is adapted from
+<a href="https://mathcurve.com/surfaces.gb/planprojectif/planprojectif.shtml">mathcurve.com</a>
+
+<h3>PM, manifold: cylinder, chromatic number 4</h3>
+The PM pattern has two parallel reflections.
+<p>
+<img src="orbifolds/beanish pm wallpaper.png" width="321" height="287" alt="Cell wrapped to form a torus">
+<p>
+Take a horizontal strip with top and bottom identified,
+fold along the vertical mirror lines, forming a concertina. 
+Identify top and bottom edges to form a cylinder. The green edges
+correspond to the two lines of reflection, which always form
+a boundary on the orbifold. 
+<table class="orbifoldExamples">
+<tr>
+<td><img src="orbifolds/beanish pm strip.png" width="321" height="115" alt="Cell wrapped to form a torus">
+<td><img src="orbifolds/beanish pm cell.png" width="176" height="130" alt="Cell wrapped to form a torus">
+<td><img src="orbifolds/beanish cylinder.png" width="341" height="270" alt="Cell wrapped to form a torus">
+<tr>
+    <td>A strip formed by folding along the reflection lines.
+    <td>The unit cell has top and bottom identified, so it forms a cylinder.
+	<td>Joining edges forms a cylinder.
+</table>
+<p>
+The cylinder has Euler characteristic χ=0, and had chromatic number 4,
+so four colours surfice. 
+
+<table class="orbifoldExamples"
+<tr>
+	<td><img src="orbifolds/pm four colour cell.png" width="300" height="300" alt="Cell wrapped to form a torus">
+	<td><img src="orbifolds/pm four colour wallpaper.png" width="300" height="300" alt="Cell wrapped to form a torus">
+	<td><img src="orbifolds/pm four colour orbifold.png" width="300" height="300" alt="Cell wrapped to form a torus">
+</tr>
+<tr>
+	<td>Fundamental domain
+	<td>Wallpaper pattern
+	<td>Orbifold
+</tr>
+</table>
+
+<h3>Groups generated by cyclic rotations</h3>
+<p>
+In terms of colouring the interesting groups are those with a chromatic number greater than 4 are 
+shown above. The rest are either topological spheres or disks, and can be coloured with 4 colours.
+First we consider the groups generated by cyclic rotations P2 (2222), P3 (333), P4 (442) and P6 (632).
+<h4>P2, manifold: sphere, chromatic number 4</h4>
+<p>
+The P2 is generated by four C2 rotations, around the mid-points of 
+a rectangular fundamental domain. The two halves of each edge
+are identified, so the edges join up to form a sphere.
+<p>	
+<img src="orbifolds/beanish p2 wallpaper.png" width="250" height="240" alt="Cell wrapped to form a torus">
+	
+<table  class="orbifoldExamples">
+<tr>
+	<td><img src="orbifolds/beanish p2 cell.png" width="300" height="170" alt="Cell wrapped to form a torus">
+	<td><img src="orbifolds/beanish p2 sphere top.png" width="200" height="185" alt="Cell wrapped to form a torus">
+	<td><img src="orbifolds/beanish p2 sphere bottom.png" width="200" height="185" alt="Cell wrapped to form a torus">
+<tr>
+    <td>Unit cell
+    <td>Top of sphere
+    <td>Bottom of sphere	
+</tr>
+</table>
+
+<p>
+A tesselation requiring 4 colours is easy to find. 
+Start by considering a tetrahedral polygonisation of the sphere, with four 
+mutually adjacent triangual faces, each of a different colour. Such a polygonisation 
+can be arranged so that each of the four rotation points lie inside one of the four faces. 
+Next unwrap this to form the fundamental domain, and apply the symetries to form the tiling. 
+<p>
+<td><img src="orbifolds/p2 hex wallpaper.png" width="273" height="201" alt="Cell wrapped to form a torus">
+
+<table  class="orbifoldExamples">
+<tr>
+	<td><img src="orbifolds/p2 hex domain.png" width="313" height="312" alt="Cell wrapped to form a torus">
+	<td><img src="orbifolds/p2 hex sphere top.png" width="200" height="185" alt="Cell wrapped to form a torus">
+	<td><img src="orbifolds/p2 hex sphere bottom.png" width="200" height="185" alt="Cell wrapped to form a torus">
+<tr>
+    <td>Unit cell
+    <td>Top of sphere
+    <td>Bottom of sphere	
+</tr>
+</table>
+
+<h4>P3, P4, P6</h4>
+<p>A similar process can be used to the other pure rotational groups, P3, P4 and P6. 
+
+	<table  class="orbifoldExamples">
+	<tr>
+		<td><img src="orbifolds/p3 four colour wallpaper.png" alt="p3 four colours tiling" width="300" height="300" >	
+		<td><img src="orbifolds/p4 four colour wallpaper.png" alt="p4 four colours tiling" width="300" height="300" >	
+		<td><img src="orbifolds/p6 four colour wallpaper.png" alt="p6 four colours tiling" width="300" height="300" >	
+	</tr>
+	<tr>
+		<td>P3: 333
+		<td>P4: 442
+		<td>P6: 632
+	</tr>
+	</table>
+<p>
+In each case the pattern is generated by three rotations. The tiling
+is chosen so that each rotation point lies in the centre of a face, the fourth
+triangular face is chosen in the middle of the fundamental domain.	
+
+
+<h4>Groups generated by dihedral reflections</h4>
+
+<p>The groups PMM, P3M1, P4M and P6M, are all generated by dihedral rotations.
+Each edge of the fundamental domain is a reflection line which form
+an edge in the underlying manifold. Hence the manifold is a topological disk
+with chromatic number 4.
+
+<p>Finding tilings that require four colours is easy here. Take an
+	domain with a small triangle in the centre and draw lines outward from the 
+	corners. This froms a square or triangle with four mutually adjacent regions.
+	
+
+<table  class="orbifoldExamples">
+<tr>
+	<td><img src="orbifolds/pmm four colour domain.jpg" alt="p3 four colours tiling" width="200" height="200" >	
+	<td><img src="orbifolds/pmm four colour wallpaper.jpg" alt="p4 four colours tiling" width="200" height="200" >	
+	<td><img src="orbifolds/p3m1 half edge domain.jpg" alt="p6 four colours tiling" width="200" height="200" >	
+	<td><img src="orbifolds/p3m1 half edge wallpaper.jpg" alt="p6 four colours tiling" width="200" height="200" >	
+</tr>
+<tr>
+	<td>PMM domain
+	<td>PMM wallpaper
+	<td>P3M1 domain
+	<td>P3M1 wallpaper	
+</tr>
+<tr>
+	<td><img src="orbifolds/p4m half edge domain.jpg" alt="p3 four colours tiling" width="200" height="200" >	
+	<td><img src="orbifolds/p4m half edge wallpaper.jpg" alt="p4 four colours tiling" width="200" height="200" >	
+	<td><img src="orbifolds/p6m half edge domain.jpg" alt="p6 four colours tiling" width="200" height="200" >	
+	<td><img src="orbifolds/p6m half edge wallpaper.jpg" alt="p6 four colours tiling" width="200" height="200" >	
+</tr>
+<tr>
+	<td>P4M domain
+	<td>P4M wallpaper
+	<td>P6M domain
+	<td>P6M wallpaper	
+</tr>
+</table>
+<p>
+For these groups the orbifold a polygon coresponding to the fundamental domain,
+the reflection lines form the boundary of the orbifold, each dihedral rotation point
+giving a vertex. Topologically this is a disk.
+<table  class="orbifoldExamples">
+<tr>
+<td><img src="orbifolds/dihedal orbifolds.png" alt="p6 four colours tiling" width="300" height="300" >	
+</tr>
+<tr>
+    <td>Orbifolds for PMM, P3M1, P4M and P6M
+</tr>
+</table>
+
+<h4>Mixed types</h4>
+<p>
+The groups CMM, P31M and P4G all
+have both cyclic rotations and dihedral rotations.
+The lines of reflection gives an edge around the underlying manifold,
+a topological disk, with corners for each dihedral rotation. 
+Cyclic rottion point lie in the middle of the disk.
+Each pattern has chromatic number 4.
+PMG is similar, it has a line of reflection and two cyclic rotation points,
+by no dihedral rotations. 
+
+<table  class="orbifoldExamples">
+	<tr>
+		<td><img src="orbifolds/pmg four colour domain.jpg" alt="pmg four colours domain" width="200" height="200" >	
+		<td><img src="orbifolds/pmg four colour wallpaper.jpg" alt="pmg four colours tiling" width="200" height="200" >	
+		<td><img src="orbifolds/pmg four colour orbifold.png" alt="pmg four colours tiling" width="150" height="150" >	
+		<td><img src="orbifolds/cmm four colour domain.jpg" alt="cmm four colours domain" width="200" height="200" >	
+		<td><img src="orbifolds/cmm four colour wallpaper.jpg" alt="cmm four colours tiling" width="200" height="200" >		
+		<td><img src="orbifolds/cmm four colour orbifold.png" alt="cmm four colours orbifold" width="150" height="150" >	
+	</tr>
+	<tr>
+		<td>PMG domain
+		<td>PMG wallpaper
+		<td>PMG underlying manifold
+		<td>CMM domain
+		<td>CMM wallpaper
+		<td>CMM underlying manifold
+	</tr>
+<tr>
+	<td><img src="orbifolds/p4g sq domain.png" alt="p4g sq domain" width="200" height="200" >	
+	<td><img src="orbifolds/p4g sq wallpaper.png" alt="p4g sq tiling" width="200" height="200" >	
+	<td><img src="orbifolds/p4g orbifold2.png" alt="p4g orbifold" width="150" height="150" >	
+	<td><img src="orbifolds/p31m y domain.png" alt="p31m four colours domain" width="200" height="200" >	
+	<td><img src="orbifolds/p31m y wallpaper.png" alt="p31m four colours tiling" width="200" height="200" >	
+	<td><img src="orbifolds/p31m orbifold.png" alt="p4g orbifold" width="150" height="150" >	
+</tr>
+<tr>
+	<td>P4G domain
+	<td>P4G wallpaper
+	<td>P4G orbifold
+	<td>P31M domain
+	<td>P31M wallpaper	
+</tr>
+</table>
+
+<p>
+	
+
+
+<h4>Summery of colourings</h4>
+
+<table class="costTable">
+	<tr>
+		<th colspan=4>Groups</th><th>type</th><th>Underlying manifold</th><th>Chromatic number</th>
+	</tr>
+	<tr>
+		<td>P1</td><td></td><td></td><td></td><td> </td><td>Torus</td><td>7</td>
+	</tr>
+	<tr>
+		<td>CM</td><td></td><td></td><td></td><td> </td><td>Möbius band</td><td>6</td>
+	</tr>
+	<tr>
+		<td>PG</td><td></td><td></td><td></td><td> </td><td>Klein bottle</td><td>6</td>
+	</tr>
+	<tr>
+		<td>PGG</td><td></td><td></td><td></td><td> </td><td>Projective plane</td><td>6</td>
+	</tr>
+	<tr>
+		<td>PM</td><td></td><td></td><td></td><td> </td><td>Cylinder</td><td>4</td>
+	</tr>
+	<tr>
+		<td>P2</td><td>P3</td><td>P4</td><td>P6</td><td>pure rotation</td><td>Sphere</td><td>4</td>
+	</tr>
+	<tr>
+		<td>PMM</td><td>P3M</td><td>P4M</td><td>P6M</td><td>dihedral rotations</td><td>Disk</td><td>4</td>
+	</tr>
+	<tr>
+		<td>CMM</td><td>PMG</td><td>P31M</td><td>P4G</td><td>mixed</td><td>Disk</td><td>4</td>
+	</tr>
+</table>	
+
+<h2>References</h2>
 <ul>
-<li>if <em>x</em><sub>mod</sub> < 0.5, <em>x</em><sub>src</sub> = <em>x</em><sub>mod</sub>,</li>
-<li>if <em>x</em><sub>mod</sub> > 0.5, <em>x</em><sub>src</sub> = 1 - <em>x</em><sub>mod</sub>.</li>
-<li>if <em>y</em><sub>mod</sub> < 0.5, <em>y</em><sub>src</sub> = <em>y</em><sub>mod</sub>,</li>
-<li>if <em>y</em><sub>mod</sub> > 0.5, <em>y</em><sub>src</sub> = 1 - <em>y</em><sub>mod</sub>.</li>
+<li><a href="http://en.wikipedia.org/wiki/Wallpaper_group">Wikipedia: Wallpaper groups</a>.
+<li><a href="https://ncatlab.org/nlab/show/Riemannian+orbifold">nLab: Riemannian orbifold</a>	
+<li>Patrick J. Morandi <a href="https://ncatlab.org/nlab/files/Morandi-WallpaperPatterns.pdf">The Classification of Wallpaper Patterns:
+	From Group Cohomology to Escher's Tessellations</a> 2003 - Describes how cohomology can be used to classify wallpaper patterns.
+<li>João Guerreiro <a href="https://www.math.tecnico.ulisboa.pt/~rfern/Estudantes/TrabalhoJGuerreiro.pdf">Orbifolds and Wallpaper Patterns</a> 2009
+<li>J. H. Conway, H. Burgiel, C. Goodman-Stauss, <i>The Symmetries of Things</i>, Taylor & Francais Group, New York, 2008. - A good ilustrated example of 
+	wallpaper patterns and orbifolds. 
 </ul>
-<p>Each other group will have similar condition.</p>
 
-<p>In the above the transformation we have used floating point coordinates. 
-The above calculations can be repeated using purely integer arithmetic, this results in faster algorithms and eliminates any rounding problems.
-Let <b>O</b> be the position of the green dot and <b>u</b> and <b>v</b> be the two vectors of the frame.
-Let M be the matrix
-with <b>u</b> and <b>v</b> as columns,
-this has the determinant <em>det</em> =
-(<b>u</b><sub>x</sub> * <b>v</b><sub>y</sub> - <b>u</b><sub>y</sub> <b>v</b><sub>x</sub>).
-. Now the transformation from a point <b>q</b> in the Q-frame to a point
-<b>p</b> the P-frame
-is given by <b>p</b>=<b>O</b> + M<b>q</b>, and the inverse transformation is
-<b>q</b> = M<sup>-1</sup>(<b>p</b>-<b>O</b>).
-The inverse matrix M<sup>-1</sup> is calculated as 1/det (<b>v</b><sub>y</sub>, -<b>v</b><sub>x</sub>;-<b>u</b><sub>y</sub> <b>u</b><sub>x</sub>).
-If we multiply through by the determinant giving
-<b>q'</b> = det M<sup>-1</sup>(<b>p</b>-<b>O</b>), observe that <b>q'</b> will have integer coordinates.
-The above method can be followed through using this scaled frame, with the frame vectors being (det,0) and (0,det).</p>
 
-<pre>
-int Qdest[] = new int[2];
-int Qsrc[] = new int[2];
-int det = ux * vy - uy * vx;
+<?php 
+$page = "wallmaths";
 
-for(i=0;i&lt;width;++i)
- for(j=0;j&lt;height;++j) {
-  // translate
-  int x = i - x0; 
-  int y = j - y0;
-  // calculate Q coodinates of dest
-  Qdest[0] = vy * x - vx * y; 
-  Qdest[1] = -uy * x + ux * y;
-  // apply specific transformation
-  fun(Qdest,Qsrc,det); 
-  // calculate Psrc
-  int srcX = x0 + (Qsrc[0] * ux + Qsrc[1] * vx ) / det;	
-  int srcY = y0 + (Qsrc[0] * uy + Qsrc[1] * vy ) / det;	
-  // copy src pixel to dest pixel
-  pixels[i*width+j] = pixels[srcX*width+srcY];
- }
- 
-// An example of transformation function for group Pmm 
-void fun(int dest[2],int src[2],int det) {
-	// find modulus
-	int a = dest[0] % det; if(a<0) a+= det;
-	int b = dest[1] % det; if(b<0) b+= det;
-	// find coordinates of point in fundamental domain
-	if(a>det/2) a = det - a;
-	if(b>det/2) b = det - b;
-}
-</pre>
+include_once('../admin/connect.php');
+include_once('../admin/log.php');
+echo '<h2>Readers comments</h2>';
+include_once('../admin/dispcomments.php');
+include_once('../admin/util.php');
 
-<h3>Using lattice points</h3>
-<p>The calculation can be sped up by using the lattice structure of the tessellation. First find the bounding box enclosing one 
-parallelogram in the lattice, and calculate the full pattern in that rectangle. The find all the lattice points in the region to be drawn.
-For each lattice point copy the pixels in the rectangle to a new rectangle based on the lattice point.
-This will result in a certain amount of overlap, but this does not affect the speed as coping arrays can be achieve very quickly.
-</p>
+showPageComments($page);
+printCommentForm($page);
 
-<h3>Speeds of integer and floating point</h3>
-<p>Using integer arithmetic offers considerable speed advantages over floating point in the inner loops.
-Compare these two methods for finding division rounded down (rather than to 0 as in the language spec for /):
-<pre>
- int a = (int) Math.floor((float) in[0]/det);
- int b = (int) Math.floor((float) in[1]/det);
-</pre>
-and
-<pre>
- int a = (in[0]<0 ? (in[0]+1)/det -1 : in[0]/det); 
- int b = (in[1]<0 ? (in[1]+1)/det -1 : in[1]/det); 
-</pre>
-Changing from the first to the second resulted in a four fold speed improvement over the whole algorithm.
-These two lines represented 67% of the entire speed of the algorithm.
-
-<h2>Further information</h2>
-<P>For more information see
-<a href="http://en.wikipedia.org/wiki/Wallpaper_group">Wikipedia</a>.
+?>
 
 <hr>
 <p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
-<a href="help.html">help</a>
-<a href="maths.html">maths</a>
+	<?php
+	echo '<a href="wallpaper.php">Wallpaper app</a> '
+	?>
+	<a href="help.html">Help</a>
+	<a href="maths.html">Maths</a>
+	<a href="groups.html">Groups</a>
+	<a href="code.html">Code</a>
 </p>
 <p>Copyright R Morris 2025</p>
 </div>

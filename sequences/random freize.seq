@@ -1,0 +1,10 @@
+frame:
+group: frieze
+vertices:
+  - [389,282]
+  - [170,282]
+  - [170,81]
+filename: images/*.jpg
+zoom: [1,1]
+anim: left-right
+repeat: 10

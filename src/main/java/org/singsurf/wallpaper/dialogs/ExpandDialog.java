@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.MessageFormat;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -24,6 +25,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Wallpaper;
 import org.singsurf.wallpaper.ZoomedDrawableRegion;
 import org.singsurf.wallpaper.tessrules.TessRule;
@@ -47,7 +49,7 @@ public class ExpandDialog extends JDialog implements  ChangeListener {
         JCheckBox centerCB;
 	Wallpaper wall;
 	public ExpandDialog(JFrame frame,Wallpaper w) {
-		super(frame,"Expand",true);
+		super(frame,Messages.getString("Dialog.Expand.title"),true); //$NON-NLS-1$
 		setPreferredSize(new Dimension(300,200));
 		wall = w;
 		GridBagLayout gbl = new GridBagLayout();
@@ -62,30 +64,30 @@ public class ExpandDialog extends JDialog implements  ChangeListener {
 		gbc.gridwidth = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0; gbc.gridy++; 
-		add(new JLabel("Width"), gbc);
+		add(new JLabel(Messages.getString("Dialog.width")), gbc); //$NON-NLS-1$
 		++gbc.gridx;
 		wSS = new JSpinner(new SpinnerNumberModel(10, 1, null, 1));
 		add(wSS,gbc);
 		
 		gbc.gridx++;
-		add(new JLabel("Height"), gbc);
+		add(new JLabel(Messages.getString("Dialog.height")), gbc); //$NON-NLS-1$
 		++gbc.gridx;
 		hSS = new JSpinner(new SpinnerNumberModel(10, 1, null, 1)); //hSS.s10,1);
 		add(hSS,gbc);
 		
 		gbc.gridwidth=4;
 		gbc.gridx=0; gbc.gridy++;
-		add(new JLabel("Offset"),gbc);
+		add(new JLabel(Messages.getString("Dialog.Expand.offset")),gbc); //$NON-NLS-1$
 		gbc.gridwidth = 1;
 		
 		gbc.gridx = 0; gbc.gridy++;
-		add(new JLabel("Left"), gbc);
+		add(new JLabel(Messages.getString("Dialog.left")), gbc); //$NON-NLS-1$
 		++gbc.gridx;
 		xoffSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1));
 		add(xoffSS,gbc);
 
 		gbc.gridx++;
-		add(new JLabel("Top"), gbc);
+		add(new JLabel(Messages.getString("Dialog.top")), gbc); //$NON-NLS-1$
 		++gbc.gridx;
 		yoffSS = new JSpinner(new SpinnerNumberModel(10, null, null, 1));
 		add(yoffSS,gbc);
@@ -93,11 +95,11 @@ public class ExpandDialog extends JDialog implements  ChangeListener {
 
 		gbc.gridwidth=2;
 		gbc.gridx = 0; gbc.gridy++;
-		tileCB = new JCheckBox("Tile image");
+		tileCB = new JCheckBox(Messages.getString("Dialog.Expand.tile_image")); //$NON-NLS-1$
 		add(tileCB,gbc);
 
 		gbc.gridx = 0; gbc.gridy++;
-	        centerCB = new JCheckBox("Center image",false);
+	        centerCB = new JCheckBox(Messages.getString("Dialog.Expand.centre_image"),false); //$NON-NLS-1$
 	        add(centerCB,gbc);
 
 		wSS.addChangeListener(this);
@@ -106,12 +108,12 @@ public class ExpandDialog extends JDialog implements  ChangeListener {
 		yoffSS.addChangeListener(this);
 
 		gbc.gridwidth=2;
-		JButton okBut = new JButton("OK");
+		JButton okBut = new JButton(Messages.getString("Dialog.OK")); //$NON-NLS-1$
 		okBut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				close(true);
 			}});
-		JButton cancelBut = new JButton("Cancel");
+		JButton cancelBut = new JButton(Messages.getString("Dialog.Cancel")); //$NON-NLS-1$
 		cancelBut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				close(false);
@@ -131,7 +133,7 @@ public class ExpandDialog extends JDialog implements  ChangeListener {
 	}
 
 	public void open(int w,int h) {
-		heading.setText("Current size "+w+" X "+h);
+		heading.setText(MessageFormat.format(Messages.getString("Dialog.current_size"),w,h)); //$NON-NLS-1$ //$NON-NLS-2$
 		imageWidth = wall.dr.baseRect.width;
 		imageHeight = wall.dr.baseRect.height;
 		wSS.setValue(w);
@@ -157,7 +159,7 @@ public class ExpandDialog extends JDialog implements  ChangeListener {
 
 	public void stateChanged(ChangeEvent ce) {
 		Graphics g = wall.myCanvas.getGraphics();
-		wall.paintCanvas(g);
+		wall.controller.paintCanvas(wall, g);
 		CropDialog.clear_background(g, wall.dr);
 		g.setColor(Color.black);
 		g.setPaintMode();

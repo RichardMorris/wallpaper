@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 
 import org.singsurf.wallpaper.DrawableRegion;
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 
 public abstract class BasicRule extends TessRule
@@ -137,13 +138,13 @@ public abstract class BasicRule extends TessRule
                 catch(Exception e)
                 {
                     if(!error_flag)
-                        System.out.println("Error ("+i+","+j+") det "+det
-                                + " x "+x
-                                + " y "+y
-                                + " in ("+ in[0] + ","+in[1]+")"
-                                + " res ("+ res[0] + ","+res[1]+")"
-                                + " sX "+srcX
-                                + " sY "+srcY
+                        System.out.println("Error ("+i+","+j+") det "+det //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + " x "+x //$NON-NLS-1$
+                                + " y "+y //$NON-NLS-1$
+                                + " in ("+ in[0] + ","+in[1]+")" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + " res ("+ res[0] + ","+res[1]+")" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + " sX "+srcX //$NON-NLS-1$
+                                + " sY "+srcY //$NON-NLS-1$
                         );
                     error_flag = true;
                     dr.pixels[i+j*dr.destRect.width] = 0;
@@ -154,9 +155,23 @@ public abstract class BasicRule extends TessRule
     abstract void fun(int x,int y,int[] out);
 
 
-    public static final TessRule trans = new BasicRule("Translation",
-    "A Translation of the image.\n" +
-    "Translates green point to red point") {
+    @Override
+	protected void paintSymetries(Vec U, Vec V, Vec O) {
+    	// not relevant here
+	}
+
+
+	@Override
+	public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
+    	// not relevant here
+	}
+
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+	}
+
+	public static final TessRule trans = new BasicRule(Messages.getString("Rule.trans"), //$NON-NLS-1$
+    Messages.getString("Rule.trans.descript")) { //$NON-NLS-1$
         @Override
         public final void fun(int x,int y,int[] out)
         {
@@ -165,9 +180,8 @@ public abstract class BasicRule extends TessRule
         }
     };
 
-    public static final TessRule id = new BasicRule("Identity",
-    "Identity.\n" +
-    "Will tile the output") {
+    public static final TessRule id = new BasicRule(Messages.getString("Rule.identity"), //$NON-NLS-1$
+    Messages.getString("Rule.identity.descript")) { //$NON-NLS-1$
         @Override
         public final void fun(int x,int y,int[] out)
         {
@@ -176,8 +190,8 @@ public abstract class BasicRule extends TessRule
         }
     };
 
-    public static final TessRule rot = new BasicRule("Rotation",
-    "A rotation of the image.\nRotates around the green point") {
+    public static final TessRule rot = new BasicRule(Messages.getString("Rule.rotation"), //$NON-NLS-1$
+    Messages.getString("Rule.rotation.descript")) { //$NON-NLS-1$
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             drawRotationPoint(frameO, 10);
         }
@@ -194,9 +208,8 @@ public abstract class BasicRule extends TessRule
         
     };
 
-    public static final TessRule reflect = new BasicRule("Reflection",
-    "A reflection of the image.\n"
-    + "Reflects along the line through the green point and red point") {
+    public static final TessRule reflect = new BasicRule(Messages.getString("Rule.reflection"), //$NON-NLS-1$
+    Messages.getString("Rule.reflection.descript")) { //$NON-NLS-1$
         @Override
         public final void fun(int x,int y,int[] out)
         {
@@ -240,9 +253,8 @@ public abstract class BasicRule extends TessRule
         return points;
     }
 
-    public static final TessRule glide = new BasicRule("Glide-Reflection",
-    "First the image is translated along a line and then reflected along the line.\n"
-    + "The lenght of the line specifies the length of the translation.") {
+    public static final TessRule glide = new BasicRule(Messages.getString("Rule.glide"), //$NON-NLS-1$
+    Messages.getString("Rule.glide.descript")) { //$NON-NLS-1$
         protected void paintSymetries(Vec U, Vec V, Vec O) {
             Vec[] points = laticePoints();
             for(int i=1;i<points.length;++i) {
@@ -262,8 +274,8 @@ public abstract class BasicRule extends TessRule
         
     };
 
-    public static final TessRule scale = new BasicRule("Scale",
-    "A uniform scalling") {
+    public static final TessRule scale = new BasicRule(Messages.getString("Rule.uniformscale"), //$NON-NLS-1$
+    Messages.getString("Rule.uniformscale.descript")) { //$NON-NLS-1$
         @Override
         public final void fun(int x,int y,int[] out)
         {
@@ -274,8 +286,8 @@ public abstract class BasicRule extends TessRule
         }
     };
 
-    public static final TessRule scaleXY = new BasicRule("Scale XY",
-    "Scalling in XY direction") {
+    public static final TessRule scaleXY = new BasicRule(Messages.getString("Rule.scalexy"), //$NON-NLS-1$
+    Messages.getString("Rule.scalexy.descript")) { //$NON-NLS-1$
         @Override
         public final void fun(int x,int y,int[] out)
         {
@@ -286,9 +298,8 @@ public abstract class BasicRule extends TessRule
         }
     };
 
-    public static final TessRule shear = new BasicRule("Linear",
-    "General linear map\n"
-    + "Specified by two vectors") {
+    public static final TessRule shear = new BasicRule(Messages.getString("Rule.linear"), //$NON-NLS-1$
+    Messages.getString("Rule.linear.descript")) { //$NON-NLS-1$
         public void calcFrame(FundamentalDomain fd, int selVert, boolean constrained) {
             frameO.set(fd.cellVerts[1]);
             frameU.set(fd.cellVerts[0].sub(fd.cellVerts[1]));

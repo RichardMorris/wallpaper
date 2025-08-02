@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.MessageFormat;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -23,6 +24,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Wallpaper;
 import org.singsurf.wallpaper.ZoomedDrawableRegion;
 
@@ -37,7 +39,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 	Wallpaper wall;
 	private JSpinner pcSS;
 	public RescaleDialog(JFrame frame,Wallpaper w) {
-		super(frame,"Resize",true);
+		super(frame,Messages.getString("Dialog.Rescale.title"),true); //$NON-NLS-1$
 		setPreferredSize(new Dimension(300,200));
 		wall = w;
 		GridBagLayout gbl = new GridBagLayout();
@@ -53,7 +55,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 		gbc.gridwidth = 1;
 
 		gbc.gridx = 0; gbc.gridy++; 
-		add(new JLabel("Width"), gbc);
+		add(new JLabel(Messages.getString("Dialog.width")), gbc); //$NON-NLS-1$
 
 		++gbc.gridx;
 		sxSS = new JSpinner(new SpinnerNumberModel(10, 1, null, 1));
@@ -61,7 +63,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 		sxSS.addChangeListener(this);
 
 		gbc.gridx = 0; gbc.gridy++;
-		add(new JLabel("Height"), gbc);
+		add(new JLabel(Messages.getString("Dialog.height")), gbc); //$NON-NLS-1$
 	
 		++gbc.gridx;
 		sySS = new JSpinner(new SpinnerNumberModel(10, 1, null, 1));
@@ -69,7 +71,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 		sySS.addChangeListener(this);
 
 		gbc.gridx = 0; gbc.gridy++;
-		add(new JLabel("Percent"), gbc);
+		add(new JLabel(Messages.getString("Dialog.percent")), gbc); //$NON-NLS-1$
 	
 		++gbc.gridx;
 		pcSS = new JSpinner(new SpinnerNumberModel(100, 1, null, 1));
@@ -78,7 +80,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 
 		gbc.gridwidth = 2;
 		gbc.gridx = 0; gbc.gridy++;
-		JCheckBox cb = new JCheckBox("Lock aspect ratio",true);
+		JCheckBox cb = new JCheckBox(Messages.getString("Dialog.Rescale.lock_aspect_ratio"),true); //$NON-NLS-1$
 		add(cb,gbc);
 		gbc.gridwidth = 1;
 		cb.addItemListener(e -> {
@@ -87,11 +89,11 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 		});
 	
 		gbc.gridx = 0; gbc.gridy++;
-		JButton okBut = new JButton("OK");
+		JButton okBut = new JButton(Messages.getString("Dialog.OK")); //$NON-NLS-1$
 		add(okBut,gbc);
 
 		++gbc.gridx;
-		JButton cancelBut = new JButton("Cancel");
+		JButton cancelBut = new JButton(Messages.getString("Dialog.Cancel")); //$NON-NLS-1$
 		add(cancelBut,gbc);
 		
 		
@@ -107,7 +109,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 	}
 
 	public void open(int w,int h) {
-		heading.setText("Current size "+w+" X "+h);
+		heading.setText(MessageFormat.format(Messages.getString("Dialog.current_size"),w,h)); //$NON-NLS-1$ //$NON-NLS-2$
 		newWidth = w;
 		newHeight = h;
 		drawn =false;
@@ -140,7 +142,7 @@ public class RescaleDialog extends JDialog implements  ChangeListener {
 	int oldx=0,oldy=0;
 	public void stateChanged(ChangeEvent ce) {
 		Graphics g = wall.myCanvas.getGraphics();
-		wall.paintCanvas(g);
+		wall.controller.paintCanvas(wall, g);
 		CropDialog.clear_background(g, wall.dr);
 		g.setColor(Color.black);
 		g.setPaintMode();

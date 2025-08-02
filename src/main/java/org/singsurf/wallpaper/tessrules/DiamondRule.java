@@ -3,8 +3,11 @@
  */
 package org.singsurf.wallpaper.tessrules;
 
+import java.awt.Polygon;
+
 import org.singsurf.wallpaper.DVec;
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 
 public abstract class DiamondRule extends TessRule
@@ -47,8 +50,8 @@ public abstract class DiamondRule extends TessRule
 		}
 
         if(DEBUG) {
-            System.out.println("sel "+selectedVertex+" fc "+firstCall);
-            System.out.println("u "+u1+","+u2+" v "+v1+","+v2);
+            System.out.println("sel "+selectedVertex+" fc "+firstCall); //$NON-NLS-1$ //$NON-NLS-2$
+            System.out.println("u "+u1+","+u2+" v "+v1+","+v2); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
 
         if(selectedVertex==0) {
@@ -76,7 +79,7 @@ public abstract class DiamondRule extends TessRule
         	v2 = (int) Math.rint(ref.y);
         }
         if(DEBUG) {
-            System.out.println("u "+u1+","+u2+" v "+v1+","+v2);
+            System.out.println("u "+u1+","+u2+" v "+v1+","+v2); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
         det = u1 * v2 - v1 * u2;
         frameO.x = fd.cellVerts[1].x;
@@ -112,7 +115,7 @@ public abstract class DiamondRule extends TessRule
             // first fix blue point
             u = verts[2].sub(verts[0]);
             u = u.constrainedVec(Math.PI/2);
-            verts[2].set(verts[0].add(u));
+//            verts[2].set(verts[0].add(u));
 
             // now line from mid point of RB to G
             if(u.x==0) {
@@ -146,8 +149,14 @@ public abstract class DiamondRule extends TessRule
 
             break;
         default:
-            System.out.println("Illegal seletion point");
+            System.out.println(Messages.getString("Rule.Msg.illegal_sel_point")); //$NON-NLS-1$
         return;
+        }
+        if(verts[0].x == verts[1].x && verts[1].x == verts[2].x) {
+        	--verts[1].x;
+        }
+        if(verts[0].y == verts[1].y && verts[1].y == verts[2].y) {
+        	--verts[1].y;
         }
     }
 
@@ -167,10 +176,37 @@ public abstract class DiamondRule extends TessRule
         fd.setLatticeType(FundamentalDomain.PARALLOGRAM);
     }
 
-    public static TessRule rhombCM = new DiamondRule("CM",
-            "A reflection through opposite corners of diamond.\n"+
-            "The lengths of each side of the diamond are all equal\n"+
-            "Only one side of the fundamental domain needs to be a straight line"
+    
+    
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+		fd.drawLatticeLine(p2, p2.add(U));
+		fd.drawLatticeLine(p2, p2.add(V));
+		fd.drawLatticeLine(p2, p2.add(U.negate()));
+		fd.drawLatticeLine(p2, p2.add(V.negate()));
+	}
+    
+	@Override
+	public Polygon make_tile_polygon(FundamentalDomain fd) {
+    	int npts = 4;
+    	int x[]=new int[npts];
+    	int y[]=new int[npts];
+    	
+       	var A = Vec.linComb(4,frameO,1,frameU,-1,frameV,4);
+		var B=	Vec.linComb(4,frameO,-1,frameU,1,frameV,4);
+		var C=	Vec.linComb(4,frameO,3,frameU,5,frameV,4);
+		var D=	Vec.linComb(4,frameO,5,frameU,3,frameV,4);
+
+    	x[0] = A.x; y[0] = A.y;
+    	x[1] = B.x; y[1] = B.y;
+    	x[2] = C.x; y[2] = C.y;
+    	x[3] = D.x; y[3] = D.y;
+    	return new Polygon(x,y,npts);
+	}
+
+
+    public static TessRule rhombCM = new DiamondRule(Messages.getString("Rule.CM"), //$NON-NLS-1$
+            Messages.getString("Rule.CM.descript") //$NON-NLS-1$
     )
     {
         @Override
@@ -222,12 +258,111 @@ public abstract class DiamondRule extends TessRule
         public double approxArea() { return 0.5; }
     };
 
+    public static TessRule rhombCMr = new DiamondRule(Messages.getString("Rule.CMr"), //$NON-NLS-1$
+            Messages.getString("Rule.CMr.descript") //$NON-NLS-1$
+    )
+    {
+        @Override
+        public void calcFund(FundamentalDomain fd)
+        {
+        	fd.fund[0].setLC(4,frameO,1,frameU,-1,frameV,4);
+        	fd.fund[1].setLC(4,frameO,-1,frameU,1,frameV,4);
+        	fd.fund[2].setLC(4,frameO,1,frameU,3,frameV,4);
+        	fd.fund[3].setLC(4,frameO,3,frameU,1,frameV,4);
+        	fd.numFund = 4;
+        }
 
-    public static TessRule rhombCMM = new DiamondRule("CMM",
-            "Two reflections through opposite corners of diamond.\n"+
-            "The reflections must be at right angles and form "+
-            "two of the sides of the fundamental domain.\n"+
-            "The other side does not needs to be a straight line."
+        @Override
+		public void paintTileEdges(Vec U, Vec V, Vec O, FundamentalDomain fd) {
+        	fd.drawLatticeLine(Vec.linComb(4,O,1,U,-1,V,4),
+        					Vec.linComb(4,O,-1,U,1,V,4));
+        	fd.drawLatticeLine(Vec.linComb(4,O,1,U,-1,V,4),
+					Vec.linComb(4,O,5,U,3,V,4));        	
+        }
+
+		@Override
+		public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
+			
+        	drawSimpleEdge(Vec.linComb(4,O,1,U,-1,V,4),
+					Vec.linComb(4,O,-1,U,1,V,4));
+        	drawSimpleEdge(Vec.linComb(4,O,1,U,-1,V,4),
+        			Vec.linComb(4,O,5,U,3,V,4));
+        	drawSimpleEdge(Vec.linComb(4,O,1,U,3,V,4),
+        			Vec.linComb(4,O,3,U,1,V,4));
+
+		}
+		
+		
+
+		@Override
+		public Polygon make_tile_polygon(FundamentalDomain fd) {
+        	int npts = 4;
+        	int x[]=new int[npts];
+        	int y[]=new int[npts];
+        	
+           	var A = Vec.linComb(4,frameO,1,frameU,-1,frameV,4);
+			var B=	Vec.linComb(4,frameO,-1,frameU,1,frameV,4);
+			var C=	Vec.linComb(4,frameO,3,frameU,5,frameV,4);
+			var D=	Vec.linComb(4,frameO,5,frameU,3,frameV,4);
+
+        	x[0] = A.x; y[0] = A.y;
+        	x[1] = B.x; y[1] = B.y;
+        	x[2] = C.x; y[2] = C.y;
+        	x[3] = D.x; y[3] = D.y;
+        	return new Polygon(x,y,npts);
+		}
+
+		@Override
+        public void fun(int[] in,int[] out,int det)
+        {
+            int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
+            int beta = in[1] % det; if(beta < 0) beta = beta + det;
+            if((alpha+beta) > det)
+            {
+                int gamma = beta;
+                beta = det - alpha;
+                alpha = det - gamma;
+            }
+            if(2* alpha < 2* beta - det) 
+			{ 
+				out[0] = det -beta;
+				out[1] =  - alpha;
+			}
+            else if(2* alpha > 2* beta + det) 
+			{ 
+				out[0] =  -beta;
+				out[1] = det - alpha;
+			}
+            else {
+            	out[0] = alpha;
+            	out[1] = beta;
+            }
+        }
+
+        @Override
+        public void paintSymetries(Vec U,Vec V,Vec O) {
+            Vec P1 = U.add(O); 
+            Vec P2 = V.add(O);
+            drawReflectionLine(P1,P2);
+            Vec P5 = Vec.linComb(2,U,-1,V,2).add(O);
+            Vec P6 = V.div(2).add(O);
+            drawGlideLine(P5,P6);
+        }
+
+//        @Override
+//        public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
+//            drawSimpleEdge(O, O.add(U));
+//            drawSimpleEdge(O, O.add(V));
+//            //drawSimpleEdge(O, O.sum(U).sum(V));
+//            drawSimpleEdge(O.add(V), O.add(U));
+//        }
+
+        @Override
+        public double approxArea() { return 0.5; }
+    };
+
+    public static TessRule rhombCMM = new DiamondRule(Messages.getString("Rule.CMM"), //$NON-NLS-1$
+            Messages.getString("Rule.CMM.descript") //$NON-NLS-1$
     )
     {
         @Override
@@ -250,6 +385,7 @@ public abstract class DiamondRule extends TessRule
             fd.numFund=3;
         }
 
+
         @Override
         public void fun(int[] in,int[] out,int det)
         {
@@ -267,8 +403,9 @@ public abstract class DiamondRule extends TessRule
                 alpha = beta;
                 beta = gamma;
             }
-            out[0] = alpha;
-            out[1] = beta;
+            
+           	out[0] = alpha;
+           	out[1] = beta;
         }
 
         @Override
@@ -300,6 +437,109 @@ public abstract class DiamondRule extends TessRule
             drawSimpleEdge(O, O.add(U).add(V));
             drawSimpleEdge(O.add(V), O.add(U));
         }
+
+        @Override
+        public double approxArea() { return 0.25; }
+
+    };
+
+    public static TessRule rhombCMMr = new DiamondRule(Messages.getString("Rule.CMMr"), //$NON-NLS-1$
+            Messages.getString("Rule.CMMr.descript") //$NON-NLS-1$
+    )
+    {
+        @Override
+        public void calcFund(FundamentalDomain fd)
+        {
+            fd.fund[0].x = fd.cellVerts[1].x; 
+            fd.fund[0].y = fd.cellVerts[1].y;
+            if(det<0)
+            {
+                fd.fund[1].setLC(4, frameO,  1,  frameU,-1, frameV, 4);
+                fd.fund[2].setLC(4, frameO,  3,  frameU, 1, frameV, 4);
+                  
+            }
+            else
+            {
+                fd.fund[1].setLC(4, frameO,  1,  frameU,-1, frameV, 4);
+                fd.fund[2].setLC(4, frameO,  3,  frameU, 1, frameV, 4);
+            }
+            fd.fund[3].x = fd.cellVerts[1].x+(frameV.x+frameU.x)/2;
+            fd.fund[3].y = fd.cellVerts[1].y+(frameV.y+frameU.y)/2;
+            fd.numFund=4;
+        }
+
+        @Override
+        public void fun(int[] in,int[] out,int det)
+        {
+            int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
+            int beta = in[1] % det; if(beta < 0) beta = beta + det;
+            if((alpha+beta) > det)
+            {
+                int gamma = beta;
+                beta = det - alpha;
+                alpha = det - gamma;
+            }
+            if( beta < alpha ) 
+            { 
+                int gamma = alpha;
+                alpha = beta;
+                beta = gamma;
+            }
+            
+            if(2* alpha < 2* beta - det) 
+			{ 
+				out[0] = -alpha;
+				out[1] = det - beta;
+			}
+            else {
+            	out[0] = alpha;
+            	out[1] = beta;
+            }
+        }
+
+        @Override
+        public void paintSymetries(Vec U,Vec V,Vec O) {
+            Vec P1 = U.add(O); 
+            Vec P2 = V.add(O);
+            drawReflectionLine(P1,P2);
+            Vec P3 = O;
+            Vec P4 = Vec.linComb(1,U,1,V,1,O);
+            drawReflectionLine(P3,P4);
+            drawRotationPoint(O,2);
+            drawRotationPoint(Vec.linComb(1,U,1,V,2).add(O),2);
+            drawRotationPoint(U.div(2).add(O),2);
+            drawRotationPoint(V.div(2).add(O),2);
+
+            Vec P5 = Vec.linComb(2,U,-1,V,2).add(O);
+            Vec P6 = V.div(2).add(O);
+
+            drawGlideLine(P5,P6);
+
+            Vec P7   = Vec.linComb(2, U, 3, V,2,O,2);
+            drawGlideLine(P6,P7);
+        }
+
+        @Override
+        public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
+        	drawSimpleEdge(Vec.linComb(4,O,1,U,-1,V,4),
+					Vec.linComb(4,O,-1,U,1,V,4));
+        	drawSimpleEdge(Vec.linComb(4,O,1,U,-1,V,4),
+        			Vec.linComb(4,O,5,U,3,V,4));
+        	drawSimpleEdge(Vec.linComb(4,O,1,U,3,V,4),
+        			Vec.linComb(4,O,3,U,1,V,4));
+        	drawSimpleEdge(O,
+					Vec.linComb(1,O,1,U,1,V));
+        }
+        
+        @Override
+		public void paintTileEdges(Vec U, Vec V, Vec O, FundamentalDomain fd) {
+        	fd.drawLatticeLine(Vec.linComb(4,O,1,U,-1,V,4),
+        					Vec.linComb(4,O,-1,U,1,V,4));
+        	fd.drawLatticeLine(Vec.linComb(4,O,1,U,-1,V,4),
+					Vec.linComb(4,O,5,U,3,V,4));        	
+        }
+
+
 
         @Override
         public double approxArea() { return 0.25; }

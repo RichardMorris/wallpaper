@@ -214,14 +214,7 @@ public class FileController {
 				wall.fd.zoom(((float) denom)/numer);
 	             ((ZoomedDrawableRegion) wall.dr).zoom(1,1);	
 	
-	             if(wall.controller.showingOriginal) {
-	            	 wall.controller.showOriginal();
-	             }
-	             else {
-	            	 wall.controller.applyTessellation();
-	            	 wall.controller.calcGeom();
-	            	 wall.controller.applyFull();
-	             }
+	             wall.controller.redraw();
 	
 	            String type = getType(f.getName());
 	            try {
@@ -231,7 +224,7 @@ public class FileController {
 	                        BufferedImage.TYPE_INT_RGB);
 	                Graphics g = bImg.getGraphics();
 	                g.setClip(0, 0, img.getWidth(null),img.getHeight(null));
-	                wall.paintCanvas(g);
+	                wall.controller.paintCanvas(wall, g);
 	                ImageIO.write(bImg,type,f);
 	
 	            } catch (IOException e) {

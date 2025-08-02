@@ -4,6 +4,7 @@
 package org.singsurf.wallpaper.tessrules;
 
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 import org.singsurf.wallpaper.Wallpaper;
 
@@ -44,7 +45,7 @@ public abstract class SquRule extends TessRule
             verts[1].set(verts[0].add(u));
             break;
         default:
-            System.out.println("Only green or red points can be selected");
+            System.out.println(Messages.getString("Rule.Msg.Only_red_or_green")); //$NON-NLS-1$
             return;
         }
     }
@@ -76,6 +77,14 @@ public abstract class SquRule extends TessRule
         drawSimpleEdge(O,D);
         drawSimpleEdge(F,G);
     }
+
+    @Override
+	public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+		fd.drawLatticeLine(p2, p2.add(U));
+		fd.drawLatticeLine(p2, p2.add(V));
+		fd.drawLatticeLine(p2, p2.add(U.negate()));
+		fd.drawLatticeLine(p2, p2.add(V.negate()));
+	}
 
     
     public void fixFlip(String code, FundamentalDomain fd) {
@@ -119,11 +128,8 @@ public abstract class SquRule extends TessRule
         }
     }
 
-    public static TessRule squP4 = new SquRule("P4",
-            "A 90\u00ba rotation.\n"+
-            "A square has much more symmetry than a rectangle or diamond.\n"+
-            "As well as the two  90\u00ba rotation there is an 180\u00ba rotation.\n"+
-            "and two lines of reflection."
+    public static TessRule squP4 = new SquRule(Messages.getString("Rule.P4"), //$NON-NLS-1$
+            Messages.getString("Rule.P4.descript") //$NON-NLS-1$
     )
     {
         
@@ -163,13 +169,90 @@ public abstract class SquRule extends TessRule
 
     };
 
-    public static TessRule squP4g = new SquRule("P4g",
-            "A 90\u00ba rotation and a glide-reflection.\n"+
-            "There is only one lines of reflection which does not pass through\n"+
-            "the 90\u00ba rotation points.\n"+
-            "One of my favorite patterns with the rotation appearing\n"+
-            "to go in opposite directions.\n"+
-            "The fundamental domain is a right angled isosceles triangle."
+    public static TessRule squP4r = new SquRule(Messages.getString("Rule.P4k"), //$NON-NLS-1$
+            Messages.getString("Rule.P4k.descript") //$NON-NLS-1$
+    )
+    {
+        
+        public void calcFund(FundamentalDomain fd)
+        {
+            fd.fund[0].set(frameO); // frameO is the origin
+            fd.fund[1].setLC(2,  frameO,1, frameU, 1, frameV,2);
+            fd.fund[2].setLC(4,  frameO,1, frameU, 3, frameV,4);
+            fd.fund[3].setLC(4,  frameO,-1, frameU, 1, frameV,4);
+            fd.numFund = 4;
+        }
+
+        
+        public void fun(int[] in,int[] out,int det)
+        {
+            int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
+            int beta = in[1] % det; if(beta < 0) beta = beta + det;
+            calcRot4(alpha,beta,det,out);
+            alpha = out[0]; beta = out[1];	
+            
+            if(alpha > beta)
+			{
+            	if(2* alpha + 2* beta < det)
+				{
+					out[0] = -beta;
+					out[1] = alpha;
+				}
+				else
+				{
+					out[0] = beta;
+					out[1] = det-alpha;
+				}
+			}
+        }
+
+        
+        
+        @Override
+		public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
+//            fd.fund[0].set(frameO); // frameO is the origin
+//            fd.fund[1].setLC(2,  frameO,1, frameU, 1, frameV,2);
+//            fd.fund[2].setLC(4,  frameO,1, frameU, 3, frameV,4);
+//            fd.fund[3].setLC(4,  frameO,-1, frameU, 1, frameV,4);
+//            fd.numFund = 4;
+
+			drawSimpleEdge(
+					O,
+					Vec.linComb(1, O, 1, U, 1, V));
+			drawSimpleEdge(
+					O,
+					Vec.linComb(1, O, -1, U, 1, V));
+			drawSimpleEdge(
+					Vec.linComb(4, O, -1, U, 1, V, 4),
+					Vec.linComb(4, O, 1, U, 3, V, 4));
+			drawSimpleEdge(
+					Vec.linComb(4, O, 1, U, 1, V, 4),
+					Vec.linComb(4, O, 3, U, -1, V, 4));
+
+		}
+
+
+		@Override
+		public void paintTileEdges(Vec U, Vec V, Vec p2, FundamentalDomain fd) {
+			// TODO Auto-generated method stub
+			super.paintTileEdges(U, V, p2, fd);
+		}
+
+
+		protected void paintSymetries(Vec U, Vec V, Vec O) {
+            drawRotationPoint(O,4);
+            drawRotationPoint(Vec.linComb(1,U,2,O,2),2);
+            drawRotationPoint(Vec.linComb(1,V,2,O,2),2);
+            drawRotationPoint(Vec.linComb(1,U,1,V,2,O,2),4);
+        }
+
+        
+        public double approxArea() { return 0.25; }
+
+    };
+
+    public static TessRule squP4G = new SquRule(Messages.getString("Rule.P4G"), //$NON-NLS-1$
+            Messages.getString("Rule.P4G.descript") //$NON-NLS-1$
     )
     {
         
@@ -181,9 +264,12 @@ public abstract class SquRule extends TessRule
             u2 =	frameV.y;
             v1 = 	frameU.x;
             v2 = 	frameU.y;
-            fd.fund[0].x = fd.cellVerts[1].x; fd.fund[0].y = fd.cellVerts[1].y;
-            fd.fund[1].x = fd.cellVerts[1].x + u1/2; fd.fund[1].y = fd.cellVerts[1].y + u2/2;
-            fd.fund[2].x = fd.cellVerts[1].x + v1/2; fd.fund[2].y = fd.cellVerts[1].y + v2/2;
+            fd.fund[0] = Vec.linComb(2,fd.cellVerts[1],1,frameV,1,frameU,2); 
+//            fd.fund[0].y = fd.cellVerts[1].y;
+            fd.fund[1].x = fd.cellVerts[1].x + u1/2; 
+            fd.fund[1].y = fd.cellVerts[1].y + u2/2;
+            fd.fund[2].x = fd.cellVerts[1].x + v1/2; 
+            fd.fund[2].y = fd.cellVerts[1].y + v2/2;
             fd.numFund=3;
         }
 
@@ -195,7 +281,7 @@ public abstract class SquRule extends TessRule
             int res[] = new int[2];
             calcRot4(alpha,beta,det,res);
             alpha = res[0]; beta = res[1];
-            if(2 * (alpha + beta ) > det)
+            if(2 * (alpha + beta ) < det)
             {
                 alpha = det/2 - res[1];
                 beta = det/2 - res[0]; 
@@ -239,11 +325,84 @@ public abstract class SquRule extends TessRule
 
     };
 
-    public static TessRule squP4m = new SquRule("P4m",
-            "A 90\u00ba rotation and a reflection passing through the\n"+
-            "center of rotation.\n"+
-            "Shows the full symmetry of the square with\n"+
-            "three reflections and a 180\u00ba rotation."
+    public static TessRule squP4Gs = new SquRule(Messages.getString("Rule.P4Gs"), //$NON-NLS-1$
+            Messages.getString("Rule.P4Gs.descript") //$NON-NLS-1$
+    )
+    {
+        
+        public void calcFund(FundamentalDomain fd)
+        {
+            fd.fund[0].setLC(4,frameO, 1, frameU, 1, frameV,4);
+            fd.fund[1].setLC(2, frameO, 1, frameU, 1, frameV,2);
+            fd.fund[2].setLC(4, frameO, 1, frameU, 3, frameV, 4);
+            fd.fund[3].setLC(2, frameO, 0, frameU, 1, frameV,2);
+           fd.numFund=4;
+        }
+
+        
+        public void fun(int[] in,int[] out,int det)
+        {
+            int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
+            int beta = in[1] % det; if(beta < 0) beta = beta + det;
+            int res[] = new int[2];
+            calcRot4(alpha,beta,det,res);
+            alpha = res[0]; beta = res[1];
+            if(2 * (alpha + beta ) < det)
+            {
+                alpha = det/2 - res[1];
+                beta = det/2 - res[0]; 
+            }
+            if(beta < alpha)
+			{
+            	out[0] = beta;
+            	out[1] = det - alpha;
+			}
+            else {
+            out[0] = alpha;
+            out[1] = beta;
+            }
+        }
+
+        
+        protected void paintSymetries(Vec U, Vec V, Vec O) {
+
+            drawReflectionLine(Vec.linComb(1,U,2,O,2),Vec.linComb(1,V,2,O,2));
+            drawReflectionLine(Vec.linComb(1,V,2,O,2),Vec.linComb(1,U,2,V,2,O,2));
+            drawReflectionLine(Vec.linComb(1,U,2,V,2,O,2),Vec.linComb(2,U,1,V,2,O,2));
+            drawReflectionLine(Vec.linComb(2,U,1,V,2,O,2),Vec.linComb(1,U,2,O,2));
+
+            drawGlideLine(Vec.linComb(1,U,4,O,4),Vec.linComb(1,U,4,V,4,O,4));
+            drawGlideLine(Vec.linComb(3,U,4,O,4),Vec.linComb(3,U,4,V,4,O,4));
+            drawGlideLine(Vec.linComb(1,V,4,O,4),Vec.linComb(1,V,4,U,4,O,4));
+            drawGlideLine(Vec.linComb(3,V,4,O,4),Vec.linComb(3,V,4,U,4,O,4));
+
+            drawGlideLine(O,O.add(U).add(V));
+            drawGlideLine(O.add(U),O.add(V));
+
+            drawRotationPoint(O,4);
+            drawRotationPoint(Vec.linComb(1,U,2,O,2),2);
+            drawRotationPoint(Vec.linComb(1,V,2,O,2),2);
+            drawRotationPoint(Vec.linComb(1,U,1,V,2,O,2),4);
+        }
+
+        
+        public void paintDomainEdges(Vec U, Vec V, Vec O, int det) {
+            drawSimpleEdge(Vec.linComb(2, O, 1, V, 2), Vec.linComb(2, O, 2, U, -1, V, 2));
+            drawSimpleEdge(Vec.linComb(2, O, -1, V, 2), Vec.linComb(2, O, 2, U, 1, V, 2));
+
+            drawSimpleEdge(O, Vec.linComb(1, O, 1, U, 1, V));
+            drawSimpleEdge(Vec.linComb(1, O, 1, V), Vec.linComb(1, O, 1, U));
+
+        }
+
+
+        
+        public double approxArea() { return 0.125; }
+
+    };
+
+    public static TessRule squP4M = new SquRule(Messages.getString("Rule.P4M"), //$NON-NLS-1$
+            Messages.getString("Rule.P4M.descript") //$NON-NLS-1$
     )
     {
         

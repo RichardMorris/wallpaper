@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Wallpaper;
 
 public class AnimDialog extends JDialog  {
@@ -28,13 +29,13 @@ public class AnimDialog extends JDialog  {
 
 
 	public boolean ok=false;
-	JLabel heading = new JLabel("Time animation runs for");
+	JLabel heading = new JLabel(Messages.getString("Dialog.Anim.time_for_anim")); //$NON-NLS-1$
 	JSpinner timeSS;
 //	JCheckBox repeatCB;
 	Wallpaper wall;
 
 	public AnimDialog(JFrame frame,Wallpaper w) {
-		super(frame,"Animation time",true);
+		super(frame,Messages.getString("Dialog.Anim.title"),true); //$NON-NLS-1$
 		setPreferredSize(new Dimension(300,120));
 		wall = w;
 		GridBagLayout gbl = new GridBagLayout();
@@ -51,18 +52,18 @@ public class AnimDialog extends JDialog  {
 		gbc.gridwidth = 1;
 
 		gbc.gridx = 0; gbc.gridy++; 
-		add(new JLabel("Elapse Time (s)"), gbc);
+		add(new JLabel(Messages.getString("Dialog.Anim.elapse_time")), gbc); //$NON-NLS-1$
 		++gbc.gridx;
                 timeSS = new JSpinner(new SpinnerNumberModel(30, 0, null, 1));
 		add(timeSS,gbc);
 		gbc.gridx++;
 
-		JButton okBut = new JButton("OK");
+		JButton okBut = new JButton(Messages.getString("Dialog.OK")); //$NON-NLS-1$
 		okBut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				close(true);
 			}});
-		JButton cancelBut = new JButton("Cancel");
+		JButton cancelBut = new JButton(Messages.getString("Dialog.Cancel")); //$NON-NLS-1$
 		cancelBut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				close(false);

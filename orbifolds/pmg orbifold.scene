@@ -1,0 +1,95 @@
+<definitions>
+<definition name="Globals" type="globals" opType="none">
+
+</definition>
+
+<definition name="Simple domain" type="psurf" opType="none">
+[x,y,0];
+
+<variable name="x" min="-1.0" max="1.0" steps="100" type="none">
+<variable name="y" min="-1.0" max="1.0" steps="100" type="none">
+<option name="textureXmin" value="-1.0"/>
+<option name="textureXmax" value="1.0"/>
+<option name="textureYmin" value="-1.0"/>
+<option name="textureYmax" value="1.0"/>
+<option name="showFace" value="true"/>
+<option name="showEdge" value="true"/>
+<option name="showVert" value="false"/>
+<option name="surfColour" value="Colours from XYZ"/>
+<option name="colourMinVal" value="-1.0"/>
+<option name="colourMaxVal" value="1.0"/>
+<option name="clipping" value="100.0"/>
+</definition>
+
+<definition name="Sphere" type="clip" opType="none">
+-sign * ((x-x0)^2+(y-y0)^2+(z-z0)^2 - r^2);
+
+<variable name="x" min="0.0" max="0.0" type="none">
+<variable name="y" min="0.0" max="0.0" type="none">
+<variable name="z" min="0.0" max="0.0" type="none">
+<parameter name="sign" value="1.0">
+<parameter name="x0" value="0.0">
+<parameter name="y0" value="0.0">
+<parameter name="z0" value="0.0">
+<parameter name="r" value="0.7499999999999999">
+<option name="showFace" value="true"/>
+<option name="showEdge" value="false"/>
+<option name="showVert" value="false"/>
+<option name="showCurve" value="true"/>
+<option name="colour" value="Unchanged"/>
+<option name="numItts" value="5"/>
+<option name="invert" value="false"/>
+</definition>
+
+<definition name="conical points" type="mapping" opType="none">
+[x,y,Z];
+Z = h if( d < r, (r - d)^3, 0);
+d = if(d1 > d2,d2,d1);
+d1 = sqrt( (x-x1)^2 + (y-y1)^2 );
+d2 = sqrt( (x-x2)^2 + (y-y2)^2 );
+<variable name="x" min="0.0" max="0.0" type="none">
+<variable name="y" min="0.0" max="0.0" type="none">
+<variable name="z" min="0.0" max="0.0" type="none">
+<parameter name="x1" value="0.0">
+<parameter name="y1" value="-0.20000000000000004">
+<parameter name="r" value="0.4999999999999999">
+<parameter name="h" value="4.999999999999999">
+<parameter name="x2" value="0.0">
+<parameter name="y2" value="0.2">
+<option name="showFace" value="true"/>
+<option name="showEdge" value="false"/>
+<option name="showVert" value="false"/>
+<option name="showCurve" value="true"/>
+<option name="surfColour" value="Unchanged"/>
+<option name="curveColour" value="Unchanged"/>
+<option name="clipping" value="100.0"/>
+<option name="continuity" value="100.0"/>
+<option name="parametersFromTextures" value="false"/>
+</definition>
+
+</definitions>
+<dependencies>
+<projectComponents name="Sphere">
+  <input name="Simple domain" >
+    <inputOpt name="showVert" value="false" />
+    <inputOpt name="showEdge" value="false" />
+    <inputOpt name="showFace" value="true" />
+    <inputOpt name="surfColours" value="Unchanged" />
+  </input>
+</projectComponents>
+<projectComponents name="conical points">
+  <input name="Sphere(Simple domain)" >
+    <inputOpt name="showVert" value="false" />
+    <inputOpt name="showEdge" value="false" />
+    <inputOpt name="showFace" value="true" />
+    <inputOpt name="surfColours" value="Unchanged" />
+  </input>
+</projectComponents>
+</dependencies>
+<visibleGeometries>
+  <display name="Main Display">
+    <visgeom name="conical points" visible="true" >
+    <visgeom name="Sphere(Simple domain)" visible="false" >
+    <visgeom name="Simple domain" visible="false" >
+  </display>
+</visibleGeometries>

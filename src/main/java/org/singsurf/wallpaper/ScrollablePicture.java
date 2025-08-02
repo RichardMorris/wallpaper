@@ -109,7 +109,7 @@ public class ScrollablePicture extends JPanel
     
     @Override
     protected void paintComponent(Graphics g) {
-    	wall.paintCanvas(g);
+    	wall.controller.paintCanvas(wall, g);
     }
 
 

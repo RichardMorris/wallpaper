@@ -2,10 +2,13 @@ package org.singsurf.wallpaper.tessrules;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.text.MessageFormat;
 
 import org.singsurf.wallpaper.DrawableRegion;
 import org.singsurf.wallpaper.FundamentalDomain;
+import org.singsurf.wallpaper.Messages;
 import org.singsurf.wallpaper.Vec;
 
 /**
@@ -61,7 +64,7 @@ public abstract class TessRule
 
     /** calculate the fundamental domain */
     public abstract void calcFund(FundamentalDomain fd);
-
+    
     /**
      * Constrain the vertices so that it could be used as a desktop tile.
      * @param verts array of three selection points modified on return
@@ -122,7 +125,6 @@ public abstract class TessRule
         if( det == 0 ) return;
         if(det < 0 )
         {
-            //				System.out.println("Negative det");
             det = - det;
             int w1 = v1; v1 = u1; u1 = w1; 
             int w2 = v2; v2 = u2; u2 = w2;
@@ -130,25 +132,10 @@ public abstract class TessRule
         long t1=0;
         if(TIME)  t1=System.currentTimeMillis();
         
-        //long n1 = System.nanoTime();
-        //Arrays.fill(dr.pixels, Color.BLACK.getRGB());
-
-//        int latticeWidth = fd.getLatticeWidth();
-//        int latticeHeight = fd.getLatticeHeight();
         final int startX = dr.dispRect.x;
         final int startY = dr.dispRect.y;
-        Vec[] points;
-//        if(latticeWidth < 5 || latticeHeight < 5 
-//                || latticeWidth > dr.destRect.width
-//                || latticeHeight > dr.destRect.height ) {
-//            latticeWidth = dr.dispRect.width;
-//            latticeHeight = dr.dispRect.height;
-//            points = new Vec[0];
-//        }
-//        else
-            points = fd.getLatticePoints(new Rectangle(0,0,dr.dispRect.width,dr.dispRect.height));
+        Vec[] points = fd.getLatticePoints(new Rectangle(0,0,dr.dispRect.width,dr.dispRect.height));
 
-//        if(DEBUG) System.out.println("lattice "+latticeWidth+" "+latticeHeight);
         Rectangle baseRect = fd.getMinimalRectangle(points);
         if(!COPY_TILES || baseRect==null)
             baseRect = new Rectangle(0,0,dr.dispRect.width,dr.dispRect.height);
@@ -193,24 +180,24 @@ public abstract class TessRule
                 catch(Exception e)
                 {
                     if(!error_flag)
-                        System.out.println("Error ("+i+","+j+") det "+det
-                                + " x "+x
-                                + " y "+y
-                                + " in ("+ in[0] + ","+in[1]+")"
-                                + " res ("+ res[0] + ","+res[1]+")"
-                                + " sX "+srcX
-                                + " sY "+srcY
+                        System.out.println("Error ("+i+","+j+") det "+det //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + " x "+x //$NON-NLS-1$
+                                + " y "+y //$NON-NLS-1$
+                                + " in ("+ in[0] + ","+in[1]+")" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + " res ("+ res[0] + ","+res[1]+")" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + " sX "+srcX //$NON-NLS-1$
+                                + " sY "+srcY //$NON-NLS-1$
                         );
                     error_flag = true;
                     dr.pixels[i+j*dr.destRect.width] = backgroundRGB;
                 }
             }
-        if(TIME) System.out.println("Micro "+((System.currentTimeMillis()-t1)/1000));
+        if(TIME) System.out.println("Micro "+((System.currentTimeMillis()-t1)/1000)); //$NON-NLS-1$
 
         if(COPY_TILES)
         	      copyTiles(dr, fd, baseRect);
 
-        if(TIME) System.out.println("Micro "+((System.nanoTime()-t1)/1000));
+        if(TIME) System.out.println("Micro "+((System.nanoTime()-t1)/1000)); //$NON-NLS-1$
 
         dr.fillSource();
     }
@@ -247,79 +234,64 @@ public abstract class TessRule
         }
     }
 
+    public void replicate_isolated_domain(DrawableRegion dr,Polygon poly)
+    {
+        //			System.out.println("replicate");
+        if(!dr.img_ok) return;
+        int x0=frameO.x;
+        int y0=frameO.y;
+        int u1=frameU.x;
+        int u2=frameU.y;
+        int v1=frameV.x;
+        int v2=frameV.y;
+        int i,j,x,y;
+        
+        int det = u1 * v2 - v1 * u2;
+        if( det == 0 ) return;
+        if(det < 0 )
+        {
+            det = - det;
+            int w1 = v1; v1 = u1; u1 = w1; 
+            int w2 = v2; v2 = u2; u2 = w2;
+        }
+        
+        final int startX = dr.dispRect.x;
+        final int startY = dr.dispRect.y;
+
+        int[] in = new int[2];
+        int[] res = new int[2];
+
+        int srcX,srcY;   
+        for(i=startX;i<dr.dispRect.width;++i)
+            for(j=startY;j<startY+dr.dispRect.height;++j)
+            {
+                x = i+dr.offset.x-x0;
+                y = j+dr.offset.y-y0; // offset of figure
+                in[0] = v2 * x - v1 * y;
+                in[1] = -u2 * x + u1 * y;
+                fun(in,res,det);
+
+                srcX = x0 + (res[0] * u1 + res[1] * v1 ) / det;	
+                srcY = y0 + (res[0] * u2 + res[1] * v2 ) / det;	
+
+                int inInd = srcX+srcY*dr.srcRect.width;
+                int px = inInd >=0 && inInd < dr.inpixels.length
+                		? dr.inpixels[inInd]
+                		: backgroundRGB;
+
+                int outInd = i+j*dr.destRect.width;
+                dr.pixels[outInd] = px;
+                if(!poly.contains(i, j)) {
+                	px = backgroundRGB;
+                }
+                dr.pixels[outInd] = px;
+            }
+
+        dr.fillSource();
+    }
+
     public double approxArea() { return 1; }
     public double approxAspect() { return 1;	}
-
-    public static String[] WallpaperNames = {
-        "P1","P2","PM","PG","CM","CMM","PMG","PGG","PMM",
-        "P4","P4M","P4G","P3M1","P31M","P6","P6M"
-    };
-    
-    public static final String[] basicNames = new String[]{
-        "Translation","Rotation","Reflection","Glide-Reflection","Scale","Linear"};
-
-    public static TessRule getTessRuleByName(String name) {
-        if(name==null) name="";
-        if(name.equalsIgnoreCase("P1")) return PgramRule.rhombusTT;
-        if(name.equalsIgnoreCase("P1A")) return IrregularHexRule.p1hex;
-        if(name.equalsIgnoreCase("P1H")) return IrregularHexRule.p1hex;
-        if(name.equalsIgnoreCase("P2")) return PgramRule.rhombusR1;
-        if(name.equalsIgnoreCase("P2A")) return IrregularHexRule.p2hex;
-        if(name.equalsIgnoreCase("P2H")) return IrregularHexRule.p2hex;
-        if(name.equalsIgnoreCase("CM")) return DiamondRule.rhombCM;
-        if(name.equalsIgnoreCase("CMM")) return DiamondRule.rhombCMM;
-        if(name.equalsIgnoreCase("PM")) return RectRule.rectPM;
-        if(name.equalsIgnoreCase("PG")) return RectRule.rectPG;
-        if(name.equalsIgnoreCase("PMG")) return RectRule.rectPMG;
-        if(name.equalsIgnoreCase("PMM")) return RectRule.rectPMM;
-        if(name.equalsIgnoreCase("PGG")) return RectRule.rectPGG;
-        if(name.equalsIgnoreCase("P4")) return SquRule.squP4;
-        if(name.equalsIgnoreCase("P4M")) return SquRule.squP4m;
-        if(name.equalsIgnoreCase("P4G")) return SquRule.squP4g;
-        if(name.equalsIgnoreCase("P3")) return HexiRule.triP3;
-        if(name.equalsIgnoreCase("P3M1")) return HexiRule.triP3m1;
-        if(name.equalsIgnoreCase("P31M")) return HexiRule.triP31m;
-        if(name.equalsIgnoreCase("P31Mk")) return HexiRule.triP31mk;
-        if(name.equalsIgnoreCase("P6")) return HexiRule.triP6;
-        if(name.equalsIgnoreCase("P6M")) return HexiRule.triP6m;
-        if(name.equalsIgnoreCase("F1")) return FrezeRule.F1;
-        if(name.equalsIgnoreCase("F2")) return FrezeRule.F2;
-        if(name.equalsIgnoreCase("F3")) return FrezeRule.F3;
-        if(name.equalsIgnoreCase("F4")) return FrezeRule.F4;
-        if(name.equalsIgnoreCase("F5")) return FrezeRule.F5;
-        if(name.equalsIgnoreCase("F6")) return FrezeRule.F6;
-        if(name.equalsIgnoreCase("F7")) return FrezeRule.F7;
-        if(name.equalsIgnoreCase("Translation")) return BasicRule.trans;
-        if(name.equalsIgnoreCase("Rotation")) return BasicRule.rot;
-        if(name.equalsIgnoreCase("Reflection")) return BasicRule.reflect;
-        if(name.equalsIgnoreCase("Glide-Reflection")) return BasicRule.glide;
-        if(name.equalsIgnoreCase("Scale")) return BasicRule.scale;
-        if(name.equalsIgnoreCase("Scale XY")) return BasicRule.scaleXY;
-        if(name.equalsIgnoreCase("Linear")) return BasicRule.shear;
-        try {
-
-            if(name.startsWith("C") || name.startsWith("c")) {
-                int num = Integer.parseInt(name.substring(1));
-                return PointRule.cycleRules[num];
-            }
-            else if(name.startsWith("D") || name.startsWith("d")) {
-                int num = Integer.parseInt(name.substring(1));
-                return PointRule.dyhRules[num];
-            }
-        } catch(Exception e) {System.out.println(e.getMessage());}
-        int rand;
-        if(name.equalsIgnoreCase("attractive")) {
-            rand = (int) (Math.random() * 13 + 4);
-        }
-        else if(name.equalsIgnoreCase("symmetrical")) {
-            rand = (int) (Math.random() * 6 + 9);
-        }
-        else
-            rand = (int) (Math.random() * WallpaperNames.length);
-        return(getTessRuleByName(WallpaperNames[rand]));
-
-
-    }
 
     FundamentalDomain paintFd=null;
     public void paintSymetries(Vec U, Vec V, Vec O,FundamentalDomain fd) {
@@ -332,9 +304,9 @@ public abstract class TessRule
         paintDomainEdges(U,V,O,fd.det);
     }
 
-    protected void paintSymetries(Vec U, Vec V, Vec O) { /* null default sub classes over ride */ }
+    protected abstract void paintSymetries(Vec U, Vec V, Vec O); // { /* null default sub classes over ride */ }
 
-    public void paintDomainEdges(Vec U, Vec V, Vec O, int det) { /* null default sub classes over ride */ }
+    public abstract void paintDomainEdges(Vec U, Vec V, Vec O, int det); // { /* null default sub classes over ride */ }
 
     final protected void drawReflectionLine(Vec P1,Vec P2) {
         paintFd.drawReflectionLine(P1, P2);
@@ -355,4 +327,100 @@ public abstract class TessRule
         return;
     }
 
+    public static String[] WallpaperNames = {
+            Messages.getString("Rule.P1"),Messages.getString("Rule.P2"),Messages.getString("Rule.PM"),Messages.getString("Rule.PG"),Messages.getString("Rule.CM"),Messages.getString("Rule.CMM"),Messages.getString("Rule.PMG"),Messages.getString("Rule.PGG"),Messages.getString("Rule.PMM"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
+            Messages.getString("Rule.P4"),Messages.getString("Rule.P4M"),Messages.getString("Rule.P4G"),Messages.getString("Rule.P3M1"),Messages.getString("Rule.P31M"),Messages.getString("Rule.P6"),Messages.getString("Rule.P6M") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+        };
+        
+        public static final String[] basicNames = new String[]{
+            Messages.getString("Rule.trans"),Messages.getString("Rule.rotation"), //$NON-NLS-1$ //$NON-NLS-2$ 
+            Messages.getString("Rule.reflection"),Messages.getString("Rule.glide"), //$NON-NLS-1$ //$NON-NLS-2$ 
+            Messages.getString("Rule.uniformscale"),Messages.getString("Rule.linear") //$NON-NLS-1$ //$NON-NLS-2$
+        };
+        
+        public static TessRule getTessRuleByName(String name) {
+            if(name==null) name=""; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P1"))) return PgramRule.rhombusTT; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P1a"))) return IrregularHexRule.p1hex; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P1h"))) return IrregularHexRule.p1hex; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P2"))) return PgramRule.rhombusR1; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P2a"))) return IrregularHexRule.p2hex; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P2h"))) return IrregularHexRule.p2hex; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.CM"))) return DiamondRule.rhombCM; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.CMr"))) return DiamondRule.rhombCMr; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.CMM"))) return DiamondRule.rhombCMM; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.CMMr"))) return DiamondRule.rhombCMMr; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.PM"))) return RectRule.rectPM; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.PG"))) return RectRule.rectPG; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.PMG"))) return RectRule.rectPMG; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.PMM"))) return RectRule.rectPMM; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.PGG"))) return RectRule.rectPGG; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P4"))) return SquRule.squP4; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P4k"))) return SquRule.squP4; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P4M"))) return SquRule.squP4M; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P4G"))) return SquRule.squP4G; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P4Gs"))) return SquRule.squP4G; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P3"))) return HexiRule.triP3; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P3h"))) return HexiRule.triP3h; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P3M1"))) return HexiRule.triP3m1; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P31M"))) return HexiRule.triP31m; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P31Mk"))) return HexiRule.triP31mk; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P31Mt"))) return HexiRule.triP31Mt; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P6"))) return HexiRule.triP6; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P6k"))) return HexiRule.triP6k; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P6M"))) return HexiRule.triP6m; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.F1"))) return FrezeRule.F1; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.F2"))) return FrezeRule.F2; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.F3"))) return FrezeRule.F3; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.F4"))) return FrezeRule.F4; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.F5"))) return FrezeRule.F5; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.F6"))) return FrezeRule.F6; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.F7"))) return FrezeRule.F7; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.trans"))) return BasicRule.trans; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.rotation"))) return BasicRule.rot; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.reflection"))) return BasicRule.reflect; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.glide"))) return BasicRule.glide; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.uniformscale"))) return BasicRule.scale; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.scalexy"))) return BasicRule.scaleXY; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.linear"))) return BasicRule.shear; //$NON-NLS-1$
+            try {
+
+                if(name.startsWith(Messages.getString("Rule.C.prefix")) || name.startsWith(Messages.getString("Rule.c.prefix"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                    int num = Integer.parseInt(name.substring(1));
+                    return PointRule.cycleRules[num];
+                }
+                else if(name.startsWith(Messages.getString("Rule.D.prefix")) || name.startsWith(Messages.getString("Rule.d.prefix"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                    int num = Integer.parseInt(name.substring(1));
+                    return PointRule.dyhRules[num];
+                }
+            } catch(Exception e) {System.out.println(e.getMessage());}
+            
+            String[] collections = Messages.getString("Rule.collections").split(",");
+    		for(var key : collections) {
+        		if(name.equalsIgnoreCase(key)) { //$NON-NLS-1$
+        			String[] names = Messages.getString("Rule."+key+".list").split(","); //$NON-NLS-1$ //$NON-NLS-2$
+        			int rnd = (int) (Math.random() * names.length);
+        			String name2 = names[rnd];
+					var rule = getTessRuleByName(name2);
+        			if(rule==null) {
+    					System.out.println(MessageFormat.format(Messages.getString("Rule.error_tess_rule"),name2)); //$NON-NLS-1$
+    				}
+    				else {
+    					return rule;
+    				}
+        		}
+    		}
+            	
+            int rand = (int) (Math.random() * WallpaperNames.length);
+            return(getTessRuleByName(WallpaperNames[rand]));
+        }
+
+		public Polygon make_tile_polygon(FundamentalDomain fd) {
+			return fd.make_tile_polygon();
+		}
+
+		public abstract void paintTileEdges(Vec u, Vec v, Vec p2, FundamentalDomain fundamentalDomain);
+
+		public void setLambda(double d) {
+		}
 }
