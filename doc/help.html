@@ -1,17 +1,20 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Wallpaper patterns - Help</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
-<div id="head1"></div>
-<div id="col2">
 <p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
-	<a href="help.html">Help</a>
+	<?php
+	echo '<a href="wallpaper.php">Wallpaper app</a> '
+	?>
+	<a href="help.html">Help</a> 
 	<a href="maths.html">Maths</a>
 	<a href="groups.html">Groups</a>
 	<a href="code.html">Code</a>
-
+<hr>
 <h1>Wallpaper patterns - Help</h1>
 <p>The Wallpaper Pattern Java application creates repeating
 patterns based on an image and the 17 mathematical plane symmetry
@@ -426,14 +429,22 @@ To start the paint mode select
 	</ul>
 	</dd>
 </dl>
+<?php 
+include_once('../admin/connect.php');
+include_once('../admin/util.php');
+include_once('../admin/log.php');
+?>
 
 <hr>
 <p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
+	<?php
+	 echo '<a href="wallpaper.php"">Wallpaper app</a> '
+	?>
 	<a href="help.html">Help</a>
 	<a href="maths.html">Maths</a>
 	<a href="groups.html">Groups</a>
 	<a href="code.html">Code</a>
-<p>Copyright R Morris 2007</p>
+<p>Copyright R Morris 2025</p>
 </div>
 </body>
 </html>

@@ -1,12 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">  
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta charset="UTF-8">
 <title>Wallpaper patterns - The mathematics</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
 
 <script>
-MathJax = {
+MathJax = { 
   tex: {
     inlineMath: [['$', '$'], ['\$', '\$']]
   },
@@ -75,14 +75,17 @@ table.orbifoldTable, .orbifoldTable td, .orbifoldTable th {
 </style>
 </head>
 <body>
-<div id="head1"></div>
-<div id="col2">
+
 <p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
+	<?php
+	echo '<a href="wallpaper.php">Wallpaper app</a> '
+	?>
 	<a href="help.html">Help</a>
 	<a href="maths.html">Maths</a>
 	<a href="groups.html">Groups</a>
 	<a href="code.html">Code</a>
 </p>
+<hr>
 
 <h1>Wallpaper patterns - the code</h1>
 <p>Here we explain some key aspects behind the code. 
@@ -125,7 +128,7 @@ table.orbifoldTable, .orbifoldTable td, .orbifoldTable th {
 	</dd>
 </dl> 
 		
-<img src="Wallpaper Class Diagram.svg" width="600" alt="class diagram" >	
+<img src="naut/Wallpaper Class Diagram.svg" width="600" alt="class diagram" >	
 
 <p>
 The key methods used for creating patterns are:
@@ -148,7 +151,7 @@ The key methods used for creating patterns are:
 	Some like the classes for frieze groups and cyclic groups have custom versions
 	of the replicate method.
 <p>	
-<img src="TessRule class diagram.svg" width="600" alt="class diagram" >	
+<img src="naut/TessRule class diagram.svg" width="600" alt="class diagram" >	
 
 <h3>TessRules and the fun method</h3>
 
@@ -299,15 +302,23 @@ Changing from the first to the second resulted in a four fold speed improvement 
 These two lines represented 67% of the entire speed of the algorithm.
 
 <?php 
-include("footer.php"); 
-include_once('../admin/connect.php');
-include_once('../admin/util.php');
-include_once('../admin/log.php');
+$page = "wallmaths";
 
+include_once('../admin/connect.php');
+include_once('../admin/log.php');
+echo '<h2>Readers comments</h2>';
+include_once('../admin/dispcomments.php');
+include_once('../admin/util.php');
+
+showPageComments($page);
+printCommentForm($page);
 ?>
 
 <hr>
 <p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
+<?php
+	echo '<a href="wallpaper.php">Wallpaper app</a> '
+?>
 	<a href="help.html">Help</a>
 	<a href="maths.html">Maths</a>
 	<a href="groups.html">Groups</a>
