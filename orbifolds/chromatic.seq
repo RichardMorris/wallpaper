@@ -1,0 +1,309 @@
+frame:
+group: P1
+vertices:
+  - [318,156]
+  - [240,217]
+  - [148,181]
+filename: orbifolds/hex 7 coloured.jpg
+zoom: [2,1]
+anim: none
+repeat: 10
+description: P1 group is a topological torus, requiring upto 7 colours
+frame:
+group: CM
+vertices:
+  - [278,227]
+  - [404,183]
+  - [530,227]
+filename: orbifolds/cm brick.png
+zoom: [1,1]
+anim: none
+repeat: 10
+description: CM group is a topological mobius band, requiring upto 6 colours
+frame:
+group: PG
+vertices:
+  - [440,249]
+  - [239,249]
+  - [239,48]
+filename: orbifolds/pg bricks.png
+zoom: [1,1]
+anim: none
+repeat: 10
+description: PG group is a topological Kleine bottle, requiring upto 6 colours
+
+frame:
+group: PGG
+vertices:
+  - [505,351]
+  - [228,351]
+  - [228,87]
+filename: orbifolds/pgg pentagons.gif
+zoom: [1,1]
+anim: none
+repeat: 10
+description: PGG group is a topological real projective plane, requiring upto 6 colours
+
+frame:
+group: P4M
+vertices:
+  - [295,207]
+  - [150,62]
+  - [295,-83]
+filename: orbifolds/four colours tri.png
+zoom: [1,1]
+anim: none
+repeat: 10
+description: P4M group is a topological disk, requiring at most 4 colours
+
+frame:
+group: P4
+vertices:
+  - [94,133]
+  - [220,7]
+  - [346,133]
+filename: orbifolds/four colours tri.png
+zoom: [1,1]
+anim: none
+repeat: 10
+description: P4 group is a topological sphere, requiring at most 4 colours
+frame:
+group: CMM
+vertices:
+  - [428,221]
+  - [338,363]
+  - [248,221]
+filename: orbifolds/four colours tri.png
+zoom: [1,1]
+anim: bounce
+repeat: 10
+frame:
+group: P1
+vertices:
+  - [143,142]
+  - [8,142]
+  - [8,6]
+filename: orbifolds/7x-torus sml.png
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: CM
+vertices:
+  - [298,347]
+  - [205,238]
+  - [298,129]
+filename: simpleImages/beanish.png
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: CM
+vertices:
+  - [298,333]
+  - [189,224]
+  - [298,115]
+filename: simpleImages/beanish.png
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: CM
+vertices:
+  - [277,338]
+  - [403,277]
+  - [529,338]
+filename: orbifolds/cm brick2.png
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: CM
+vertices:
+  - [177,238]
+  - [303,177]
+  - [429,238]
+filename: orbifolds/cm brick2.png
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: PGG
+vertices:
+  - [505,351]
+  - [228,351]
+  - [228,87]
+filename: orbifolds/pgg pentagons.gif
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: PGG
+vertices:
+  - [506,353]
+  - [228,353]
+  - [228,80]
+filename: orbifolds/pgg pentagons.gif
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: PGG
+vertices:
+  - [504,352]
+  - [228,352]
+  - [228,84]
+filename: orbifolds/pgg pentagons.gif
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: PG
+vertices:
+  - [440,250]
+  - [239,250]
+  - [239,50]
+filename: orbifolds/pg bricks2.png
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: PG
+vertices:
+  - [440,249]
+  - [239,249]
+  - [239,51]
+filename: orbifolds/pg bricks2.png
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: CM
+vertices:
+  - [207,242]
+  - [332,173]
+  - [457,242]
+filename: orbifolds/cm brick3.png
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: CM
+vertices:
+  - [207,240]
+  - [332,175]
+  - [457,240]
+filename: orbifolds/cm brick3.png
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: CM
+vertices:
+  - [196,240]
+  - [322,175]
+  - [448,240]
+filename: orbifolds/cm brick3.png
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: CMr
+vertices:
+  - [192,376]
+  - [312,267]
+  - [432,376]
+filename: orbifolds/cm octogon.png
+zoom: [1,1]
+anim: none
+repeat: 30
+frame:
+group: PG
+vertices:
+  - [394,338]
+  - [244,338]
+  - [244,41]
+filename: orbifolds/pg hex.png
+zoom: [1,1]
+anim: bounce
+repeat: 30
+frame:
+group: PG
+vertices:
+  - [394,338]
+  - [244,338]
+  - [244,40]
+filename: orbifolds/pg hex.png
+zoom: [1,1]
+anim: bounce
+repeat: 30
+frame:
+group: P2H
+vertices:
+  - [482,299]
+  - [417,299]
+  - [384,200]
+filename: orbifolds/p2 four colour domain.png
+zoom: [1,1]
+anim: bounce
+repeat: 30
+frame:
+group: P3h
+vertices:
+  - [407,306]
+  - [273,306]
+  - [206,190]
+filename: images/flower.jpg
+zoom: [1,1]
+anim: bounce
+repeat: 30
+frame:
+group: P4k
+vertices:
+  - [345,225]
+  - [112,225]
+  - [112,-8]
+filename: images/office.jpg
+zoom: [1,2]
+anim: bounce
+repeat: 30
+frame:
+group: !Rule.P6k!
+vertices:
+  - [237,236]
+  - [152,236]
+  - [110,162]
+filename: orbifolds/p6 four colour background.png
+zoom: [1,1]
+anim: bounce
+repeat: 30
+frame:
+group: PMG
+vertices:
+  - [233,11]
+  - [233,142]
+  - [15,142]
+filename: orbifolds/pmg four colour background.jpg
+zoom: [1,1]
+anim: bounce
+repeat: 30
+frame:
+group: P4Gs
+vertices:
+  - [237,122]
+  - [128,231]
+  - [19,122]
+filename: orbifolds/p4g background.png
+zoom: [1,1]
+anim: bounce
+repeat: 30
+frame:
+group: P31Mk
+vertices:
+  - [214,178]
+  - [132,178]
+  - [91,107]
+filename: orbifolds/p32m y background.png
+zoom: [1,1]
+anim: bounce
+repeat: 30
