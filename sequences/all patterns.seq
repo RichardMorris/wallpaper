@@ -145,15 +145,6 @@ repeat: 20
 frame:
 group: P6m
 vertices:
-  - [546,134]
-  - [418,134]
-  - [354,23]
-zoom: [1,1]
-anim: bounce
-repeat: 20
-frame:
-group: P6m
-vertices:
   - [471,257]
   - [343,257]
   - [279,146]
