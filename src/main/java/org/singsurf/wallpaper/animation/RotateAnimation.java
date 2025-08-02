@@ -14,11 +14,12 @@ public class RotateAnimation extends AnimationPath {
 	int count=0;
 	int sX[]=new int[6],sY[]=new int[6];
 	Vec center;
-
+	int diff;
 	private boolean useCenter;
-	public RotateAnimation(Rectangle rect, boolean useCenter) {
+	public RotateAnimation(Rectangle rect, boolean useCenter, int dir) {
 		this.rect =rect;
 		this.useCenter = useCenter;
+		this.diff = dir;
 		center = new Vec(rect.x+rect.width/2,rect.y+rect.height/2);
 	}
 
@@ -45,7 +46,7 @@ public class RotateAnimation extends AnimationPath {
 			fd.cellVerts[i].x= sX[1] + (int) Math.rint(Math.cos(angle) * inX - Math.sin(angle)*inY);
 			fd.cellVerts[i].y= sY[1] + (int) Math.rint(Math.sin(angle) * inX + Math.cos(angle)*inY);
 		}
-		++count;
+		count += diff;
 	}
 
 }

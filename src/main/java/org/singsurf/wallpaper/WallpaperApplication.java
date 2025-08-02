@@ -18,7 +18,10 @@ public class WallpaperApplication {
 
     public WallpaperApplication(String image,int w,int h) {
 		this.image = image;
-        mainFrame = new JFrame(Messages.getString("Window.title")); //$NON-NLS-1$
+        mainFrame = new JFrame(Messages.getString("Window.title")); //$NON-NLS-1$        
+        String iconFileName = GraphicalTesselationPanel.iconPrefix + Messages.getString("Window.icon");
+        var icon = GraphicalTesselationPanel.createImageIcon(iconFileName, "");
+        mainFrame.setIconImage(icon.getImage());
         mainFrame.setBounds(0, 0, w, h);
         app = new WallpaperFramed(image, w, h);
         app.mainFrame = mainFrame;
@@ -32,9 +35,6 @@ public class WallpaperApplication {
         mainFrame.setFocusable(true);
         mainFrame.setVisible(true);
     }
-
-    
-
 
 	/**
      * @param progargs

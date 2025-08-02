@@ -200,7 +200,7 @@ public abstract class HexiRule extends TessRule
             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
             int beta = in[1] % det; if(beta < 0) beta = beta + det;
             calcRot3(a,b,alpha,beta,det,out);
-            if( -out[0] + 2*out[1] > det && out[0] + out[1] > det) {
+            if( -out[0] + 2*out[1] >= det && out[0] + out[1] >= det) {
                 int c =  2* det - out[1] ;
                 int d =   det - out[1] + out[0];
             	out[0]=c; out[1]= d;
@@ -966,8 +966,113 @@ public abstract class HexiRule extends TessRule
 
     };
 
+    public static TessRule triP6k = new HexiRule(Messages.getString("Rule.P6k"), //$NON-NLS-1$
+    Messages.getString("Rule.P6k.descript")) //$NON-NLS-1$
+    {
+        @Override
+        public void calcFund(FundamentalDomain fd)
+        {
+            int u1,u2,v1,v2; //,w1,w2;
 
-    public static TessRule triP6a = new HexiRule(Messages.getString("Rule.P6"),Messages.getString("Rule.P6.descript")){ //$NON-NLS-1$ //$NON-NLS-2$
+            u1 =	frameV.x;
+            u2 =	frameV.y;
+            v1 = 	frameU.x;
+            v2 = 	frameU.y;
+            fd.fund[0].x = fd.cellVerts[1].x+u1/2; fd.fund[0].y = fd.cellVerts[1].y+u2/2;
+            fd.fund[1].x = fd.cellVerts[1].x; fd.fund[1].y = fd.cellVerts[1].y;
+            fd.fund[2].x = fd.cellVerts[1].x + v1/2; fd.fund[2].y = fd.cellVerts[1].y + v2/2;
+            fd.fund[3].x = fd.cellVerts[1].x + u1+v1; fd.fund[3].y = fd.cellVerts[1].y + u2+v2;
+            fd.numFund =4;
+        }
+
+        @Override
+        public void fun(int[] in,int[] out,int det)
+        {
+            /*			int a = (int) Math.floor((float) in[0]/det);
+			int b = (int) Math.floor((float) in[1]/det);
+             */			
+        	int a = (in[0]<0 ? (in[0]+1)/det -1 : in[0]/det); 
+             int b = (in[1]<0 ? (in[1]+1)/det -1 : in[1]/det); 
+             int alpha = in[0] % det; if(alpha < 0) alpha = alpha + det;
+             int beta = in[1] % det; if(beta < 0) beta = beta + det;
+             int res[] = new int[2];
+             calcRot3(a,b,alpha,beta,det,res);
+             alpha = res[0]; beta = res[1];
+             // reflect bot right in line 2 alpha - beta - 1
+             // reflect top left in  2 beta - alpha - 1
+
+             if( beta > alpha )
+             {
+                 if( 2 * beta - alpha - det > 0 )
+                 {
+//                     beta = alpha - beta +det;
+//                     beta = alpha =0;
+                     int gamma = alpha;
+                     alpha = det + alpha - beta;
+                     beta = gamma;
+
+                 }
+
+             }
+             else
+             {
+                 if( 2 * alpha - beta - det > 0 )
+                 {
+//                     alpha = beta - alpha + det;
+                     int gamma = beta;
+                     beta = det - alpha + beta;
+                     alpha = gamma;
+
+                 }
+             }
+
+             out[0] = alpha;
+             out[1] = beta;
+        }
+
+        //@Override
+        protected void paintSymetries(Vec U, Vec V, Vec O) {
+            Vec f23 = new Vec(frameU.x,frameU.y);
+            Vec f45 = new Vec(frameV.x,frameV.y);
+
+            drawRotationPoint(O,3);
+            drawRotationPoint(f23.add(O),6);
+            drawRotationPoint(Vec.linComb(2,f23,1,O),3);
+
+            drawRotationPoint(Vec.linComb(-1,f45,2,O,2),2);
+            drawRotationPoint(Vec.linComb(1,f23,-2,f45,2,O,2),2);
+            drawRotationPoint(Vec.linComb(1,f23,1,f45,2,O,2),2);
+
+        }
+
+        @Override
+        public void paintDomainEdges(Vec U, Vec V,
+                Vec O, int det) {
+            Vec A = Vec.linComb(3, O, -1, U,-1,V,3);
+            Vec B = Vec.linComb(3, O, 2, U,-1,V,3);
+            Vec B2 = Vec.linComb(6, O, 2, U,-1,V,6);
+            Vec C = Vec.linComb(3, O, -1, U,2,V,3);
+            Vec C2 = Vec.linComb(6, O, -1, U,2,V,6);
+            Vec D = Vec.linComb(6, O, 5, U,-1,V,6);
+            Vec E = Vec.linComb(6, O, -1, U,5,V,6);
+
+            drawSimpleEdge(O,A);
+            drawSimpleEdge(O,B);
+            drawSimpleEdge(O,C);
+            drawSimpleEdge(B2, B2.add(V));
+            drawSimpleEdge(C2, C2.add(U));
+            drawSimpleEdge(D, E);
+
+
+        }
+
+        @Override
+        public double approxArea() { return Math.sqrt(3)/4; }
+
+    };
+
+
+    public static TessRule triP6o = new HexiRule(Messages.getString("Rule.P6"),Messages.getString("Rule.P6.descript")){ //$NON-NLS-1$ //$NON-NLS-2$
         @Override
         public void calcFund(FundamentalDomain fd)
         {
@@ -1072,7 +1177,7 @@ public abstract class HexiRule extends TessRule
             alpha = res[0]; beta = res[1];
             // rotate bot right to top left
 
-            if( beta < alpha )
+            if( alpha > beta )
             {
                 int gamma = beta;
                 beta = det - alpha + beta;

@@ -18,16 +18,17 @@ public abstract class PointRule extends TessRule
     boolean dihedral;
     double spokesX[],spokesY[];
     
-    static final int NUM_RULES = 10;
-    public static final CyclicRule[] cycleRules = new CyclicRule[NUM_RULES+1];
-    public static final DihedralRule[] dyhRules = new DihedralRule[NUM_RULES+1];
+    static final int C_MAX = Messages.getInt("GTP.C.max");
+    static final int D_MAX = Messages.getInt("GTP.D.max");
+    public static final CyclicRule[] cycleRules = new CyclicRule[C_MAX+1];
+    public static final DihedralRule[] dyhRules = new DihedralRule[D_MAX+1];
 
     static {
-        for(int i=1;i<=NUM_RULES;++i) {
-            if(i>=2) {
+        for(int i=2;i<=C_MAX;++i) {
                 cycleRules[i] = new CyclicRule(i);
-            }
-            dyhRules[i] = new DihedralRule(i);
+        }
+        for(int i=1;i<=D_MAX;++i) {
+            	dyhRules[i] = new DihedralRule(i);
         }
     }
     public PointRule(int num,String name, String message) {

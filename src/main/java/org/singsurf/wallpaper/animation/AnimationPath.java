@@ -56,10 +56,16 @@ public abstract class AnimationPath {
 			path = new ShiftAnimation(speed,speed);
 		}
 		else if(label.equals(Messages.getString("Anim.rotate"))) { //$NON-NLS-1$
-			path = new RotateAnimation(rect,false);
+			path = new RotateAnimation(rect,false,1);
 		}
 		else if(label.equals(Messages.getString("Anim.rotate_centre"))) { //$NON-NLS-1$
-			path = new RotateAnimation(rect,true);
+			path = new RotateAnimation(rect,true,1);
+		}
+		else if(label.equals(Messages.getString("Anim.rotate_cc"))) { //$NON-NLS-1$
+			path = new RotateAnimation(rect,false,-1);
+		}
+		else if(label.equals(Messages.getString("Anim.rotate_centre_cc"))) { //$NON-NLS-1$
+			path = new RotateAnimation(rect,true,-1);
 		}
 		else if(label.equals(Messages.getString("Anim.bounce"))) { //$NON-NLS-1$
 			path = new BounceAnimation(rect,speed,speed);

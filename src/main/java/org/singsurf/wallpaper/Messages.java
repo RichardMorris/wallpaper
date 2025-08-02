@@ -20,7 +20,16 @@ public class Messages {
 			return '!' + key + '!';
 		}
 	}
-	
+
+	public static int getInt(String key) {
+		try {
+			var str =  RESOURCE_BUNDLE.getString(key);
+			return Integer.parseInt(str);
+		} catch (MissingResourceException e) {
+			return -1;
+		}
+	}
+
 	public static Color getColor(String key) {
 		var cname = getString(key);
 		Color color;

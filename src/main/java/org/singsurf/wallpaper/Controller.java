@@ -352,4 +352,12 @@ public class Controller {
         tr.firstCall = true;
 	}
 
+	public void setLambda(double d) {
+		if(tr != null) {
+			tr.setLambda(d);
+	        tr.firstCall = true;
+	        redraw();
+		}
+	}
+
 }

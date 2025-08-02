@@ -55,7 +55,7 @@ public class AnimationController implements ActionListener {
 	public void startAnim() {
 	    if(DEBUG) 
 	    	System.out.println("Start anim"); //$NON-NLS-1$
-	    
+	    controller.firstAction();
 	    path.firstItteration(controller.getFD());
 	
 	

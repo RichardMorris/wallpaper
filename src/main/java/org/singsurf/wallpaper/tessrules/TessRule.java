@@ -356,8 +356,10 @@ public abstract class TessRule
             if(name.equalsIgnoreCase(Messages.getString("Rule.PMM"))) return RectRule.rectPMM; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.PGG"))) return RectRule.rectPGG; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P4"))) return SquRule.squP4; //$NON-NLS-1$
-            if(name.equalsIgnoreCase(Messages.getString("Rule.P4M"))) return SquRule.squP4m; //$NON-NLS-1$
-            if(name.equalsIgnoreCase(Messages.getString("Rule.P4G"))) return SquRule.squP4g; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P4k"))) return SquRule.squP4; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P4M"))) return SquRule.squP4M; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P4G"))) return SquRule.squP4G; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P4Gs"))) return SquRule.squP4G; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P3"))) return HexiRule.triP3; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P3h"))) return HexiRule.triP3h; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P3M1"))) return HexiRule.triP3m1; //$NON-NLS-1$
@@ -365,6 +367,7 @@ public abstract class TessRule
             if(name.equalsIgnoreCase(Messages.getString("Rule.P31Mk"))) return HexiRule.triP31mk; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P31Mt"))) return HexiRule.triP31Mt; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P6"))) return HexiRule.triP6; //$NON-NLS-1$
+            if(name.equalsIgnoreCase(Messages.getString("Rule.P6k"))) return HexiRule.triP6k; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.P6M"))) return HexiRule.triP6m; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.F1"))) return FrezeRule.F1; //$NON-NLS-1$
             if(name.equalsIgnoreCase(Messages.getString("Rule.F2"))) return FrezeRule.F2; //$NON-NLS-1$
@@ -398,7 +401,6 @@ public abstract class TessRule
         			String[] names = Messages.getString("Rule."+key+".list").split(","); //$NON-NLS-1$ //$NON-NLS-2$
         			int rnd = (int) (Math.random() * names.length);
         			String name2 = names[rnd];
-        			System.out.println("Chosen name "+name2);
 					var rule = getTessRuleByName(name2);
         			if(rule==null) {
     					System.out.println(MessageFormat.format(Messages.getString("Rule.error_tess_rule"),name2)); //$NON-NLS-1$
@@ -418,4 +420,7 @@ public abstract class TessRule
 		}
 
 		public abstract void paintTileEdges(Vec u, Vec v, Vec p2, FundamentalDomain fundamentalDomain);
+
+		public void setLambda(double d) {
+		}
 }
