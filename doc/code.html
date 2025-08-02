@@ -1,0 +1,319 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">  
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Wallpaper patterns - The mathematics</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\$', '\$']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style type="text/css">
+body { font-family: sans-serif; }
+.latticeTable td {
+	width: 150px;
+}
+th {
+	font-weight: bold;
+}
+td {	vertical-align: top; }
+
+.rotTable td { text-align: center; width: 100px; }
+
+table.orbifoldTable, .orbifoldTable td, .orbifoldTable th {
+	//border: 1px solid; border-collapse: collapse; 
+	border-spacing: 0;
+	padding-bottom: 2px;
+	}
+.costTable td {
+    //border: 1px solid; border-collapse: collapse; 
+	border-top: 1px solid #ddd;
+    border-spacing: 0;
+    padding: 2px;
+    }
+	.costTable td:nth-child(3) {
+        text-align: center;
+		padding-left: 5px;
+    }
+	
+.orbifoldExamples td {
+    vertical-align: middle;
+	text-align: center;
+    padding: 5px;
+}
+.groupTable {
+	border-collapse: collapse; 
+	margin: 5px;
+	margin-left: 20px;
+}
+.groupTable td, .groupTable th {
+	border-right: 1px solid; 
+	border-bottom: 1px solid; 
+	border-spacing: 0;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-align: bottom;
+	font-size: smaller;
+}
+.groupTable td:nth-child(1), .groupTable th:nth-child(1) {
+	border-right: 2px solid; 
+}
+.groupTable tr:nth-child(1) th {
+	border-bottom: 2px solid; 
+}
+
+
+</style>
+</head>
+<body>
+<div id="head1"></div>
+<div id="col2">
+<p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
+	<a href="help.html">Help</a>
+	<a href="maths.html">Maths</a>
+	<a href="groups.html">Groups</a>
+	<a href="code.html">Code</a>
+</p>
+
+<h1>Wallpaper patterns - the code</h1>
+<p>Here we explain some key aspects behind the code. 
+	The full code for the applet can be found at 
+	<a href="https://github.com/RichardMorris/wallpaper">GitHub - Wallpaper</a>.
+	
+<h2>Basic structure</h2>
+<p>The Java application is made of a number of interacting classes, loosly following the
+	Model-View-Controller pattern.
+<dl>
+	<dt>View
+	<dd>
+		UI related elements.
+		<ul>
+		<li><b>Wallpaper</b> the main UI class with most common controls.
+		<li><b>WallpaperFramed</b> extension above, adding a menu bar.
+		</ul>
+	</dd>
+	<dt>Controller
+	<dd>
+		The glue between the model and view.
+		<ul>
+		<li><b>Controller</b> the main controller 
+		<li><b>AnimationController</b> controller for animation related tasks
+		<li><b>FileController</b> controller for loading and saving files.
+		</ul>
+	</dd>
+	<dt>Model
+	<dd>
+		Contains the current state of the application
+		<ul>
+		<li><b>DrawableRegion</b> Contains a pair of images: the source image
+			and the destination image, calculated by coping pixels from the source
+			according to the wallpaer pattern.
+		<li><b>FundamentalDomain</b> a set of vertices defining the lattice.
+		<li><b>TessRule</b> an abstract base class describing the type of pattern.
+			There are several sub-classes for particular classes of pattern, and one sub-class
+			instance for each pattern.
+		<li><b>AnimationPath</b> an abstract base class describing a type of animation.
+	</dd>
+</dl> 
+		
+<img src="Wallpaper Class Diagram.svg" width="600" alt="class diagram" >	
+
+<p>
+The key methods used for creating patterns are:
+<ul>
+	<li><code>TessRule.replicate(DrawableRegion dr,FundamentalDomain fd)</code>
+		that calculated the full destination image, using the specific type of pattern,
+		and the FundamentalDomain defining the lattice. The base class provides
+		a default implementation that calls the <code>fun</code> method
+		whenever a destination pixel needs to be calculated. Conceptually it
+		loops through each pixel in the destination, finds the source pixel and copies the colour
+		from the source to the destination. The actual implementation, optomised this
+		copying blocks of pixels to fill the destination. 	
+	<li><code>TessRule.fun(int[] in,int[] out,int det)</code> takes the coordinates of a destination
+		pixel and calculates the coordinated of the source pixel which will be copied.
+	<li><code>Controller.applyTeselation()</code> the main methods called when a tesselation needs to be 
+		calculated. The controller has fields for the DrawableRegion, FundamentalDomain
+		and TessRule and this method calls <code>TessRule.replicate</code>
+</ul>
+<p>Every subclass of TessRule implements its own implementation of the <code>fun</code> method.
+	Some like the classes for frieze groups and cyclic groups have custom versions
+	of the replicate method.
+<p>	
+<img src="TessRule class diagram.svg" width="600" alt="class diagram" >	
+
+<h3>TessRules and the fun method</h3>
+
+<p>Each symmetry group is represented by a member of the class <b>TessRule</b> which defines the type of pattern
+and a set of vectors which specify a coordinate frame. 
+The origin of this frame is the green dot and the two coordinate axis are the lines 
+from the green dot to the red and blue dots.
+This frame defines at lattice which tessellate the the plane by parallelograms, 
+and the image inside each parallelogram will be the same.
+</p>
+
+<img src="naut/frames2.png" alt="Transformation of coordinate frames" width="670" align="center">
+<p>First consider the case of the simplest group P1. To calculate the tessellated image for each point in the image P<sub>dest</sub> we wish to find 
+the point P<sub>src</sub> inside the fundamental domain. To achieve this first transform to coordinates in the new frame to
+give the point Q<sub>dest</sub>. As the image in each 
+parallelogram is identical we can take coordinates in this frame mod 1 giving the point Q<sub>src</sub>. Finally
+transform back to image coordinates giving the P<sub>src</sub>. Finally the colour of the pixel at P<dest> is set to the color at P<src>.</p>
+
+<p>For other transformations a little more work is needed. Consider Pmm which is obtained by reflection in two lines at right angles. 
+In the transformed coordinates this is in the lines x=0.5 and y=0.5. Let Q<sub>mod</sub> be the point after the modulus is taken
+which has coordinates (<em>x</em><sub>mod</sub>,<em>y</em><sub>mod</sub>) 
+with <em>x</em><sub>mod</sub> and <em>y</em><sub>mod</sub> in the range 0 to 1.
+The <em>y</em>-coordinates of Q<sub>src</sub>, <em>x</em><sub>src</sub> is calculate as follow:</p>
+<ul>
+<li>if <em>x</em><sub>mod</sub> < 0.5, <em>x</em><sub>src</sub> = <em>x</em><sub>mod</sub>,</li>
+<li>if <em>x</em><sub>mod</sub> > 0.5, <em>x</em><sub>src</sub> = 1 - <em>x</em><sub>mod</sub>.</li>
+<li>if <em>y</em><sub>mod</sub> < 0.5, <em>y</em><sub>src</sub> = <em>y</em><sub>mod</sub>,</li>
+<li>if <em>y</em><sub>mod</sub> > 0.5, <em>y</em><sub>src</sub> = 1 - <em>y</em><sub>mod</sub>.</li>
+</ul>
+<p>Each other group will have similar condition.</p>
+
+<p>In the above the transformation we have used floating point coordinates. 
+The above calculations can be repeated using purely integer arithmetic, this results in faster algorithms and eliminates any rounding problems.
+Let <b>O</b> be the position of the green dot and <b>u</b> and <b>v</b> be the two vectors of the frame.
+Let M be the matrix
+with <b>u</b> and <b>v</b> as columns,
+this has the determinant <em>det</em> =
+(<b>u</b><sub>x</sub> * <b>v</b><sub>y</sub> - <b>u</b><sub>y</sub> <b>v</b><sub>x</sub>).
+. Now the transformation from a point <b>q</b> in the Q-frame to a point
+<b>p</b> the P-frame
+is given by <b>p</b>=<b>O</b> + M<b>q</b>, and the inverse transformation is
+<b>q</b> = M<sup>-1</sup>(<b>p</b>-<b>O</b>).
+The inverse matrix M<sup>-1</sup> is calculated as 1/det (<b>v</b><sub>y</sub>, -<b>v</b><sub>x</sub>;-<b>u</b><sub>y</sub> <b>u</b><sub>x</sub>).
+If we multiply through by the determinant giving
+<b>q'</b> = det M<sup>-1</sup>(<b>p</b>-<b>O</b>), observe that <b>q'</b> will have integer coordinates.
+The above method can be followed through using this scaled frame, with the frame vectors being (det,0) and (0,det).</p>
+
+<pre>
+int Qdest[] = new int[2];
+int Qsrc[] = new int[2];
+int det = ux * vy - uy * vx;
+
+for(i=0;i&lt;width;++i)
+ for(j=0;j&lt;height;++j) {
+  // translate
+  int x = i - x0; 
+  int y = j - y0;
+  // calculate Q coodinates of dest
+  Qdest[0] = vy * x - vx * y; 
+  Qdest[1] = -uy * x + ux * y;
+  // apply specific transformation
+  fun(Qdest,Qsrc,det); 
+  // calculate Psrc
+  int srcX = x0 + (Qsrc[0] * ux + Qsrc[1] * vx ) / det;	
+  int srcY = y0 + (Qsrc[0] * uy + Qsrc[1] * vy ) / det;	
+  // copy src pixel to dest pixel
+  pixels[i*width+j] = pixels[srcX*width+srcY];
+ }
+ 
+// An example of transformation function for group Pmm 
+void fun(int dest[2],int src[2],int det) {
+	// find modulus
+	int a = dest[0] % det; if(a<0) a+= det;
+	int b = dest[1] % det; if(b<0) b+= det;
+	// find coordinates of point in fundamental domain
+	if(a>det/2) a = det - a;
+	if(b>det/2) b = det - b;
+}
+</pre>
+
+<h3>Hexagonal patterns</h3>
+<p>The five patterns with 3 or 6 fold rotations require the more complex calculations.
+<ul>
+	<li>Let $det$ be the length of the <b>u</b> vector.
+	<li>First calculate coordinates $\mathbf{in}=(X, Y)$ with respect to the <b>u-v</b> frame. 
+	<li>Find the "integer"" and "fractional" parts of the input:
+		$X=a + \frac{\alpha}{det}, Y =b + \frac{\beta}{det}$,
+		where $a,\alpha, b,\beta$ are integers and $0 \leq \alpha, \beta < det$.
+		So $\alpha = X \bmod det$, $a = \lfloor \frac{X}{det}\rfloor $,
+		  $\beta = Y \bmod det$, $b = \lfloor \frac{Y}{det}\rfloor $. 
+	<li>Find $index = (a + b ) \mod 3$, all points with the same index will have the same source point.
+	<li>Next factor out the 3-fold rotation around the center of the tile. 
+		This can be found by simple addition with 5 cases
+		depending on the index and $\alpha$ and $\beta$.
+		$$\mathbf{out} = \begin{cases}
+		(\alpha,\beta) & index=0 \\
+		(\beta - \alpha, det - \alpha) & index=1, \alpha < \beta \\
+		(det - \beta, \alpha - \beta) & index=1, \alpha \ge \beta \\
+		(det - \beta, \alpha - \beta + det)  & index=2, \alpha < \beta \\
+		(\beta - \alpha + det, det - \alpha) & index=2, \alpha \ge \beta 
+		\end{cases}$$
+	<li>Further symmetry options depending on the type of pattern
+</ul>
+<img src="naut/p3 flower annotated.png" width="400" height="400" alt="finding the index and out coords">
+<p>
+In the above figure, we wish to rotate the point $\mathbf{in}$
+around the center of the tile $\mathbf{p}$. 
+Orange number are the index of each parallelogram
+The input point is
+$$\mathbf{in} = \left(a + \frac{\alpha}{det}\right) \mathbf{u} 
+	+ \left(b + \frac{\beta}{det}\right) \mathbf{v}$$
+<p>
+Here $a = 1, b=0, index=1$ and $\alpha < \beta$.
+Rotating 120° clockwise around O send $\mathbf{u}\to\mathbf{w}=-\mathbf{u}-\mathbf{v}$
+and $\mathbf{v}\to\mathbf{u}$ so the rotated points is
+$$\mathbf{rot}=\left(1 + \frac{\alpha}{det}\right) (-\mathbf{u}-\mathbf{v}) 
+	+ \left( \frac{\beta}{det}\right) \mathbf{u} 
+= \left(-1-\frac{\alpha}{det}+\frac{\beta}{det}\right)\mathbf{u} + \left(-1-\frac{\alpha}{det}\right)\mathbf{v}  $$
+Translating by $\mathbf{u}+2\mathbf{v}$ gives the final output point 
+$$ \mathbf{out}=\left(-\frac{\alpha}{det}+\frac{\beta}{det}\right)\mathbf{u} 
++ \left(1-\frac{\alpha}{det}\right)\mathbf{v}  $$
+With coordinated $(-\alpha+\beta, det-\alpha)$ in the <b>u-v</b> frame.
+<p>
+Hence the calculation of the output coordinates can be done in integer arithmetic,
+the only time floating point is used is when calculating the 
+vector $\mathbf{v}$ which only needs to be done once.
+
+<h3>Using lattice points</h3>
+<p>The calculation can be sped up by using the lattice structure of the tessellation. First find the bounding box enclosing one 
+parallelogram in the lattice, and calculate the full pattern in that rectangle. The find all the lattice points in the region to be drawn.
+For each lattice point copy the pixels in the rectangle to a new rectangle based on the lattice point.
+This will result in a certain amount of overlap, but this does not affect the speed as coping arrays can be achieve very quickly.
+</p>
+
+<h3>Speeds of integer and floating point</h3>
+<p>Using integer arithmetic offers considerable speed advantages over floating point in the inner loops.
+Compare these two methods for finding division rounded down (rather than to 0 as in the language spec for /):
+<pre>
+ int a = (int) Math.floor((float) in[0]/det);
+ int b = (int) Math.floor((float) in[1]/det);
+</pre>
+and
+<pre>
+ int a = (in[0]<0 ? (in[0]+1)/det -1 : in[0]/det); 
+ int b = (in[1]<0 ? (in[1]+1)/det -1 : in[1]/det); 
+</pre>
+Changing from the first to the second resulted in a four fold speed improvement over the whole algorithm.
+These two lines represented 67% of the entire speed of the algorithm.
+
+<?php 
+include("footer.php"); 
+include_once('../admin/connect.php');
+include_once('../admin/util.php');
+include_once('../admin/log.php');
+
+?>
+
+<hr>
+<p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
+	<a href="help.html">Help</a>
+	<a href="maths.html">Maths</a>
+	<a href="groups.html">Groups</a>
+	<a href="code.html">Code</a>
+</p>
+<p>Copyright R Morris 2025</p>
+</div>
+</body>
+</html>

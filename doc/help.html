@@ -7,8 +7,10 @@
 <div id="head1"></div>
 <div id="col2">
 <p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
-<a href="help.html">help</a> <a
-	href="maths.html">maths</a></p>
+	<a href="help.html">Help</a>
+	<a href="maths.html">Maths</a>
+	<a href="groups.html">Groups</a>
+	<a href="code.html">Code</a>
 
 <h1>Wallpaper patterns - Help</h1>
 <p>The Wallpaper Pattern Java application creates repeating
@@ -131,7 +133,7 @@ ppm and bmp format images.</p>
 		pattern</b> option on the <b>File</b> menu.
 <p>Pattern files are formated like:
 <pre>
-	group: P3m1
+	group: p3m1
 	vertices:
 	  - [471,257]
 	  - [343,257]
@@ -183,7 +185,38 @@ ppm and bmp format images.</p>
 		<li><b>repeat:</b> specifies how long the animation will run for, in seconds.</li>
 	</ul>
 		
-	<p>Sequence files can be loaded and saved using the <b>Load
+	<p>The <b>group</b> can be any name of a group, such as <code>P4m</code>, 
+		<code>P6</code>, <code>D4</code>, <code>F7</code> etc., or
+		it can be the name a collection of groups such as <code>wall</code> or <code>frieze</code> or <code>kaleidoscopes</code>.
+		and the group is randomly selected from the collection. Additional collections
+		can be defined in the <code>org/singsurf/wallpaper/messages.properties</code> file.
+		
+	<p>The <b>filename</b> can be any image file, such as a jpg or png file.
+		It can also be a filename pattern such as <code>images/*.{jpg,png}</code>
+		that selects a random image from the <code>images</code> directory
+		matching the glob pattern.
+		
+	<p>The <b>anim</b> can be the name of an animation type:
+		<ul>
+			<li><code>up</code>, <code>down</code>, <code>left</code>, <code>right</code>,
+        <code>NE</code>, <code>NW</code>, <code>SE</code>, <code>SW</code>, continualy move in one direction
+		using a tiled version of the underlying image.	
+		<li><code>bounce</code>, <code>left-right</code> ,<code>up-down</code> animations constrain the domain 
+			to lie within the boundary of the image, changing direction at the edges of the image.
+		<li><code>smooth</code> constrains the the domain 
+						to lie within the boundary of the image, has a smooth path base on a Lissajous figure. 
+						It can be a little glitchy.
+		<li><code>rotate</code> and <code>rotate-centre</code> rotate the domain, either around a vertex of
+			the domain, or the centre of the image, which works better with full screen images.
+		<li><code>grow</code> ,<code>grow-centre</code> grows and shrinks the domain, it can be glitchy at small sizes				
+		<li><code>none</code> a do nothing animation.
+		</ul>
+		<p>Or the name of a collection of animation types, the actual animation used
+			is chosen at random: <li><code>all</code>, <li><code>nice</code>
+			or <li><code>shifts</code> with just the shifting animations which are the best behaved.
+		Other types of collection can be specified in the properties file. 
+
+				<p>Sequence files can be loaded and saved using the <b>Load
         sequence</b> and constructed using the <b>Append sequence</b> options on the <b>File</b> menu.
 	Sequences are constructed in multple steps, by appending multiples frames to the same file. At each step
 	a dialog will be shown to allow the user to set the running time for the animation and
@@ -198,8 +231,19 @@ These are
     <li><b>sequences/all friezes.seq</b> - all the freize groups</li>
     <li><b>sequences/all cyclic.seq</b> - all the cyclic and dyhedrai groups.</li>
     <li><b>sequences/image sequence.seq</b> - a sequence different images with different groups.</li>
-</ul>
-	
+    <li><b>sequences/random image.seq</b> - random image, and random wallpaper group.</li>
+    <li><b>sequences/random freize.seq</b> - random image, and random frieze group.</li>
+    <li><b>sequences/random point.seq</b> - random image, and random point group.</li>
+	<li><b>sequences/random alternate.seq</b> - random image, and random alternative versions for some group.</li>
+	<li><b>sequences/random everything.seq</b> - random image, and every possible group including alternate, friezes and point groups.</li>
+	<li><b>sequences/kalidoscopes.seq</b> - random pure-kalidoscopes (P6M,P4M,P3M1,PMM,PM)</li>
+	<li><b>sequences/tropic.seq</b> - random tropic patterns built from gyration point (P6,P4,P3,P2,P1)</li>
+	<li><b>sequences/gyro.seq</b> - random gyro patterns with mirrors and gyrations (P4G,P31M,PMG)</li>
+	<li><b>sequences/glide.seq</b> - random glide patterns with mirroe and glide reflections (PGG,PG)</li>
+	<li><b>sequences/rhombic.seq</b> - random rhombic patterns (CMM,CM)</li>
+	</ul>
+<p>See <a href="http://www.geom.uiuc.edu/docs/doyle/mpls/handouts/node39.html">Geometry and the Imagination in Minneapolis</a>
+(Conway, Doyle, Gilman, Thurston) for kalidoscopes/tropic/gyro/glide/rhombic classification</p>
 <h3>Creating rectangular tiles</h3>
 <p>Rectangular tiles which can be used to tile a desktop background
 can be produced. However, not all patterns have the correct geometry to
@@ -215,14 +259,14 @@ created.</p>
 <p>If possible the tileable region can be saved using the <b>Save
 Tile</b> option on the <b>File</b> menu.</p>
 
-<h3>Image menu</h3>
+<h2>Image menu</h2>
 
 <p>The <b>image</b> menu allows some image manipulation to be
 carried out. 
 
 <uL>
 	<li><b>Zoom</b> - zoom in or out of the image. The zoom factor is a fraction
-		of the original image size. Preserves the underlying image.</li
+		of the original image size. Preserves the underlying image.</li>
 	<li><b>Crop</b> crop the image, modifying the underling image</li>
 	<li><b>Expand</b> - expand the size of the image, either tiling the image or
         adding a background colour. The background colour can be set using the
@@ -239,6 +283,16 @@ carried out.
 <p>Finer cotrol can be obtained by using the <b>Basic Transform</b> 
 to rotate by a precise amount, and then copying and pasting the image.
 
+<h2>View menu</h2>
+<p>The <b>view</b> menu allows fine control over the display, allowing
+	cells (each cell is a copy of the fundamental domain), tiles (tiles
+	can be tesslelated to fill the plane), points of rotation or lines indicating
+	reflections or glide-reflections. 
+<p>There are other specalised views: <b>isolate domain</b> just shows the fundamental domain;
+	<b>isolate tile</b> shows a single tesselatible tile, and
+	<b>split</b> shows a split-screen view, the original image on the left
+	and the tiled version of the right. 
+	
 <h2>Windows menu</h2>
 <p>The <b>Windows</b> menu has a single option <b>Full screen</b> which
 displays the image in full screen mode. All controls are hidden and the image is
@@ -271,6 +325,20 @@ To start the paint mode select
 
 <h2>Version history</h2>
 <dl>
+	<dt>Version 1.8 - 19 June 2025</dt>
+	<dd>
+	<ul>
+		<li>String externalisation, allowing internationalisation and
+			customisation by editing the <code>message.properties</code> file.</li>
+		</li>
+		<li>Key O toggles full string</li>
+		<li>"None" do-nothing animation.</li>
+		<li>Ability to just show the fundamental domain, or single tile.</li>
+		<li>Allow the selection of alternate domains for some groups.</li>
+		<li>Can now copy images with incliding the symetry overlays to the clipboard.</li>
+		<li>Orbifold notation displayed, and expanded desription in the help pages.</li>
+	</ul>
+	</dd>
 	<dt>Version 1.7 - 30 April 2025</dt>
 	<dd>
 	<ul>
@@ -361,8 +429,10 @@ To start the paint mode select
 
 <hr>
 <p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
- <a href="help.html">help</a> <a
-	href="maths.html">maths</a></p>
+	<a href="help.html">Help</a>
+	<a href="maths.html">Maths</a>
+	<a href="groups.html">Groups</a>
+	<a href="code.html">Code</a>
 <p>Copyright R Morris 2007</p>
 </div>
 </body>

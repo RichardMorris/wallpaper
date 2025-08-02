@@ -1,0 +1,950 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">  
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Wallpaper patterns - The mathematics</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\$', '\$']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style type="text/css">
+body { font-family: sans-serif; }
+.latticeTable td {
+	width: 150px;
+}
+th {
+	font-weight: bold;
+}
+td {	vertical-align: top; }
+
+.rotTable td { text-align: center; width: 100px; }
+
+table.orbifoldTable, .orbifoldTable td, .orbifoldTable th {
+	//border: 1px solid; border-collapse: collapse; 
+	border-spacing: 0;
+	padding-bottom: 2px;
+	}
+.costTable td {
+    //border: 1px solid; border-collapse: collapse; 
+	border-top: 1px solid #ddd;
+    border-spacing: 0;
+    padding: 2px;
+    }
+	.costTable td:nth-child(3) {
+        text-align: center;
+		padding-left: 5px;
+    }
+	
+.orbifoldExamples td {
+    vertical-align: middle;
+	text-align: center;
+    padding: 5px;
+}
+.groupTable {
+	border-collapse: collapse; 
+	margin: 5px;
+	margin-left: 20px;
+}
+.groupTable td, .groupTable th {
+	border-right: 1px solid; 
+	border-bottom: 1px solid; 
+	border-spacing: 0;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-align: bottom;
+	font-size: smaller;
+	vertical-align: baseline;
+}
+.groupTable td:nth-child(1), .groupTable th:nth-child(1) {
+	border-right: 2px solid; 
+}
+.groupTable tr:nth-child(1) th {
+	border-bottom: 2px solid; 
+}
+
+
+</style>
+</head>
+<body>
+<div id="head1"></div>
+<div id="col2">
+<p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
+	<a href="help.html">Help</a>
+	<a href="maths.html">Maths</a>
+	<a href="groups.html">Groups</a>
+	<a href="code.html">Code</a>
+</p>
+
+<h1>Wallpaper patterns - some group theory</h1>
+
+<p>Wallpaper groups are a nice way to explain some of the key concepts in group theory,
+	and offers some non-trivial examples.
+	
+<h3>What is a group?</h3>
+<p>Firstly: what is a group? A group is a generalisation of addition of integers.
+Addition has an operator: +, that takes two elements and returns a third. 
+It has and identity element, 0, such that for any integer, $n$, $0+n = n$ and $n+0 = 0$,
+and every element, $n$, has an inverse, $-n$, such that
+$n+(-n)=0\, (-n)+n=0$. The operation is associative meaning $a+(b+c)=(a+b)+c$.
+The interger with addition and also commutative so $a+b=b+c$ so forms
+a <i>abelian group</i> not all groups need to be commutative. We write the
+this group as $(\mathbb{Z},+)$.
+<p>
+A formal definition of a group, $(G,\circ)$, is a set $G$ with operator $\circ:G\times G\to G$ such that
+<ul>
+	<li>There exists a unique <i>identity element</i> $\text{id}$ such that for all $g\in G$ we have
+		$g \circ \text{id} = g, \text{id} \circ g = g$.
+	<li>Every element has a unique inverse $g^{-1}$ such that 
+		$g \circ g^{-1} = \text{id}, g^{-1} \circ g = \text{id}$
+	<li>The operation is <i>associative</i>, for any three elements
+		$a,b,c\in G$ we have $a \circ (b \circ c)=(a \circ b)\circ c$
+</ul>
+<p>Its sometimes useful to say the group is <i>closed</i> under the opertator $\circ$,
+	this means that $g\circ h \in G$. Its not a formal part of the definition but
+	it can be a useful check to ensure we have not missed any elements out.
+<p>
+If we futher have
+<ul>
+	<li>The operation is <i>commutative</i>: for every two elements $a,b,c\in G$ then $a\circ b=b \circ a$
+</ul>
+<p>Then the group is said to be an <i>abelian group</i>.
+
+<h3>Elements of the Wallpaper groups</h3>
+<p>Each Wallpaper pattern is an example of a group. In each case the elements of the 
+	group will be transformations of the plane, so for each element $g \in G$ there is a transformation 
+	$T_g : \mathbb{R}^2 \to \mathbb{R}^2$. We will write
+<ul>
+	<li>$I$ the identity transformation: $I:(x,y)\to(x,y)$
+	<li>$T_\mathbf{u}$ translation along vector $\mathbf{u}$ 
+	<li>$R_{\theta}$ rotation around the origin by $\theta$ degrees counter-clockwise, so $R_{90}$ is a 90º rotation.
+	<li>$R_{\theta,p}$ rotation around point $p$ by $\theta$ degrees counter-clockwise. 
+	<li>$M_l$ reflection in the line $l$.
+	<li>$M_\theta$ reflection around a line at angle $\theta$ through the origin.
+	<li>$G_{\mathbf{u}}$ a glide-reflection: a translation along $\mathbf{u}$ followed
+		by a reflection along a line through the origin parallel to $\mathbf{u}$ 
+	<li>$G_{\mathbf{u},p}$ a glide-reflection: a translation along $\mathbf{u}$ followed
+			by a reflection along a line through point $p$ parallel to $\mathbf{u}$ 
+</ul>
+We can combine two transformations $T_g, T_h$ by composition. 
+$T_h \circ T_g$ means apply transformation $T_g$ followed by transformation $T_h$.
+this always gives another transformation which we write as $T_{h\circ g}$. 
+
+<p>The exact set of elements depend on the type of group. Each group will have an infinite
+	set of elements, including a two dimensional set of translations, and optionally
+	infinite sets of rotations, reflections and glide-reflections. Before we look at 
+	these infinite groups its useful to study the finite groups that we find in the cyclic and dihedral groups.
+	
+<h3>Finite groups</h3>
+<p>For <i>finite</i> group, that has a finite number of elements, it can be useful to use a 
+	table listing the results of the group operators for each pair of elements, called the <i>Cayley table</i>.
+	If a group $G$ has elements $\{I,a,b\}$ then its Cayley table is
+	
+<table class="groupTable">
+	<tr>		<th>$\circ$		<th>$I$		<th>$a$		<th>$b$
+	<tr>		<th>$I$		<td>$I\circ I$		<td>$I\circ a$		<td>$I\circ b$
+	<tr>		<th>$a$		<td>$a\circ I$		<td>$a\circ a$		<td>$a\circ b$
+	<tr>		<th>$b$		<td>$b\circ I$		<td>$b\circ a$		<td>$b\circ b$
+</table>
+
+<p>
+	The simplest possible group is called the <i>trivial group</i> which has a single
+	element $I$. We have $I\circ I=I$ so this element is the identity element and it is its own inverse. 
+	The operation is both associative and comutative.  We will denote such a group by $1$.
+	
+<h4>Cyclic groups</h4>
+<p>
+	Next consider the cyclic groups $C_n$, consting of n-fold rotations about the origin.
+	There is a simple rule for combining two rotations 
+	$R_\theta \circ R_\phi = R_{\theta+\phi \mod 360^\circ}$.
+<ul>
+	<li> $C_2$ has two elements $\{I,R_{180}\}$.
+	$I$ is the identity element and $R_{180}$. Cayley table
+	<table class="groupTable">
+		<tr>		<th>$\circ$		<th>$I$		<th>$R_{180}$
+		<tr>		<th>$I$		<td>$I$		<td>$R_{180}$
+		<tr>		<th>$R_{180}$		<td>$R_{180}$		<td>$I$
+	</table>
+	Note the 	
+	 $R_{180}\circ R_{180} = I$ so $R_{180}$ is its own inverse. 
+	<li>$C_3$ has three elements $\{I,R_{120},R_{240}\}$. 
+		<table class="groupTable">
+			<tr>		<th>$\circ$		<th>$I$		<th>$R_{120}$	<th>$R_{240}$
+			<tr>		<th>$I$		<td>$I$		<td>$R_{120}$ <td>$R_{240}$
+			<tr>		<th>$R_{120}$		<td>$R_{120}$	<td>$R_{240}$ <td>I
+			<tr>		<th>$R_{240}$		<td>$R_{240}$	<td>$I$ <td>$R_{120}$ 
+		</table>
+		 So	$R_{120},  R_{240}$ are each others inverse. 
+
+	<li>$C_4$ has four elements $\{I,R_{90}, R_{180}, R_{270}\}$. 
+		<table class="groupTable">
+			<tr>		<th>$\circ$		<th>$I$			<th>$R_{90}$	<th>$R_{180}$ 	<th>$R_{270}$
+			<tr>		<th>$I$			<td>$I$			<td>$R_{90}$ 	<td>$R_{180}$ 	<td>$R_{270}$
+			<tr>		<th>$R_{90}$	<td>$R_{90}$	<td>$R_{180}$	<td>$R_{270}$	<td>$I$
+			<tr>		<th>$R_{180}$	<td>$R_{180}$	<td>$R_{270}$ 	<td>$I$ 		<td>$R_{90}$
+			<tr>		<th>$R_{270}$	<td>$R_{270}$	<td>$I$ 		<td>$R_{90}$ 	<td>$R_{180}$
+		</table>
+		So $R_{180}$ is its own inverse and $R_{90},  R_{270}$ are each others inverse. 
+	<li>$C_5$ has five elements $\{I, R_{72},  R_{144},  R_{216},  R_{288}\}$
+		<table class="groupTable">
+			<tr>		<th>$\circ$		<th>$I$			<th>$R_{72}$	<th>$R_{144}$ 	<th>$R_{216}$	<th>$R_{288}$
+			<tr>		<th>$I$			<td>$I$			<td>$R_{72}$ 	<td>$R_{144}$ 	<td>$R_{216}$   <td>$R_{288}$
+			<tr>		<th>$R_{72}$	<td>$R_{72}$	<td>$R_{144}$	<td>$R_{216}$	<td>$R_{288}$	<td>$I$
+			<tr>		<th>$R_{144}$	<td>$R_{144}$	<td>$R_{216}$ 	<td>$R_{288}$ 	<td>$I$			<td>$R_{72}$
+			<tr>		<th>$R_{216}$	<td>$R_{216}$	<td>$R_{288}$ 	<td>$I$ 		<td>$R_{72}$	<td>$R_{144}$
+			<tr>		<th>$R_{288}$	<td>$R_{288}$	<td>$I$ 		<td>$R_{72}$ 	<td>$R_{144}$	<td>$R_{216}$
+		</table>
+
+		, so $ R_{72},  R_{288}$ are each others inverse as are $ R_{144}$, $ R_{216}$,
+	<li>$C_6$ has six elements $\{I, R_{60},  R_{120},  R_{180},  R_{240},  R_{300}\}$,
+		<table class="groupTable">
+			<tr>		<th>$\circ$		<th>$I$			<th>$R_{60}$	<th>$R_{120}$ 	<th>$R_{180}$	<th>$R_{240}$	<th>$R_{300}$
+			<tr>		<th>$I$			<td>$I$			<td>$R_{60}$ 	<td>$R_{120}$ 	<td>$R_{180}$   <td>$R_{240}$	<td>$R_{300}$
+			<tr>		<th>$R_{60}$	<td>$R_{60}$	<td>$R_{120}$	<td>$R_{180}$	<td>$R_{240}$	<td>$R_{300}$	<td>$I$
+			<tr>		<th>$R_{120}$	<td>$R_{120}$	<td>$R_{180}$ 	<td>$R_{240}$ 	<td>$R_{300}$	<td>$I$			<td>$R_{60}$
+			<tr>		<th>$R_{180}$	<td>$R_{180}$	<td>$R_{240}$ 	<td>$R_{300}$ 	<td>$I$			<td>$R_{60}$	<td>$R_{120}$
+			<tr>		<th>$R_{240}$	<td>$R_{240}$	<td>$R_{300}$ 	<td>$I$ 		<td>$R_{60}$	<td>$R_{120}$	<td>$R_{180}$
+			<tr>		<th>$R_{300}$	<td>$R_{300}$	<td>$I$ 		<td>$R_{60}$ 	<td>$R_{120}$	<td>$R_{180}$	<td>$R_{240}$
+		</table>
+		So $R_{180}$ is its own inverse ,$ R_{60},  R_{300}$ are each others inverse as are $ R_{120}$, $ R_{240}$.
+</ul>
+<p>All these groups is closed, and commutative. 
+	
+<p>Theres groups also have the property that
+	they are generated by a single element. Write
+	$g^2 = g \circ g$,
+	$g^3 = g \circ g \circ g$, etc. 
+	If every element of a group has the form $g^n$ for some integer $n$
+	then the group is said to be <i>generated</i> by $g$.
+
+<p>As the identity is an element of the group then $I = g^N$ for some integer $N$,
+	and we say $g$
+	has <i>order</i> $N$.
+	If all elements of a group has order $N$ or less, the group is
+	said to have order $N$.
+	
+<p>For the cyclic groups:
+	$C_2$ is generated by $R_{180}$ and has order 2,
+	$C_3$ is generated by $R_{120}$ and has order 3,
+	$C_4$ is generated by $R_{90}$ and has order 4,
+	$C_5$ is generated by $R_{72}$ and has order 5,
+	$C_6$ is generated by $R_{60}$ and has order 6.
+	Other elements can also generate the group, for $C_2$, $C_3$ and 
+	$C_5$ every element apart from the identity is a generator
+	for the group. For $C_4$, $R_{90}$ and $R_{270}$ are generators, but
+	$R_{180}$ is not. The element only has order 2. For $C_6$ $R_{60}$ and $R_{300}$
+	are generators of order 6, but $R_{120}$ and $R_{240}$ have order 3,
+	and $R_{180}$ has order 2. 
+	You may notice a connection with prime numbers and factorisation here.
+	
+<h4>Dihedaral groups</h4>
+<p>Now consider the group $D_n$ of dihedral rotations, 
+	which is the group of symmetries of a regular polygon with $n$ sides.
+Each of these has at least one reflection.
+
+<ul>
+	<li>$D_1$ has elements $\{I, M_0\}$ where $M_0$ is
+	a reflection around the x-axis.  $M_0$ is its own inverse.
+
+	<table class="groupTable" id="D1">
+		<tr>		<th>$\circ$		<th>$I$		<th>$M_{0}$
+		<tr>		<th>$I$			<td>$I$		<td>$M_{0}$
+		<tr>		<th>$M_{0}$		<td>$M_{0}$	<td>$I$
+	</table>
+
+	<li>$D_2$ has four elements $\{I, M_0, R_{180}, M_{90}\}$ where $M_{90}$ is
+		a reflection around the y-axis. 
+		<style>
+			#D2 td:nth-child(3) { border-right: 2px solid black; }
+			#D2 th:nth-child(3) { border-right: 2px solid black; }
+			#D2 tr:nth-child(3) td {border-bottom: 2px solid black; }
+			#D2 tr:nth-child(3) th {border-bottom: 2px solid black; }
+		</style>
+		<table id="D2" class="groupTable">
+			<tr>		<th>$\circ$		<th>$I$			<th>$R_{180}$	<th>$M_{0}$ 	<th>$M_{90}$
+			<tr>		<th>$I$			<td>$I$			<td>$R_{180}$ 	<td>$M_{0}$ 	<td>$M_{90}$
+			<tr>		<th>$R_{180}$	<td>$R_{180}$	<td>$I$			<td>$M_{90}$	<td>$M_{0}$
+			<tr>		<th>$M_{0}$		<td>$M_{0}$		<td>$M_{90}$ 	<td>$I$ 		<td>$R_{180}$
+			<tr>		<th>$M_{90}$	<td>$M_{90}$	<td>$M_{0}$ 	<td>$R_{180}$ 	<td>$I$
+		</table>
+		
+		Each element is its own
+		inverse. 
+	<li>$D_3$ has six elements $\{I, M_0, M_{60}, M_{120}, R_{120}, R_{240}\}$ 
+		
+		<style>
+			#D3 :is(th,td):nth-child(4) { border-right: 2px solid black; }
+			#D3 tr:nth-child(4) :is(th,td) {border-bottom: 2px solid black; }
+		</style>
+	<table id="D3" class="groupTable">
+	<tbody>
+	<tr>
+		<th>$\circ$</th>	<th>$I$</th>		<th>$R_{120}$</th>	<th>$R_{240}$</th>	<th>$M_{0}$</th>	<th>$M_{60}$</th>	<th>$M_{120}$</th>
+	</tr>
+	<tr>
+		<th>$I$</th>		<td>$I$</td>		<td>$R_{120}$</td>	<td>$R_{240}$</td>	<td>$M_{0}$</td>	<td>$M_{60}$</td>	<td>$M_{120}$</td>
+	</tr>
+	<tr>
+		<th>$R_{120}$</th>	<td>$R_{120}$</td>	<td>$R_{240}$</td>	<td>$I$</td>		<td>$M_{60}$</td>	<td>$M_{120}$</td>	<td>$M_{0}$</td>
+	</tr>
+		<tr>
+		<th>$R_{240}$
+		</th>
+		<td>$R_{240}$</td>
+		<td>$I$</td>
+		<td>$R_{120}$
+		</td>
+		<td>$M_{120}$</td>
+		<td>$M_{0}$</td>
+		<td>$M_{60}$
+		</td></tr>
+		<tr>
+		<th>$M_{0}$
+		</th>
+		<td>$M_{0}$</td>
+		<td>$M_{120}$</td>
+		<td>$M_{60}$
+		</td>
+		<td>$I$</td>
+		<td>$R_{240}$</td>
+		<td>$R_{120}$
+		</td></tr>
+		<tr>
+		<th>$M_{60}$
+		</th>
+		<td>$M_{60}$</td>
+		<td>$M_{0}$</td>
+		<td>$M_{120}$
+		</td>
+		<td>$R_{120}$</td>
+		<td>$I$</td>
+		<td>$R_{240}$
+		</td></tr>
+		<tr>
+		<th>$M_{120}$
+		</th>
+		<td>$M_{120}$</td>
+		<td>$M_{60}$</td>
+		<td>$M_{0}$
+		</td>
+		<td>$R_{240}$</td>
+		<td>$R_{120}$</td>
+		<td>$I$
+		</td></tr>
+	</tbody></table>
+		
+	<li>$D_4$ has eight elements $\{I, R_{90}, R_{180}, R_{270},
+		M_0, M_{45}, M_{90}, M_{135}\}$ 
+		
+		<style>
+			#D4 :is(td,th):nth-child(5) { border-right: 2px solid black; }
+			#D4 tr:nth-child(5) :is(td,th) {border-bottom: 2px solid black; }
+		</style>
+	<table class="groupTable" id="D4">
+	<tbody><tr>
+		<th>$\circ$
+		<th>$I$</th>
+		<th>$R_{90}$</th>
+		<th>$R_{180}$</th>
+		<th>$R_{270}$</th>
+		<th>$M_{0}$</th>
+		<th>$M_{45}$</th>
+		<th>$M_{90}$</th>
+		<th>$M_{135}$</th>
+	</tr>
+	<tr>
+		<th>$I$</th>
+		<td>$I$</td>
+		<td>$R_{90}$</td>
+		<td>$R_{180}$</td>
+		<td>$R_{270}$</td>
+		<td>$M_{0}$</td>
+		<td>$M_{45}$</td>
+		<td>$M_{90}$</td>
+		<td>$M_{135}$</td>
+	</tr>
+	<tr>
+		<th>$R_{90}$</th>
+		<td>$R_{90}$</td>
+		<td>$R_{180}$</td>
+		<td>$R_{270}$</td>
+		<td>$I$</td>
+		<td>$M_{45}$</td>
+		<td>$M_{90}$</td>
+		<td>$M_{135}$</td>
+		<td>$M_{0}$</td>
+	</tr>
+	<tr>
+		<th>$R_{180}$</th>
+		<td>$R_{180}$</td>
+		<td>$R_{270}$</td>
+		<td>$I$</td>
+		<td>$R_{90}$</td>
+		<td>$M_{90}$</td>
+		<td>$M_{135}$</td>
+		<td>$M_{0}$</td>
+		<td>$M_{45}$</td>
+	</tr>
+	<tr>
+		<th>$R_{270}$</th>
+		<td>$R_{270}$</td>
+		<td>$I$</td>
+		<td>$R_{90}$</td>
+		<td>$R_{180}$</td>
+		<td>$M_{135}$</td>
+		<td>$M_{0}$</td>
+		<td>$M_{45}$</td>
+		<td>$M_{90}$</td>
+	</tr>
+	<tr>
+		<th>$M_{0}$</th>
+		<td>$M_{0}$</td>
+		<td>$M_{135}$</td>
+		<td>$M_{90}$</td>
+		<td>$M_{45}$</td>
+		<td>$I$</td>
+		<td>$R_{270}$</td>
+		<td>$R_{180}$</td>
+		<td>$R_{90}$</td>
+	</tr>
+	<tr>
+		<th>$M_{45}$</th>
+		<td>$M_{45}$</td>
+		<td>$M_{0}$</td>
+		<td>$M_{135}$</td>
+		<td>$M_{90}$</td>
+		<td>$R_{90}$</td>
+		<td>$I$</td>
+		<td>$R_{270}$</td>
+		<td>$R_{180}$</td>
+	</tr>
+	<tr>
+		<th>$M_{90}$</th>
+		<td>$M_{90}$</td>
+		<td>$M_{45}$</td>
+		<td>$M_{0}$</td>
+		<td>$M_{135}$</td>
+		<td>$R_{180}$</td>
+		<td>$R_{90}$</td>
+		<td>$I$</td>
+		<td>$R_{270}$</td>
+	</tr>
+	<tr>
+		<th>$M_{135}$</th>
+		<td>$M_{135}$</td>
+		<td>$M_{90}$</td>
+		<td>$M_{45}$</td>
+		<td>$M_{0}$</td>
+		<td>$R_{270}$</td>
+		<td>$R_{180}$</td>
+		<td>$R_{90}$</td>
+		<td>$I$</td>
+	</tr>
+	</tbody>
+	</table>
+		
+		
+	<li>$D_5$ has ten elements $\{I, R_{72}, R_{144},  R_{216},  R_{288},
+		M_0, M_{36}, M_{72}, M_{108}, M_{144}	\}$
+	<li>$D_6$ has twelve elements $\{I, R_{60}, R_{120}, R_{180}, R_{210}, R_{270},
+		M_0, M_{30}, M_{60}, M_{90}, M_{120} \}$ 
+</ul>
+
+<p>$D_3$ is our first example of a non-commuative group, where 
+	there are some elements $a,b\in D_3$ for which
+	$a\circ b\ne b\circ a$. Here 
+	$R_{90}\circ M_0 = M_{45}$ but $M_0\circ R_{90}=M_{135}$.
+	In other words a reflection in the x-axis follow by a 90º 
+	rotation is different to 90º rotation followed by a reflection in the x-axis.	
+	The order in which we apply tranfomations matter.  
+
+<h4>Subgroups</h4>
+<p>You may notice some of these group share some elements of other groups,
+	and we can discuss the idea of sub-groups.
+	A group $(H,\circ)$ is a <i>subgroup</i> of a larger group $(G,\circ)$
+	if the elements of $H$ is a subset of the elements of $G$
+	and $H$ is a group closed under the group operation $\circ$.  
+	As $H$ is a group it must contain the identity element
+	and the inverse of every element of $H$ must lie in $H$.
+	We write $H \le G$, and if $H$ is not identical to $G$ then
+	$H$ is a <i>propper subgroup</i> and we write $H < G$.
+	
+	 
+<p>We have several subgroups relations in our set above:
+<ul>
+	<li>The trivial group is a subgroup of every other group, $I< C_2$, $I < D_4$ etc.
+	<li>The rotation group $C_2$ is a subgroup of the other cyclic group with an even order.
+		$C_2 < C_4, C_2 < C_6$.
+	<li>The rotation group $C_3$ is a subgroup of other cyclic groups whose order
+		is a multiple of three, in particual $C_3 < C_6$.
+	<li>Rotation groups of prime order have no subgroups other than the trivial group.
+	<li>Each cyclic group is a subgroup of the corresponding
+		dihedral group. $C_2 < D_2, C_3 < D_3, C_4 < D_4, C_5 < D_5, C_6 < D_6$
+	<li>The dihedral group $D_1$ is a subgroup of every other dihedral group.
+	<li>The dihedral group $D_2$ is a subgroup of $D_4$ and $D_6$.
+	<li>The dihedral group $D_3$ is a subgroup of $D_6$.		
+</ul>
+<p>Alternative we can list the subgroups of our groups, (omitting the tivial group and the group itself)
+<ul>
+	<li>$C_4$ has a subgroup $C_2$
+	<li>$C_6$ has subgroups $C_2, C_3$
+	<li>$D_2$ has subgroups $C_2, D_1$			
+	<li>$D_3$ has subgroups $C_3, D_1$			
+	<li>$D_4$ has subgroups $C_2, C_4, D_1, D_2$			
+	<li>$D_5$ has subgroups $C_5, D_1$			
+	<li>$D_6$ has subgroups $C_2, C_3, C_6, D_1, D_2, D_3$			
+</ul>
+<p>So even with this small list of groups we have a rich structure.
+		
+<h4>Maps between groups</h4>
+<p>
+It is useful to determine when two group are the same. 
+First we need to discuss maps between groups. If $(G,*)$, $(H,\circ)$ are two groups we can consider a map
+between the sets $f : G \to H$ given by  $g \to f(g)$. Usual we want the map to
+be consistant with the group operators, so if $a,b \in G$ then
+ $$f(a)\circ f(b)=f(a * b)$$
+This implies that if $I_G$ and $I_H$ are the two identity elements then the map send one to the other $f(I_G)=I_H$,
+and also that is consistant with inverse elements $f(a^{-1}) = (f(a))^{-1}$.   
+Such maps are called <i>Group homomorphisms</i>. 
+
+<p>We can further classify such maps according whether they are 1-to-1, or onto.
+<ul>
+	<li><i>monomorphism</i>, an injective, or 1-to-1 homomorphism, such than if $a$, $b$ are distinct then
+		$f(a)$, $f(b)$ are distinct, $f(a)\ne f(b)$.
+	<li><i>epimorphism</i> a  surjective, or onto homomorphism, such that for every element $h\in H$ there exists
+		and element, $g\in G$ such that $f(g)=h$.
+	<li><i>isomorphism</i> a homomorphism that is both injective and surjective. If two groups, $G$, $H$
+		are isomorphic then they can be considered as the same and we write $G \cong H$. The $\cong$ operator
+		is an <i>equivilence relation</i>, so $G\cong G$, if $G\cong H$ then $H\cong G$ and if $G\cong H$ and $H\cong K$
+		then $G\cong K$.
+	<li><i>endomorphism</i> when the map is an homomorphism between a group $G$ and itself $f:G\to G$
+	<li><i>automorphism</i> when the map is an isomorphism between a group $G$ and itself $f:G\to G$
+</ul>
+<p>And define two important sets
+<ul>
+	<li>The <i>kernel</i>, $ker(f)$, of a map $f:G\to H$ is the set $\{g\in G | f(g) = I_H\}$, all the elements that map to the identity.
+	<li>The <i>image</i>, $img(f)$, is the subset of $H$ given by $\{f(g) | g\in G\}$.
+</ul>
+<p>$ker(f)$ is a subgroup of $G$ and $img(f)$ is a subgroup of $H$. If $f$ is a monomorphism then $ker(f)=I_G$
+	and if $f$ is an epimorphism then $img(f)=H$. So for isomorphisms $ker(f)=I_G$ and $img(f)=H$. 
+
+<p>There are a few standard homoemorphisms 
+<ul>
+	<li><i>identity map</i> If $G$ is a subgroup of $H$ then we can define the identity map $\mathrm{id}_G : G \to H$ 
+		by $\mathrm{id}_G : g \to g$.
+	This is monomorphism.
+	<li>As the trivial group $1$ is a sub group of every group $G$ there is a monomorphism 
+		$\mathrm{id}_1 : I \to G$ by $\mathrm{id}_I: I \to I$.
+	<li>There is also a epimorphism $\pi_1 : G \to 1$ that sends every element to the single identity element
+		$\pi_1 : g \to I$. 
+	<li><i>projection map</i> For direct product groups $G\times H$ we can define two projection
+	maps $\pi_G: G\times H\to G$ and $\pi_H: G\times H\to H$ by $\pi_G : (g,h) \to g$, $\pi_H : (g,h) \to h$, 
+	called the projection maps. These are both epimorphism. 
+</ul>
+
+<p>
+We can look at our current list of groups to see if they are isomorphic. We only need to consider the groups with the same number of elements.
+<ul>
+	<li>$C_2 \cong D_1$, both groups have two elements and the map that sents $I\to I$ and $R_{180}\to M_0$
+		is an isomorphism.
+	<li>$C_4 \not\cong D_2$, even though these groups both have four elements it not posible to 
+		find a group homoemorphism that is both injective and surjective. $C_4$ and $D_4$ are two essentially different groups. 
+	<li>$C_6 \not\cong D_3$
+</ul>
+<h4>Exact sequences</h4>
+<p>An exact sequence is a diagram showing a sequences of groups and homomorphism between them
+$$A \xrightarrow{f} B \xrightarrow{g} C,$$ 
+such that $img(f) = ker(g)$. In particular we are have short exact sequence
+$$1 \xrightarrow{\mathrm{id}} A \xrightarrow{f} B \xrightarrow{g} C \xrightarrow{\pi_1} 1$$ 
+with
+<ul>
+<li>$img(\mathrm{id}) = ker(f) = I_A$ implying that $f$ is an monomorphism,
+<li>$img(f) = ker(g)$
+<li>$img(g) = ker(\pi_1) = C$ so $g$ is an epimorphism
+</ul>
+Typically we just write this as
+$$1 \to A \xrightarrow{f} B \xrightarrow{g} C \to 1$$ 
+An isomorphism could be expressed as 
+$$1 \to A \xrightarrow{f} B  \to 1$$
+because the kernal of $f$ is just the identity element of A and the image of $f$ is the whole
+of $B$. 
+
+<h3>Combining groups</h3>	
+<p>There are several ways to combine groups to form new groups.
+We will discuss two of them here, the <i>direct product</i> and the <i>semidirect product</i>.
+	
+<h4>Direct product</h4>
+<p>
+Every element in $C_6$ can be written in the form
+$R_{180}^m \circ R_{120}^n$ with $m\in \{0,1\}, n\in \{0,1,2\}$.
+So we can form a new group $C_2 \times C_3$ which has elements given by all posible pairs $(a,b)$ with $a\in C_2, b\in C_3$.
+		and a group operation given by
+		$(a_1,b_1) \circ (a_2,b_2) \to (a_1 \circ a_2, b_1 \circ b_2)$, here
+		we have used the same symbol for the operator of all three groups. 
+		This group is called the <i>direct product</i> of the two groups. 
+
+		<p>Here the six elements of the group $C_2\times C_3$ are 
+				$\{(I,I), (R_{180},R_{240}), (I,R_{120}), (R_{180},I),  (I,R_{240}),
+				(R_{180},R_{120})\}$.
+		And the Cayley table is 
+		<style>
+			#prodTable td { text-align: center; }
+		</style>
+		<table class="groupTable" id="prodTable">
+			<tr>		<th>$\circ$				<th>$(I,I)$				<th>$(R_{180},R_{240})$	<th>$(I,R_{120})$ 		<th>$(R_{180},I)$		<th>$(I,R_{240})$		<th>$(R_{180},R_{120})$
+			<tr>		<th>$(I,I)$				<td>$(I,I)$				<td>$(R_{180},R_{240})$ <td>$(I,R_{120})$ 		<td>$(R_{180},I)$   	<td>$(I,R_{240})$		<td>$(R_{180},R_{120})$
+			<tr>		<th>$(R_{180},R_{240})$	<td>$(R_{180},R_{240})$	<td>$(I,R_{120})$		<td>$(R_{180},I)$		<td>$(I,R_{240})$		<td>$(R_{180},R_{120})$	<td>$(I,I)$
+			<tr>		<th>$(I,R_{120})$		<td>$(I,R_{120})$		<td>$(R_{180},I)$ 		<td>$(I,R_{240})$ 		<td>$(R_{180},R_{120})$	<td>$(I,I)$				<td>$(R_{180},R_{240})$
+			<tr>		<th>$(R_{180},I)$		<td>$(R_{180},I)$		<td>$(I,R_{240})$ 		<td>$(R_{180},R_{120})$ <td>$(I,I)$				<td>$(R_{180},R_{240})$	<td>$(I,R_{120})$
+			<tr>		<th>$(I,R_{240})$		<td>$(I,R_{240})$		<td>$(R_{180},R_{120})$ <td>$(I,I)$ 			<td>$(R_{180},R_{240})$	<td>$(I,R_{120})$		<td>$(R_{180},I)$
+			<tr>		<th>$(R_{180},R_{120})$	<td>$(R_{180},R_{120})$	<td>$(I,I)$ 			<td>$(R_{180},R_{240})$ <td>$(I,R_{120})$		<td>$(R_{180},I)$		<td>$(I,R_{240})$
+		</table>
+
+<p>Note how this has the same structure as $C_6$ Cayley table with the same element along the diagonals. 
+We can create an map, $f:C_2\times C_3$ defined by 	
+	$f:(I,I)\to I$, $f:(R_{180},R_{240})\to R_{60}$,   
+	$f:(I,R_{120})\to R_{120}$, $f:(R_{180},I)\ to R_{180}$, 
+	$f:(I,R_{240})\to R_{240}$, and 
+	$f:(R_{180},R_{120})\to R_{300}$.  Then check it is injective, surjective and a group homomorphism.
+
+<p>In a similar fashion $D_4 \cong D_1 \times C_2$. The elements of $D_4$ are 
+		$\{ (I,I), (M_0,I), (I,R_{180}), (M_0,R_{180}) \}$ with
+		<style>
+			#D1C2 td { text-align: center; }
+		</style>
+		<table class="groupTable" id="D1C2">
+			<tr>		<th>$\circ$				<th>$(I,I)$				<th>$(M_{0},I)$			<th>$(I,R_{180})$ 		<th>$(M_0,R_{180})$		
+			<tr>		<th>$(I,I)$				<td>$(I,I)$				<td>$(M_0,I)$		 	<td>$(I,R_{180})$ 		<td>$(M_0,R_{180})$   	
+			<tr>		<th>$(M_0,I)$			<td>$(M_0,I)$			<td>$(I,I)$				<td>$(M_0,R_{180})$		<td>$(I,R_{180})$		
+			<tr>		<th>$(I,R_{180})$		<td>$(I,R_{180})$		<td>$(M_0,R_{180})$ 	<td>$(I,I)$		 		<td>$(M_0,I)$	
+			<tr>		<th>$(M_0,R_{180})$		<td>$(M_0,R_{180})$		<td>$(I,R_{180})$ 		<td>$(M_0,I)$			<td>$(I,I)$		
+		</table>
+		The function, $f: D_1 \times C_2\to D_4$, that sends $(I,I)\to I$, $(M_0,I)\to M_0$, $(I,R_{180})\to R_{180}$ and $(M_0,R_{180})\to M_{90}$
+		is an isomporphism.
+
+<h4>Semi-direct product</h4>
+		
+<p>If $N$ and $H$ are sub groups a group $G$, we can form
+	a new group, $N H$, consists of all elements of the form $n \circ h$ where $n\in N$ and $h\in H$.
+	$N H = \{ n \circ h | n\in N, h\in H \}$.
+	If $N H \cong G$ and $N \cap H = I_G$ then we say 
+	that $G$ is the <i>internal direct product</i> of the two subgroups $N$ and $H$
+	written $N\rtimes H$.
+<p>For example, the group $D_3$ is the internal direct product of the cyclic group $C_3$ and the cyclic group $D_1$.
+	These groups have elements $\{I, R_{120}, R_{240}\}$ and $\{I, M_0\}$ respectively.
+	The elements of this product are             	
+	$\{I\circ I, R_{120}\circ I, R_{240}\circ I , I\circ M_0, R_{120} \circ M_0, R_{240} \circ M_0\}$.
+	=$\{I, R_{120}, R_{240}, M_0, M_{240}, M_{120}\}$.
+<p>Even though $C_3\times C_2$ and $C_3 \rtimes C_2$ have the same 
+	number of elements they have different group structure.
+	Consider pairs of elements $a_1,a_2 \in C_3$, $b_1,b_2 \in C_2$
+	Then in $C_3\times C_2$ we have two elements $(a_1,b_1)$ and $(a_2,b_2)$
+	and there product is $(a_1\circ a_2,b_1\circ b_2)$, under the isomorphism
+	$f(a,b) = a\circ b$ this product becomes $(a_1\circ a_2)\circ(b_1\circ b_2)$.
+	In $C_3\rtimes C_2$ the two elements are $a_1\circ b_1$ and $a_2\circ b_2$
+	and their product is $(a_1\circ b_1) \circ (a_2\circ b_2)$, the elements
+	are multiplied in a different order. 
+	
+<h4>Summary of product relations for cyclic and dihedaral groups</h4>
+<ul>
+	<li>$C_6 \cong C_2 \times C_3 \cong C_3 \times C_2$.
+	<li>If $p$, $q$ are coprime integers then $C_p \times C_q \cong C_{pq}$.	
+	<li>$D_3 \cong C_3 \rtimes C_2$ the semi-direct product of $C_3$ and $C_2$.
+	<li>$D_6 \cong D_3 \times C_2$. 
+</ul> 
+	
+<h4>Quotient Groups</h4>
+<p>
+	If $N$ is a subgroup of $G$, and $g\in G$ then we can form the 
+	the left <i>coset</i> $aN =\{ a h : h\in N\}$
+	and right coset $Na = \{h a : h \in N\}$.
+	If the left and right cosets agree $aN = Na$ for all $a\in G$ then $N$ is a <i>normal subgroup</i>.
+
+<p>For example consider $C_3 = \{I, R_{120}, R_{240}\}$ as a subgroup of $D_3$. 	
+	For each element $g$ of we can form the left cosets.
+<ol>
+	<li>$I C_3 = \{I, R_{120}, R_{240}\}$  
+	<li>$R_{120} C_3 = \{R_{120}, R_{240}, I\}$  
+	<li>$R_{240} C_3 = \{R_{240}, I, R_{120}\}$  
+	<li>$M_0 C_3 = \{M_0, M_{120}, M_{60}\}$  
+	<li>$M_{60} C_3 = \{M_{60}, M_{0}, R_{120}\}$  
+	<li>$M_{120} C_3 = \{M_{120}, M_{60}, M_{0}\}$  
+</ol>
+<p>Note how the first three sets are the same set, and the last three are the same set. 
+So here we split $G$ into two disjoint sets $A = \{I, R_{120}, R_{240}\}, B = \{M_0, M_{120}, M_{60}\}$.
+We can form a group $Q = ( \{A, B\}, *)$ where the group operation extends naturally.
+This group is called the <i>Quotient group</i> and is normally written
+$G / N$. It can be thought of as factoring out the elements of $G$ by the elements of $N$.
+<p>
+For a general quotient group we have an exact sequence
+$$1 \to N \xrightarrow{\mathbf{id}} G \xrightarrow{/N} G / N \to 1$$
+<p>
+The quotient group $D_3 / C_3 \cong C_2$ so we have the exact sequence
+	$$1\to C_3 \xrightarrow{\mathbf{id}} D_3 \xrightarrow{/C_3} C_2 \to 1.$$ 
+Meaning that $img(\mathbf{id}) \in ker(/C_3)$ so every element of $C_3$ maps to the identity element.
+  
+<p>
+We now have all the tools we need to understand the wallpaper groups.
+
+<h3>The full wallpaper group</h3>
+<p>For each of the 17 wallpaper patterns we define the group $W$ consisting 
+of a set of transformations that preserve the pattern, with the composition of transformations,
+$\circ$ as the group operation.
+This group consist of a set of translations plus other translations. For example
+$p2$ consists of translations preserving a lattice plus one 180º around each lattice point. 
+The group can have complicate structures which we can examine interms of subgroup
+and quotient groups.
+
+<h4>The lattice group</h4>
+<p>Each symmetry group preserves a lattice of points, and the group of translations that preserve than lattice forms an infinite group. 
+Part of the clasification of wallpaper groups depend on the structure of this lattice.
+<p>
+Give two linearly independent vectors $\mathbf{u}$, $\mathbf{v}$
+we can define a lattice of points $\{\mathrm{O} + l\,\mathbf{u} + m\,\mathbf{v} : l, m \in \mathbb{Z}\}$
+and a set of translations that preserve this latice.
+Let $T_{lm}$ be the translation along vector $l \mathbf{u}+ m \mathbf{v}$.
+We can form a <i>translation group</i>
+$$T =(\{ T_{lm} :  l, m \in \mathbb{Z}\} , \circ).$$
+<p>
+This is our first infinite group, its abelian and the group operator is closed
+as combining two translations gives another translation, hence it forms 
+a sub group of the full wallpaper group $W$.
+It is a normal subgroup as  is invariant under conjugation by elements of $W$
+i.e. if $t\in T$ and $g\in W$ then $g\,t\,g^{-1} \in T$ or equiviently
+$g^{-1}\,t\,g \in T$. In other words take a transformation $g$ in
+$W$, apply a translation, then apply the inverse of $g$, the resulting transformation
+is another translations. Informally
+<ul>
+	<li>Translations + translations + translations = translations
+	<li>Rotation + translations + inverse rotations = translation
+	<li>Reflection + translation + inverse reflection = translations
+	<li>Glide-reflection + translations + inverse glide-reflection = translation
+</ul>
+<p>In general the resulting translation is not the initial translation.
+
+<h4>Factoring out translations</h4>
+<p>
+As $T$ is a normal subgroup of the wallpaper group $W$ we can form the quotient group $W/T$ by factoring out the 
+translation component. Giving the exact sequence
+$$1 \to T \to W \to W/T \to 1$$
+As we factor out translations the quotient group will be a point groups that fixes a single point, 
+either a cyclic group or dihedral group.  
+<p>
+By observing which point groups preserve a lattice of points we know that the only possible point groups are
+$C_1, C_2, C_3, C_4, C_6, D_1, D_2, D_3, D_4, D_6$.
+Furthermore some wallpaper groups place restrictions on the type of lattice rhombic, rectanglar, square or rectangular lattices.
+So we can clasify wallpaper groups by point group and type of lattice.
+
+<p>Note how there are three different wallpaper groups with the same $D_1$ point group
+	four with the same $D_2$ point group, two with the $D_3$ point group and two with $D_4$ point group.
+We can distinguish between some of these by considering how the reflection in the point group
+aligns with the basis for the lattice. If the lines of reflection are parallel to the
+	lattice basis vectors (short axis) or to the diagonals (long axis). 
+	
+	<table  class="orbifoldExamples">
+	<tr>
+	<td>
+	<img src="orbifolds/lattice rect.png" width="125" height="136" alt="Unit cell for 7 colouring">	
+	<td>
+	<img src="orbifolds/lattice rhombus.png" width="144" height="103" alt="Repeaded copies of the unit cell filling the plane">	
+	<td>
+	<img src="orbifolds/lattice hex short.png" width="235" height="161" alt="Unit cell wrapped around a torus">	
+	<td>
+	<img src="orbifolds/lattice hex long.png" width="225" height="163" alt="Unit cell wrapped around a torus">	
+	<tr>
+		<td>Short axis for rectanglar lattice, PM, PG, PMM, PMG, PGG
+		<td>Long axis for rhombic lattice, CM, CMM
+		<td>Short axis for hexagonal lattice, P31M
+		<td>Long axis for hexagonal lattice, P3M1
+	</table>	
+<p>
+So we have two varients $D_{n,l}$, $D_{n,s}$ for each of the groups $D_1$, $D_2$ and $D_3$ giving us a total of
+13 different point groups: $C_1, C_2, C_3, C_4, C_6, D_{1,l}, D_{1,s}, D_{2,l}, D_{2,s}, D_{3,l}, D_{3,s}, D_4, D_6$.
+
+<table class="groupTable">
+<tbody>
+	<tr><th>Wallpaper group</th><th>Point group</th><th>lattice</th><th>axis</th></tr>
+	<tr><td>P1</td><td>$C_1 = id$</td><td>parallogram</td><td></td></tr>
+	<tr><td>P2</td><td>$C_2$</td><td>parallogram</td><td></td></tr>
+
+	<tr><td>CM</td><td>$D_{1,l}$</td><td>rhombic</td><td>long</td></tr>
+	<tr><td>PM</td><td>$D_{1,s}$</td><td>rectangular</td><td>short</td></tr>
+	<tr><td>PG</td><td>$D_{1,s}$</td><td>rectangular</td><td>short</td></tr>
+
+	<tr><td>CMM</td><td>$D_{2,l}$</td><td>rhombic</td><td>long</td></tr>
+	<tr><td>PMM</td><td>$D_{2,s}$</td><td>rectangular</td><td>short</td></tr>
+	<tr><td>PMG</td><td>$D_{2,s}$</td><td>rectangular</td><td>short</td></tr>
+	<tr><td>PGG</td><td>$D_{2,s}$</td><td>rectangular</td><td>short</td></tr>
+
+	<tr><td>P4</td><td>$C_4$</td><td>square</td><td></td></tr>
+	<tr><td>P4M</td><td>$D_4$</td><td>square</td><td></td></tr>
+	<tr><td>P4G</td><td>$D_4$</td><td>square</td><td></td></tr>
+	<tr><td>P3</td><td>$C_3$</td><td>hexagonal</td><td></td></tr>
+	<tr><td>P3M1</td><td>$D_{3,l}$</td><td>hexagonal</td><td>long</td></tr>
+	<tr><td>P31M</td><td>$D_{3,s}$</td><td>hexagonal</td><td>short</td></tr>
+	<tr><td>P6</td><td>$C_6$</td><td>hexagonal</td><td></td></tr>
+	<tr><td>P6M</td><td>$D_6$</td><td>hexagonal</td><td></td></tr>
+</tbody>
+</table>
+
+
+<p>
+Factoring out translations, removes the distinction between reflections and glide reflections. 
+So we need some futher tools, to distinguish between PM and PG, and between PMM, PMG and PMG. Here we can use 
+group actions and cohomology to fully classify the Wallpaper groups and explain why there are exactly 17 such groups. 
+Morandi has a detailed explination of this classification.
+	
+<h4>The extension problem</h4>
+<p>
+	Given two groups $T$ and $Q$ we can consider the exact sequence
+	
+$$1\to T\xrightarrow{i} G \xrightarrow{\pi} Q \to 1$$
+
+and try to find the all the groups groups $G$ than give an exact sequence. $G$ is said to be an extension of 
+$Q$ by $T$. As the sequence is exact we know that $i(T)$ is a normal sub-group of $G$ and the quotient group
+$G/N$ is isomorphic to $Q$. All finite groups may be constructed as a series of extensions with finite simple groups.
+
+<p>
+One way to find a group extension is to use the direct product 
+with elements $\{(t,q) : t\in T, q\in Q\}$ and group homomorphism $i(t)=(t,1)$ and $\pi(t,q)=q$, we see
+$img(i)=ker(\pi)$ so we have an exact sequence. This is called the <i>trivial extension</i>.
+<p>
+Another group extension is the semi-direct product $T\rtimes Q$. Here elements of $G$ are given by $\{t\circ q : t\in T, q\in Q\}$ 
+the group homomorphism $i(t)=t\circ 1$ and $\pi$ is the quotient map. Such extensions are called
+<i>split extensions</i>. Another property of the semi-direct product is there is a homomorphism $\gamma: Q \to G$ such that
+$\pi \circ \gamma: Q \to Q$ is the identity map. 
+
+<p>For each of our 13 point groups there is a split extension, giving 13 different wallpaper groups. 
+<p>
+The wallpaper groups PG, PMG, PGG be described as group extension but they are not split-extensions. 
+For PG the point group is $D_{1,s}$ containing a reflection $M_0$ but the wallpaper group does
+not contain this reflection, so $D_1$ is not a subgroup of PG required for a split extension. 
+Furthermore we cannot construct a homomorphism $\gamma: Q \to G$ such that $\pi \circ \gamma = id$. We could construct a map
+with $\gamma(I)=I$ and $\gamma(M_0)=G_\mathbf{u}$, but this fails to be a homomorphism as
+$$\gamma(M_0 \circ M_0) = \gamma(I) = I$$
+but 
+$$\gamma(M_0) \circ \gamma(M_0) = G_\mathbf{u} \circ G_\mathbf{u} = T_{2\mathbf{u}} \ne I$$
+so it fails the condition $\gamma(a\circ b)=\gamma(a)\circ\gamma(b)$ needed for group homomorphism. 
+
+<p>
+The number of possible group extensions for a given point group, $G_0$ and lattice group $T$, is given by the 
+size of the second co-homology group $H^2(G_0,T)$. For 
+$C_1, C_2, C_3, C_4, C_6, D_{1,l}, D_{2,l}, D_{3,l}, D_{3,s}, D_6$ we have $|H^2(G_0,T)|=1$ and a single group extension.
+For $D_{1,s}, D_4$ $|H^2(G_0,T)|=2$ with two group extensions. For $D_{2,s}$ the cohomology group has size four but
+two of the extensions give isomorphic wallpaper groups. 
+
+
+<table class="groupTable">
+<tbody>
+	<tr><th>Point group</th><th>|H^2(G_0,T)|</th><th>Group extensions</th><th>split</th></tr>
+	
+	
+	<tr><td>$C_1 = id$</td><td>1</td><td>$1\to T\to \text{P1} \to C_1 \to 1$</td><td>y</td></tr>
+
+	<tr><td>$D_{1,l}$</td><td>1</td><td>$1\to T\to \text{CM} \to D_{1,l} \to 1$</td><td>y</td></tr>
+
+	<tr><td rowspan=2>$D_{1,s}$</td><td rowspan=2>2</td><td>$1\to T\to \text{PM} \to D_{1,s} \to 1$</td><td>y</td></tr>
+	<tr><td>$1\to T\to \text{PG} \to D_{1,s} \to 1$</td><td>n</td></tr>
+
+	<tr><td>$C_2$</td><td>1</td><td>$1\to T\to \text{P2} \to C_2 \to 1$</td><td>y</td></tr>
+	<tr><td>$D_{2,l}$</td><td>1</td><td>$1\to T\to \text{CMM} \to D_{2,l} \to 1$</td><td>y</td></tr>
+
+	<tr><td rowspan=3>$D_{2,s}$</td><td rowspan=3>4</td><td>$1\to T\to \text{PMM} \to D_{2,s} \to 1$</td><td>y</td></tr>
+	<tr><td>$1\to T\to \text{PMG} \to D_{2,s} \to 1$</td><td>n</td></tr>
+	<tr><td>$1\to T\to \text{PGG} \to D_{2,s} \to 1$</td><td>n</td></tr>
+
+	<tr><td>$C_3$</td><td>1</td><td>$1\to T\to \text{P3} \to C_3 \to 1$</td><td>y</td></tr>
+	<tr><td>$D_{3,l}$</td><td>1</td><td>$1\to T\to \text{P31M} \to D_{3,l} \to 1$</td><td>y</td></tr>
+	<tr><td>$D_{3,s}$</td><td>1</td><td>$1\to T\to \text{P3M1} \to D_{3,s} \to 1$</td><td>y</td></tr>
+	
+
+	<tr><td>$D_{4,l}$</td><td>1</td><td>$1\to T\to \text{P4} \to D_{4,l} \to 1$</td><td>y</td></tr>
+	<tr><td rowspan=2>$D_{4,s}$</td><td rowspan=2>2</td><td>$1\to T\to \text{P4M} \to D_{4,s} \to 1$</td><td>y</td></tr>
+	<tr><td>$1\to T\to \text{P4G} \to D_{4,s} \to 1$</td><td>n</td></tr>
+	
+	<tr><td>$C_6$</td><td>1</td><td>$1\to T\to \text{P6} \to C_6 \to 1$</td><td>y</td></tr>
+	<tr><td>$D_6$</td><td>1</td><td>$1\to T\to \text{P6M} \to D_6 \to 1$</td><td>y</td></tr>
+
+</tbody>
+</table>
+
+
+
+ 
+<h4>Group actions</h4>
+<p>With the exact sequence $1\to T\to G\to C_4\to 1$
+	for each element of $x$ in $C_4$ we can define an <i>action</i> $A_x: T\to T$.
+	Let $g_x \in G$ be an element in $G$ such that $\pi_{C_4}(g_x)=x$.
+	This defines a conjugation on elements $g \in G$: $g \to g_x \circ g \circ g_x^{-1}$
+	and as $T$ is a normal subgroup  
+	a conjugation on elements $t \in T$: $A_x(t) = id_T^{-1} (g_x \circ id_T(t) \circ g_x^{-1})$.
+	This is an automorphism as it preserves the identity, is both one-to-one and onto, and 
+	respects the group action. 
+<table  class="orbifoldExamples">
+<tr>
+	<td><img src="orbifolds/action gx beanish.png" alt="applying gx to the beanish motif" width="300" height="300" >	
+	<td><img src="orbifolds/action t gx beanish.png" alt="applying t gx to beanish" width="300" height="300" >	
+	<td><img src="orbifolds/action gx t gx beanish.png" alt="applying gx inv t gx to beanish" width="300" height="300" >	
+</tr>
+<tr>
+	<td>Applying the $g_x^{-1}$ to a motif where $x=R_{270}$
+	<td>Applying $t \circ g_x^{-1}$ for various values of $t$
+	<td>Applying $g_x \circ t \circ g_x^{-1}$ for various values of $t$
+</tr>
+</table>
+
+<p>
+Similar actions can be constructed for the other elements of $C_4$.
+Each gives a different automorphism on the group $T$.
+<table  class="orbifoldExamples">
+<tr>
+	<td><img src="orbifolds/action id beanish.png" alt="applying gx to the beanish motif" width="200" height="200" >	
+	<td><img src="orbifolds/action R180 full beanish.png" alt="applying t gx to beanish" width="200" height="200" >	
+	<td><img src="orbifolds/action R270 full beanish.png" alt="applying gx inv t gx to beanish" width="200" height="200" >	
+</tr>
+<tr>
+	<td>Applying the action $I$ to $T$
+	<td>Applying the $R_{180}$ to $T$
+	<td>Applying the $R_{270}$ to $T$
+</tr>
+</table>
+
+<h2>References</h2>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Wallpaper_group">Wikipedia: Wallpaper groups</a>.
+<li><a href="https://ncatlab.org/nlab/show/Riemannian+orbifold">nLab: Riemannian orbifold</a>	
+<li>Patrick J. Morandi <a href="https://ncatlab.org/nlab/files/Morandi-WallpaperPatterns.pdf">The Classification of Wallpaper Patterns:
+	From Group Cohomology to Escher's Tessellations</a> 2003 - Describes how cohomology can be used to classify wallpaper patterns.
+<li>João Guerreiro <a href="https://www.math.tecnico.ulisboa.pt/~rfern/Estudantes/TrabalhoJGuerreiro.pdf">Orbifolds and Wallpaper Patterns</a> 2009
+<li>J. H. Conway, H. Burgiel, C. Goodman-Stauss, <i>The Symmetries of Things</i>, Taylor & Francais Group, New York, 2008. - A good ilustrated example of 
+	wallpaper patterns and orbifolds. 
+</ul>
+
+<?php 
+include("footer.php"); 
+include_once('../admin/connect.php');
+include_once('../admin/util.php');
+include_once('../admin/log.php');
+
+?>
+
+<hr>
+<p id="navline"><a href="http://www.singsurf.org/">SingSurf Home</a>
+	<a href="help.html">Help</a>
+	<a href="maths.html">Maths</a>
+	<a href="groups.html">Groups</a>
+	<a href="code.html">Code</a>
+</p>
+<p>Copyright R Morris 2025</p>
+</div>
+</body>
+</html>
